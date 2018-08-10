@@ -1,0 +1,1 @@
+ALTER TABLE `user` ADD `created_at` DATETIME NOT NULL AFTER `password`, ADD `batch_id` INT NOT NULL AFTER `created_at`;

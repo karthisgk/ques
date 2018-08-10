@@ -1,0 +1,415 @@
+
+window.onload = function () {
+	var chart1 = document.getElementById("line-chart");
+	if(chart1 != null) {
+		chart1 = chart1.getContext("2d");
+		window.myLine = new Chart(chart1).Line(lineChartData, {
+			responsive: true,
+			scaleLineColor: "rgba(0,0,0,.2)",
+			scaleGridLineColor: "rgba(0,0,0,.05)",
+			scaleFontColor: "#c5c7cc"
+		});
+	}
+};
+
+String.prototype.isURL = function(){
+  var urlregex = /^(http|https):\/\/(([a-zA-Z0-9$\-_.+!*'(),;:&=]|%[0-9a-fA-F]{2})+@)?(((25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9]|[1-9][0-9]|[0-9])(\.(25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9]|[1-9][0-9]|[0-9])){3})|localhost|([a-zA-Z0-9\-\u00C0-\u017F]+\.)+([a-zA-Z]{2,}))(:[0-9]+)?(\/(([a-zA-Z0-9$\-_.+!*'(),;:@&=]|%[0-9a-fA-F]{2})*(\/([a-zA-Z0-9$\-_.+!*'(),;:@&=]|%[0-9a-fA-F]{2})*)*)?(\?([a-zA-Z0-9$\-_.+!*'(),;:@&=\/?]|%[0-9a-fA-F]{2})*)?(\#([a-zA-Z0-9$\-_.+!*'(),;:@&=\/?]|%[0-9a-fA-F]{2})*)?)?$/;
+  return urlregex.test(this);
+};
+
+String.prototype.isEmail = function(){
+  var pattern = /^[a-zA-Z0-9\-_]+(\.[a-zA-Z0-9\-_]+)*@[a-z0-9]+(\-[a-z0-9]+)*(\.[a-z0-9]+(\-[a-z0-9]+)*)*\.[a-z]{2,4}$/;
+  return pattern.test(this);
+};
+
+String.prototype.isJson = function(){
+  try {
+      JSON.parse(this);
+  } catch (e) {
+      return false;
+  }
+  return true;
+};
+
+String.prototype.input_validate = function(){
+  return this.replace(/["'<>`{}|\\]/g, '');
+};
+
+String.prototype.alpha_numeric = function(){
+  return this.replace(/\W+/g, '');
+};
+
+String.prototype.num_validate = function(opt = 0){
+
+  if(this.trim() === '')
+    return '';
+
+  if(opt == 0) /*return integer*/
+    return parseInt(this.replace(/[^0-9]/g, ""));
+  else /*return float*/
+    return parseFloat(this.replace(/[^0-9-.]/g, ""));
+};
+
+String.prototype.isNumeric = function(){
+  return /^[0-9]+$/.test(this);
+};
+
+(function($, undefined) {
+
+    $.fn.checkInput = function() {
+      var rt = true;      
+      $.each(this, function(k, ele){
+        if(ele.value == '')
+          rt = false;
+        else{
+          if($(ele).attr('type') == 'text')
+            ele.value = ele.value.input_validate();
+          else if($(ele).attr('type') == 'num' || $(ele).attr('type') == 'number'){
+            ele.value = ele.value.num_validate();
+            if(ele.value.match(/^[0-9]+$/) == null)
+              rt = false;
+          }
+          else if($(ele).attr('type') == 'email'){
+            if(!ele.value.isEmail())
+              rt = false;
+          }
+          else if($(ele).attr('type') == 'url'){
+            if(!ele.value.isURL())
+              rt = false;
+          }
+        }
+      });
+      return rt;
+    };
+
+    $.fn.initPhoneCode = function(px = '22px'){
+      this.off('focusin focusout');
+      this.parent().find('.country-phone-code').hide();
+      this.css('padding-left', px);
+      this.focusin(function(){
+          $(this).parent().find('.country-phone-code').show();
+      });
+
+      this.focusout(function(){
+        if(this.value == '')
+          $(this).parent().find('.country-phone-code').hide();
+      });
+    };
+
+})(jQuery);
+
+var Myevent = 'keyup keypress blur change mouseenter mouseleave click';
+
+$.fn.makeFormData = function(reqlx) {
+  var post = {};
+  $.each(this, function(k, ele){
+    var ind = $(ele).attr('id').replace(reqlx, '');
+    post[ind] = ele.value;
+  });
+  return post;
+};
+
+$.fn.setValue = function(d, reqlx) {
+  $.each(this, function(k, ele){
+    var ind = $(ele).attr('id').replace(reqlx, '');
+    if($('select#'+$(ele).attr('id')).length == 0)
+      ele.value = d[ind];
+    else
+      $(ele).val(d[ind]).change();
+  });
+};
+
+$.fn.initPopup = function(opt = {}){
+  var main = this;
+  var option = {
+    dummyForm: main.find('form.modal-form').length > 0 ? main.find('form.modal-form') : $(document.createElement('form')),
+    dummyInputs: main.find('form.modal-form .modal-inputs').length > 0 ? main.find('form.modal-form .modal-inputs') : $(document.createElement('input')),
+    dummySubmit: main.find('form.modal-form .modal-submit').length > 0 ? main.find('form.modal-form .modal-submit') : $(document.createElement('button')),
+    modal: main
+  };
+  if(opt.form)
+    option.form = option.modal.find(opt.form).length > 0 ? option.modal.find(opt.form) : option.dummyForm;
+  else
+    option.form = option.dummyForm;
+  if(opt.inputs)
+    option.inputs = option.form.find(opt.inputs).length > 0 ? option.form.find(opt.inputs) : option.dummyInputs;
+  else
+    option.inputs = option.dummyInputs;
+  if(opt.submit)
+    option.submit = option.form.find(opt.submit).length > 0 ? option.form.find(opt.submit) : option.dummySubmit;
+  else
+    option.submit = option.dummySubmit;
+  option.isPhone = opt.isPhone ? true : false;
+  option.shortKey = '';
+  if(opt.shortKey)
+    option.shortKey = opt.shortKey;
+  var basic = {
+    ele: {
+      form: option.form,
+      inputs: option.inputs,
+      submit: option.submit,
+      modal: option.modal,
+      isPhone: option.isPhone,
+    },
+    formKey: option.shortKey,
+    Events: 'keyup keypress blur change mouseenter mouseleave click',
+    validate: function(){
+      var rt = basic.ele.inputs.checkInput();    
+      if(!rt)
+        basic.ele.submit.prop('disabled', true);
+      else
+        basic.ele.submit.prop('disabled', false);
+      return rt;
+    },
+    submit: function(){
+      var validate = (!basic.ele.submit.prop('disabled') && basic.validate());
+      if(validate)
+        basic.ele.form.find('p.form-error-msg').text('').hide();
+      var rt = validate ? basic.ele.inputs.makeFormData(new RegExp(basic.formKey)) : {};
+      if(opt.afterSubmit)
+        opt.afterSubmit(rt, validate);
+    },
+    resetForm: function(){
+      basic.ele.inputs.parent().removeClass('form-group--active');
+      basic.ele.inputs.val('');
+      basic.ele.modal.find('*').off(basic.Events);
+    },
+    init: function(){
+      basic.resetForm();
+      basic.ele.modal.modal();
+      basic.ele.submit.prop('disabled', true).click(basic.submit);
+      basic.ele.inputs.on(Myevent, function(){
+        basic.validate();
+      }).change(function(){
+        if(!$(this).checkInput())
+          $(this).parent().addClass('has-error');
+        else
+          $(this).parent().removeClass('has-error');
+      });
+      if(basic.ele.isPhone) {
+        basic.ele.form.find('.country-phone-code').hide();
+        basic.ele.form.find('[type="number"]').initPhoneCode('32px');
+      }
+    }
+  };
+  basic.init();
+  var rt = {reset: basic.resetForm, validate: basic.validate};
+  rt.ajaxComplete = function(resp = {}){
+    if($.isEmptyObject(resp))
+      return;
+
+    if(resp.result == 'success'){
+      basic.ele.form.find('p.form-error-msg').text('').hide();
+      basic.ele.modal.find('a.open-success').click();
+      basic.resetForm();
+      basic.ele.modal.find('.success-tab p.success-alert').text(changeLang(resp.message)).show();
+    }else
+      basic.ele.form.find('p.form-error-msg').text(changeLang(resp.message)).show();
+  };
+  rt.open = function(){
+    basic.ele.modal.find('a.open-form').click();
+  };
+  return rt;
+};
+
+function changeLang(msg = ''){return msg};
+
+String.prototype.short_string = function(len) {
+    return this.length > len ? this.substring(0, len)+'...' : this;
+}
+
+function timerCallback(interval, callback) {
+  var i = 1;
+  setTimeout(function(){
+    if(i == 1)
+      callback();
+  },  interval);
+}
+
+function sweet_alert(callback, msg = ''){
+  swal({
+    title: changeLang('Are you sure?'),
+    text: msg == '' ? changeLang('You Want to Delete it.') : changeLang(msg),
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: changeLang('Yes'),
+    cancelButtonText: changeLang('No'),
+    closeOnConfirm: false
+  },callback);
+}
+
+function uniqueid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4();
+}
+
+$(document).ready(function() {
+
+  if($('#datatable').length > 0){
+      $('#datatable').DataTable({
+          rowReorder: {
+              selector: 'td:nth-child(0)'
+          },
+          "aaSorting": [[ 0, 'desc' ]],
+      });
+  }
+
+  $('#sidebar-collapse .menu').find('.'+activeMenu).addClass('active');
+  signup.init();
+  batch.init();
+});
+
+var batch = {
+  init: function(){
+    if(!/batch/.test(window.location.pathname))
+      return;
+    this.ajax_table();
+  },
+  get: function(id = ''){
+    $('#pbatch-modal .tab-pane.fade.active.in').removeClass('active in');
+    $('#pbatch-modal #pbatch-form').addClass('active in');
+    $('#pbatch-id').val(id);
+    batch.popup = $('#pbatch-modal').initPopup({
+      shortKey: 'pbatch-',
+      afterSubmit: function(d, v){
+        d.id = $('#pbatch-id').val();
+        batch.update(d);
+      } 
+    });
+    $('#pbatch-from').off('change').change(function(){
+      if(this.value != '') {
+        $('#pbatch-to').children(':not([value=""])').remove();
+        var frm = parseInt(this.value) + 2;
+        for(var i = frm; i < (frm + 2); i++)
+          $('#pbatch-to').append($('<option>'+i+'</option>'));
+
+        $('#pbatch-to').val((frm + 1)).change();
+      }
+    });
+  },
+  update: function(data){
+    if($.isEmptyObject(data))
+      return;
+    $.ajax({
+      type: 'post',
+      url: base_url+'api/batch',
+      dataType: 'json',
+      data: data,
+      success: function(resp){
+        $('#pbatch-id').val('');
+        batch.popup.ajaxComplete(resp);
+        batch.table.ajax.reload();
+      }
+    });
+  },
+  trigger: function(id = ''){
+    if(id != ''){
+      $('#pbatch-modal .modal-title').text('Edit Batch');
+      $.ajax({
+        type: 'post',
+        url: base_url+'api/get_batch/'+id,
+        dataType: 'json',
+        success: function(data){
+          if($.isEmptyObject(data)){
+            $('#pbatch-id').val('');
+            Command: toastr["error"]("Data Not Found!");
+            return;
+          }
+          batch.get(id);
+          $('#pbatch-modal .modal-inputs').setValue(data, 'pbatch-');          
+        }
+      })
+    }else{
+      $('#pbatch-modal .modal-title').text('Add Batch');
+      batch.get();
+    }
+  },
+  delete: function(id = ''){
+    sweet_alert(() => {
+      $.ajax({
+        type: 'post',
+        url: base_url+'api/delete_batch/'+id,
+        success: function(data){
+          swal.close();
+          Command: toastr['success']('Batch Deleted Successfull');
+          batch.table.ajax.reload();
+        }
+      });
+    });
+  }
+};
+
+batch.ajax_table = function(){
+    var user_col = [];
+    $.each($('#ajax-table thead tr').children(), function(){
+      var col_name = $(this).text().toLowerCase().replace(/ /g, '_');
+      user_col.push({data: col_name});
+    });
+    batch.table = $('#ajax-table').DataTable({
+        aaSorting : [[0, 'desc']],
+        "aoColumnDefs": [{ 'bSortable': false, 'aTargets':  [1,5]}],
+        "autoWidth": true,
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+                  "url": base_url+'api/batch_ajax_table',
+                  "type": "POST",
+                  "dataSrc": function ( json ) {
+                    return json.data;
+                  }
+                },
+        "columns": user_col
+    });    
+};
+
+var signup = {
+	init: function(){
+		if(typeof signup.trigger === 'undefined')
+			return;
+
+		$('#sign-up-submit').off('click').click(function(){
+			if(!$('#s-form').parsley().validate() || !$('#s-form input.form-control').checkInput())
+				return;
+
+      if($('#s-form [name="uname"][rno="true"]').length < 1)
+        return;
+
+			$('#s-form').submit();
+		});
+
+    $('#s-form [name="uname"]').off('keyup').keyup(function(){
+      if(this.value.trim() != ''){
+        if(this.value.match(/^[0-9]+$/) == null)
+          this.value = this.value.replace(/[^0-9]/g, "");
+
+        var rno = $(this).parsley();                
+        RollnoExist((b) => {
+          rno.reset();
+          if(b){       
+            window.ParsleyUI.addError(rno, "myCustomError", 'This Roll No Already Exist!');
+            rno.$element.attr('rno', 'false');
+          }else
+            rno.$element.attr('rno', 'true')
+        }, this.value);
+      }
+    });
+	}
+}
+
+function RollnoExist(callback, rno, id = ''){
+  $.ajax({
+    type: 'post',
+    url: base_url+'login/check_rno',
+    data: {rno: rno, id: ''},
+    success: function(data){
+      var bool = data == '1';
+      callback(bool);
+    }
+  });
+}
+

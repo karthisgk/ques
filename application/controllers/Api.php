@@ -1,0 +1,111 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Api extends CI_Controller {
+	public function __construct(){
+		parent::__construct();
+		$this->url = base_url().'api/';
+		if(!$this->input->is_ajax_request())
+			redirect(base_url());		
+	}
+
+	public function batch(){
+
+		if(!$this->sg->checkAccess()) { /* check admin access.*/
+			echo json_encode(array('result'	=> 'error', 'message' => 'Access Denied'));
+			die;
+		}
+
+		if(!empty($_POST)){
+			$id = $this->input->post('id');
+			$up = array(
+				'name'			=> $this->input->post('name'),
+				'from'			=> $this->input->post('from'),
+				'to'			=> $this->input->post('to')
+			);
+
+			$msg = 'Batch Updated Successfull';
+			if($id == ''){
+				$up['created_at'] = $this->sg->created_atDate();
+				$id = $this->sg->add('batch', $up);
+				$msg = 'Batch Created Successfull';
+			}
+			else{
+				$id = $this->sg->_en_urlid($id, '1');
+				$this->sg->update('batch', $up, array('id'	=> $id));
+			}
+
+			$return = array(
+				'id'		=> $id,
+				'result'	=> 'success',
+				'message'	=> $msg
+			);
+		}else
+			$return = array('result'	=> 'error', 'message'	=> 'Input values are not found');
+
+		echo json_encode($return);
+	}
+
+	public function get_batch($id = ''){
+
+		$id = $this->sg->_en_urlid($id, '1');
+		$b = $this->sg->get_one('id', $id , 'batch');
+		if(!empty($b) && $this->sg->checkAccess())
+			echo json_encode($b);
+		else
+			echo "{}";
+	}
+
+	public function batch_ajax_table() {
+
+        $sess_user = $this->sg->sessionUser();
+        if($_POST && $this->sg->checkAccess()) {
+            $wh = $response = array();
+            $response['draw'] = $_POST['draw'];
+            $response['recordsTotal'] = $response['recordsFiltered'] = 0;
+            $response['data'] = array();
+            $table_columns = array('id','name','from','to','created_at','option');
+            $search_columns = $table_columns;
+            unset($search_columns[5]);
+            $request = $_POST;
+            $request['column'] = $table_columns;
+            $request['search_columns'] = $search_columns;
+            $request['tablename'] = 'batch'; 
+            $data = $this->Model->ajax_table($request);            
+            if(!empty($data)){
+                $total = $this->Model->ajax_table($request, true);
+                $recordsTotal['recordsTotal'] = $response['recordsFiltered'] = $total;
+                foreach ($data as $key => $b) {
+
+                	$enid = $this->sg->_en_urlid($b->id, '0');
+                	$option = '<a onclick="batch.trigger(\''.$enid.'\')" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>';
+                	$option .= ' <a onclick="batch.delete(\''.$enid.'\')" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>';
+
+                    $row = array();
+                    $row['DT_RowId'] = 'row-'.$b->id;
+                    $row['id'] = $b->id;
+                    $row['name'] = $this->sg->short_string($b->name, '25');
+                    $row['from'] = $b->from;
+                    $row['to'] = $b->to;
+                    $row['created_at'] = $this->sg->timeAgo($b->created_at);
+                    $row['option'] = $option;
+                    array_push($response['data'], $row);
+                }
+            }
+            echo json_encode($response);
+        }else
+            echo '{}';
+
+        die;
+
+    }
+
+    public function delete_batch($id = ''){
+    	if($this->sg->checkAccess()){
+    		$id = $this->sg->_en_urlid($id, '1');
+    		$this->sg->remove('batch', array('id' => $id));
+    	}
+    }
+}
+
+?>

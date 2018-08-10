@@ -1,0 +1,69 @@
+-- phpMyAdmin SQL Dump
+-- version 3.3.9
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Aug 10, 2018 at 11:32 AM
+-- Server version: 5.1.51
+-- PHP Version: 5.3.5
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Database: `ques`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `batch`
+--
+
+CREATE TABLE IF NOT EXISTS `batch` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  `from` varchar(5) NOT NULL,
+  `to` varchar(5) NOT NULL,
+  `created_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `batch`
+--
+
+INSERT INTO `batch` (`id`, `name`, `from`, `to`, `created_at`) VALUES
+(1, '1st year', '2014', '2017', '2018-08-10 11:20:10');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE IF NOT EXISTS `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_type` int(2) NOT NULL DEFAULT '1' COMMENT '0 = admin, 1 = user',
+  `name` varchar(30) NOT NULL,
+  `lname` varchar(30) NOT NULL,
+  `uname` varchar(50) NOT NULL COMMENT '(roll no)',
+  `email` varchar(70) NOT NULL,
+  `password` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id`, `user_type`, `name`, `lname`, `uname`, `email`, `password`) VALUES
+(1, 0, 'karthi', '', 'karthisgk', '', 'e10adc3949ba59abbe56e057f20f883e'),
+(2, 1, 'mahesh', '', 'maheshm', '', '123456'),
+(3, 1, 'user', '', 'user1', '', '123456'),
+(4, 1, 'mahesh', 'waren', 'smahesh123', 'mahesh20@g.in', '12345');
