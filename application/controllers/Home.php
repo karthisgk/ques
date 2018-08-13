@@ -34,6 +34,9 @@ class Home extends CI_Controller {
     }
 
     public function batch(){
-        echo $this->sg->app(array('actived' => $this->id), 'batch');
+        if($this->sg->checkAccess())
+            echo $this->sg->app(array('actived' => $this->id), 'batch');
+        else
+            redirect(base_url());
     }
 }

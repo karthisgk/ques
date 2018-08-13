@@ -85,6 +85,22 @@ ul.parsley-errors-list {
   color: #fff;
 }
 
+.success-icon > .fa.error {
+  background: #f95a2a;
+}
+
+.success-icon.yes > .fa.error {
+  display: none;
+}
+
+.success-icon:not(.yes) > .fa.error {
+  display: inline-block;
+}
+
+.success-icon:not(.yes) > .fa.check {
+  display: none;
+}
+
 .submit-property__success > h2 {
   color: #69b97a;
 }

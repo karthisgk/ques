@@ -57,7 +57,10 @@
                         <div class="card__body">
                             <div class="submit-property__success">
 
-                                <p class="success-icon text-center"><i class="fa fa-check"></i></p>
+                                <p class="success-icon text-center yes">
+                                    <i class="fa fa-check check"></i>
+                                    <i class="fa fa-exclamation-triangle error"></i>
+                                </p>
 
                                 <h2 class="text-center">Successfull!</h2>
                                 <p class="success-alert text-center"></p>

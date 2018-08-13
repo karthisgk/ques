@@ -81,7 +81,7 @@ class Login extends CI_Controller {
 				'batch_id'		=> $this->input->post('batch')
 			);
 
-			if($inps['password'] != $this->input->post('cpassword')){
+			if($this->input->post('password') != $this->input->post('cpassword')){
 				$this->session->set_flashdata('flash', 'Password Does\'nt be Same.');
 				$this->session->set_flashdata('flashtype', 'error');
 				redirect($this->url.'signup');
