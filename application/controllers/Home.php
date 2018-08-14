@@ -6,6 +6,7 @@ class Home extends CI_Controller {
 	function _remap($id, $name) {
         $this->redirect = base_url();
         $this->login_url = base_url().'login/';
+        $id = strtolower($id);
         $this->id = $id;
 
         if(!isset($_SESSION['user']))
@@ -17,6 +18,8 @@ class Home extends CI_Controller {
             $this->blank();
         elseif ($id == 'batch')
             $this->batch();
+        elseif ($id == 'user')
+            $this->user();
         else
             $this->error_404();
     }
@@ -36,6 +39,15 @@ class Home extends CI_Controller {
     public function batch(){
         if($this->sg->checkAccess())
             echo $this->sg->app(array('actived' => $this->id), 'batch');
+        else
+            redirect(base_url());
+    }
+
+    public function user(){
+        if($this->sg->checkAccess()){
+            $d = array('actived' => $this->id);
+            echo $this->sg->app($d, 'user');
+        }
         else
             redirect(base_url());
     }

@@ -74,3 +74,41 @@
       
     </div>
 </div>
+
+<div class="modal fade" id="select-batch" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div></div>
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Select Batch</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="tab-content">
+                    <div class="tab-pane fade active in">
+                        <div class="form-group">
+                            <label>Batch</label>
+                            <select class="form-control">
+                                <option value="" hidden="">Select Batch</option>
+                                <option value="all">All</option>
+                                <?php foreach ($batchs as $b): ?>
+                                    <option value="<?=$b->id;?>"><?=$b->from;?> - <?=$b->to;?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="text-center">
+                            <button class="btn btn-success" type="button" id="sb-submit">Open</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+      
+    </div>
+</div>

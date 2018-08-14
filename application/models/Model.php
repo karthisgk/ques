@@ -207,6 +207,8 @@ class Model extends CI_Model
 		$data['encode'] = function($id, $opt){
 			return $this->_en_urlid($id, $opt);
 		};
+		$batch = $this->sg->get('select * from batch');
+        $data['batchs'] = !empty($batch) ? $batch : array();
 		$data['appcss'] = $this->load->view('front/appcss' , $data, true);
 		$data['menus'] = $this->load->view('front/menus' , $data, true);
 		$data['popup'] = $this->load->view('front/popup' , $data, true);

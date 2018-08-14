@@ -262,11 +262,12 @@ $(document).ready(function() {
   $('#sidebar-collapse .menu').find('.'+activeMenu).addClass('active');
   signup.init();
   batch.init();
+  user.init();
 });
 
 var batch = {
   init: function(){
-    if(!/batch/.test(window.location.pathname))
+    if(!/batch/i.test(window.location.pathname))
       return;
     this.ajax_table();
   },
@@ -295,6 +296,7 @@ var batch = {
   update: function(data){
     if($.isEmptyObject(data))
       return;
+    $('#pbatch-submit').off('click');
     $.ajax({
       type: 'post',
       url: base_url+'api/batch',
@@ -379,6 +381,7 @@ var signup = {
       if($('#s-form [name="uname"][rno="true"]').length < 1)
         return;
 
+      $('#sign-up-submit').off('click');
 			$('#s-form').submit();
 		});
 
@@ -412,4 +415,57 @@ function RollnoExist(callback, rno, id = ''){
     }
   });
 }
+
+var user = {
+  init: function(){
+    if(!/user/i.test(window.location.pathname))
+      return;
+    this.ajax_table();    
+    $('#change-batch').off('click').click(function(){
+      $('#select-batch').modal();
+      $('#sb-submit').off('click').click(user.changeBatch);
+    });
+    if(mu_batch_id == '0')
+      $('#change-batch').click();
+  },
+  changeBatch: function(){
+    var btEle = $('#select-batch select.form-control')[0];
+    if(btEle.value == ''){
+      Command: toastr['info']('Select Batch!');
+      return;
+    }
+    $('#ajax-table').DataTable().clear();
+    $('#ajax-table').DataTable().destroy();
+    mu_batch_id = btEle.value;
+    user.ajax_table();
+    history.pushState({urlPath: base_url+'user'},'', base_url+'user?bid='+mu_batch_id);
+    $('#select-batch').modal('toggle');
+  },
+  ajax_table: function(){
+    var user_col = [];
+    $.each($('#ajax-table thead tr').children(), function(){
+      var col_name = $(this).text().toLowerCase().replace(/ /g, '_');
+      col_name = col_name == 'roll_no' ? 'uname' : col_name;
+      user_col.push({data: col_name});
+    });
+    batch.table = $('#ajax-table').DataTable({
+        aaSorting : [[0, 'desc']],
+        "aoColumnDefs": [{ 'bSortable': false, 'aTargets':  [1,5]}],
+        "autoWidth": true,
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+                  "url": base_url+'api/user_ajax_table?bid='+mu_batch_id,
+                  "type": "POST",
+                  "dataSrc": function ( json ) {
+                    return json.data;
+                  }
+                },
+        "columns": user_col
+    }); 
+  },
+  trigger: function(){
+
+  }
+};
 
