@@ -6,7 +6,9 @@ class Api extends CI_Controller {
 		parent::__construct();
 		$this->url = base_url().'api/';
 		if(!$this->input->is_ajax_request())
-			redirect(base_url());		
+			redirect(base_url());	
+
+        $this->suser = $this->sg->sessionUser();	
 	}
 
 	public function batch(){
@@ -156,6 +158,64 @@ class Api extends CI_Controller {
 
         die;
 
+    }
+
+    public function get_user($id = ''){
+
+        $id = $this->sg->_en_urlid($id, '1');
+        $b = $this->sg->get_one('id', $id , 'user');
+        if(!empty($b) && $this->sg->checkAccess())
+            echo json_encode($b);
+        else
+            echo "{}";
+    }
+
+    public function update_user(){
+
+
+        $_id = $id = $this->input->post('id') != '' ? $this->sg->_en_urlid($this->input->post('id'), '1') : '';
+
+        if(!$this->sg->checkAccess()) { /* check admin access.*/
+            if($this->sg->checkAccess('1') && $this->suser->id != $_id)
+                echo json_encode(array('result' => 'error', 'message' => 'Access Denied'));
+                die;
+        }
+
+        if(!empty($_POST)){            
+            $up = array(
+                'name'          => $this->input->post('name'),
+                'lname'         => $this->input->post('lname'),
+                'uname'         => $this->input->post('uname'),
+                'email'         => $this->input->post('email'),
+                'batch_id'      => $this->input->post('batch_id')
+            );
+
+            if(trim($this->input->post('password')) != ''){
+                if($this->input->post('password') != $this->input->post('cpassword')){
+                    echo json_encode(array('result' => 'error', 'message' => 'Password Does\'nt be Same.'));
+                    die;
+                }else
+                    $up['password'] = md5($this->input->post('password'));                
+            }
+
+            $msg = 'User Updated Successfull';
+            if($id == ''){
+                $up['created_at'] = $this->sg->created_atDate();
+                $id = $this->sg->add('user', $up);
+                $msg = 'User Created Successfull';
+            }
+            else
+                $this->sg->update('user', $up, array('id'  => $id));
+
+            $return = array(
+                'id'        => $id,
+                'result'    => 'success',
+                'message'   => $msg
+            );
+        }else
+            $return = array('result'    => 'error', 'message'   => 'Input values are not found');
+
+        echo json_encode($return);
     }
 }
 

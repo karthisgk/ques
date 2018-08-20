@@ -54,7 +54,8 @@ class Login extends CI_Controller {
 
 	public function check_rno(){
 		if($this->input->is_ajax_request()){
-			if($this->sg->RollnoExist($this->input->post('rno'), $this->input->post('id')))
+			$id = $this->sg->_en_urlid($this->input->post('id'), '1');
+			if($this->sg->RollnoExist($this->input->post('rno'), $id))
 				echo "1";
 			else
 				echo "0";

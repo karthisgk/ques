@@ -220,7 +220,7 @@ class Model extends CI_Model
 	public function RollnoExist($rno, $id = ''){
 		$qry = 'select id from user where uname="'.$rno.'" ';
 		if($id != '')
-			$qry .= 'id<>"'.$id.'"';
+			$qry .= 'and id<>"'.$id.'"';
 		return $this->count($qry) > 0;
 	}
 

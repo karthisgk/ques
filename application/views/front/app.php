@@ -4,6 +4,13 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Questionary</title>
+	<meta name="description" content="Student Online Exam Test Applicaton">
+	<meta name="keywords" content="Student,Student Online Exam,Questionary,Online Exam, Online Test">
+    <meta name="author" content="karthisgk">
+
+	<!-- App Favicon -->
+    <link rel="icon" href="<?=base_url()."media/fav_icon.png"; ?>" type="image/x-icon"/>
+
 	<link href="<?=base_url(); ?>temp2/css/bootstrap.min.css" rel="stylesheet">
 	<link href="<?=base_url(); ?>temp2/css/font-awesome.min.css" rel="stylesheet">
 	<link href="<?=base_url(); ?>temp2/css/datepicker3.css" rel="stylesheet">

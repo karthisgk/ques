@@ -77,6 +77,11 @@ String.prototype.isNumeric = function(){
             if(!ele.value.isURL())
               rt = false;
           }
+          else if($(ele).attr('type') == 'password'){
+            var eq_id = $(ele).attr('data-equalto');
+            if(ele.value != $(eq_id).val())
+              rt = false;
+          }
         }
       });
       return rt;
@@ -185,6 +190,10 @@ $.fn.initPopup = function(opt = {}){
           $(this).parent().addClass('has-error');
         else
           $(this).parent().removeClass('has-error');
+        if($(this).attr('type') == 'password'){
+          if(typeof $(this).attr('data-equalto') !== 'undefined' && $(this).checkInput())
+            $($(this).attr('data-equalto')).removeClass('has-error');
+        }
       });
       if(basic.ele.isPhone) {
         basic.ele.form.find('.country-phone-code').hide();
@@ -264,6 +273,53 @@ $(document).ready(function() {
   batch.init();
   user.init();
 });
+
+var signup = {
+  init: function(){
+    if(typeof signup.trigger === 'undefined')
+      return;
+
+    $('#sign-up-submit').off('click').click(function(){
+      if(!$('#s-form').parsley().validate() || !$('#s-form input.form-control').checkInput())
+        return;
+
+      if($('#s-form [name="uname"][rno="true"]').length < 1)
+        return;
+
+      $('#sign-up-submit').off('click');
+      $('#s-form').submit();
+    });
+
+    $('#s-form [name="uname"]').off('keyup').keyup(function(){
+      if(this.value.trim() != ''){
+        if(this.value.match(/^[0-9]+$/) == null)
+          this.value = this.value.replace(/[^0-9]/g, "");
+
+        var rno = $(this).parsley();                
+        RollnoExist((b) => {
+          rno.reset();
+          if(b){       
+            window.ParsleyUI.addError(rno, "myCustomError", 'This Roll No Already Exist!');
+            rno.$element.attr('rno', 'false');
+          }else
+            rno.$element.attr('rno', 'true')
+        }, this.value);
+      }
+    });
+  }
+};
+
+function RollnoExist(callback, rno, id = ''){
+  $.ajax({
+    type: 'post',
+    url: base_url+'login/check_rno',
+    data: {rno: rno, id: id},
+    success: function(data){
+      var bool = data == '1';
+      callback(bool);
+    }
+  });
+}
 
 var batch = {
   init: function(){
@@ -369,53 +425,6 @@ batch.ajax_table = function(){
     });    
 };
 
-var signup = {
-	init: function(){
-		if(typeof signup.trigger === 'undefined')
-			return;
-
-		$('#sign-up-submit').off('click').click(function(){
-			if(!$('#s-form').parsley().validate() || !$('#s-form input.form-control').checkInput())
-				return;
-
-      if($('#s-form [name="uname"][rno="true"]').length < 1)
-        return;
-
-      $('#sign-up-submit').off('click');
-			$('#s-form').submit();
-		});
-
-    $('#s-form [name="uname"]').off('keyup').keyup(function(){
-      if(this.value.trim() != ''){
-        if(this.value.match(/^[0-9]+$/) == null)
-          this.value = this.value.replace(/[^0-9]/g, "");
-
-        var rno = $(this).parsley();                
-        RollnoExist((b) => {
-          rno.reset();
-          if(b){       
-            window.ParsleyUI.addError(rno, "myCustomError", 'This Roll No Already Exist!');
-            rno.$element.attr('rno', 'false');
-          }else
-            rno.$element.attr('rno', 'true')
-        }, this.value);
-      }
-    });
-	}
-}
-
-function RollnoExist(callback, rno, id = ''){
-  $.ajax({
-    type: 'post',
-    url: base_url+'login/check_rno',
-    data: {rno: rno, id: ''},
-    success: function(data){
-      var bool = data == '1';
-      callback(bool);
-    }
-  });
-}
-
 var user = {
   init: function(){
     if(!/user/i.test(window.location.pathname))
@@ -448,9 +457,9 @@ var user = {
       col_name = col_name == 'roll_no' ? 'uname' : col_name;
       user_col.push({data: col_name});
     });
-    batch.table = $('#ajax-table').DataTable({
+    user.table = $('#ajax-table').DataTable({
         aaSorting : [[0, 'desc']],
-        "aoColumnDefs": [{ 'bSortable': false, 'aTargets':  [1,5]}],
+        "aoColumnDefs": [{ 'bSortable': false, 'aTargets':  [5]}],
         "autoWidth": true,
         "processing": true,
         "serverSide": true,
@@ -464,8 +473,86 @@ var user = {
         "columns": user_col
     }); 
   },
-  trigger: function(){
+  get: function(id = ''){
+    $('#auser-modal .tab-pane.fade.active.in').removeClass('active in');
+    $('#auser-modal #auser-form').addClass('active in');
+    $('#auser-id').val(id);
+    user.popup = $('#auser-modal').initPopup({
+      shortKey: 'auser-',
+      afterSubmit: function(d, v){
+        d.id = $('#auser-id').val();
+        d.password = $('#auser-password').val();
+        d.cpassword = $('#auser-cpassword').val();
+        user.update(d);
+      } 
+    });
+    if(id == '')
+      $('#auser-modal input[type="password"]').attr('required','required');
+    else
+      $('#auser-modal input[type="password"]').removeAttr('required');
+    $('#auser-modal #auser-uname').off('keyup').keyup(function(){
+      if(this.value.trim() != ''){
+        if(this.value.match(/^[0-9]+$/) == null)
+          this.value = this.value.replace(/[^0-9]/g, "");
 
+        var rno = $(this).parsley();                
+        RollnoExist((b) => {
+          rno.reset();
+          rno.$element.parent().removeClass('has-error');
+          if(b){       
+            rno.$element.parent().addClass('has-error');
+            window.ParsleyUI.addError(rno, "myCustomError", 'This Roll No Already Exist!');
+            rno.$element.attr('rno', 'false');
+          }else
+            rno.$element.attr('rno', 'true')
+        }, this.value, $('#auser-id').val());
+      }
+    });
+  },
+  update: function(data){
+    if($.isEmptyObject(data))
+      return;
+    if($('#auser-modal #auser-uname[rno="true"]').length < 1){
+      $('#auser-modal #auser-uname').keyup();
+      return;
+    }
+    if(!$('#auser-form').parsley().validate())
+      return;
+    $('#auser-submit').off('click');
+    $.ajax({
+      type: 'post',
+      url: base_url+'api/update_user',
+      dataType: 'json',
+      data: data,
+      success: function(resp){
+        $('#auser-id').val('');
+        user.popup.ajaxComplete(resp);
+        user.table.ajax.reload();
+      }
+    });
+  },
+  trigger: function(id = ''){
+    $('#auser-form').parsley().reset();
+    if(id != ''){
+      $('#auser-modal .modal-title').text('Edit User');
+      $.ajax({
+        type: 'post',
+        url: base_url+'api/get_user/'+id,
+        dataType: 'json',
+        success: function(data){
+          if($.isEmptyObject(data)){
+            $('#auser-id').val('');
+            Command: toastr["error"]("Data Not Found!");
+            return;
+          }
+          user.get(id);
+          $('#auser-modal .modal-inputs').setValue(data, 'auser-');
+          $('#auser-modal #auser-uname').keyup();
+        }
+      });
+    }else{
+      user.get();   
+    }
   }
 };
 
