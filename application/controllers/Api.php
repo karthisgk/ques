@@ -105,6 +105,7 @@ class Api extends CI_Controller {
     public function delete_batch($id = ''){
     	if($this->sg->checkAccess()){
     		$id = $this->sg->_en_urlid($id, '1');
+            $this->sg->remove('user', array('batch_id' => $id));
     		$this->sg->remove('batch', array('id' => $id));
     	}
     }
@@ -216,6 +217,13 @@ class Api extends CI_Controller {
             $return = array('result'    => 'error', 'message'   => 'Input values are not found');
 
         echo json_encode($return);
+    }
+
+    public function delete_user($id = ''){
+        if($this->sg->checkAccess()){
+            $id = $this->sg->_en_urlid($id, '1');
+            $this->sg->remove('user', array('id' => $id));
+        }
     }
 }
 

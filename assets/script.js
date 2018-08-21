@@ -54,6 +54,8 @@ String.prototype.isNumeric = function(){
   return /^[0-9]+$/.test(this);
 };
 
+var Spinner = $('<i class="fa fa-spinner fa-spin" style="font-size:24px"></i>');
+
 (function($, undefined) {
 
     $.fn.checkInput = function() {
@@ -328,6 +330,7 @@ var batch = {
     this.ajax_table();
   },
   get: function(id = ''){
+    $('div#loading').hide();
     $('#pbatch-modal .tab-pane.fade.active.in').removeClass('active in');
     $('#pbatch-modal #pbatch-form').addClass('active in');
     $('#pbatch-id').val(id);
@@ -352,7 +355,7 @@ var batch = {
   update: function(data){
     if($.isEmptyObject(data))
       return;
-    $('#pbatch-submit').off('click');
+    $('#pbatch-submit').off('click').html(Spinner);
     $.ajax({
       type: 'post',
       url: base_url+'api/batch',
@@ -362,10 +365,12 @@ var batch = {
         $('#pbatch-id').val('');
         batch.popup.ajaxComplete(resp);
         batch.table.ajax.reload();
+        $('#pbatch-submit').html('Submit');
       }
     });
   },
   trigger: function(id = ''){
+    $('div#loading').show();
     if(id != ''){
       $('#pbatch-modal .modal-title').text('Edit Batch');
       $.ajax({
@@ -398,7 +403,7 @@ var batch = {
           batch.table.ajax.reload();
         }
       });
-    });
+    }, 'You Want to Delete it.\n !Caution: Students will be Deleted Automaically');
   }
 };
 
@@ -474,6 +479,7 @@ var user = {
     }); 
   },
   get: function(id = ''){
+    $('div#loading').hide();
     $('#auser-modal .tab-pane.fade.active.in').removeClass('active in');
     $('#auser-modal #auser-form').addClass('active in');
     $('#auser-id').val(id);
@@ -518,7 +524,7 @@ var user = {
     }
     if(!$('#auser-form').parsley().validate())
       return;
-    $('#auser-submit').off('click');
+    $('#auser-submit').off('click').html(Spinner);
     $.ajax({
       type: 'post',
       url: base_url+'api/update_user',
@@ -528,11 +534,13 @@ var user = {
         $('#auser-id').val('');
         user.popup.ajaxComplete(resp);
         user.table.ajax.reload();
+        $('#auser-submit').html('Submit');
       }
     });
   },
   trigger: function(id = ''){
     $('#auser-form').parsley().reset();
+    $('div#loading').show();
     if(id != ''){
       $('#auser-modal .modal-title').text('Edit User');
       $.ajax({
@@ -553,6 +561,19 @@ var user = {
     }else{
       user.get();   
     }
+  },
+  delete: function(id = ''){
+    sweet_alert(() => {
+      $.ajax({
+        type: 'post',
+        url: base_url+'api/delete_user/'+id,
+        success: function(data){
+          swal.close();
+          Command: toastr['success']('User Deleted Successfull');
+          user.table.ajax.reload();
+        }
+      });
+    });
   }
 };
 

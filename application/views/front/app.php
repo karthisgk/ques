@@ -128,6 +128,10 @@
 	<?=$main;?>
 
 	<?=$popup;?>
+
+	<div id="loading" style="display: none;">
+	    <img class="image" src="<?=base_url();?>media/loading.png" alt="" height="50">
+	</div>
 	<script src="<?=base_url(); ?>temp2/js/jquery-1.11.1.min.js"></script>
 	<script src="<?=base_url(); ?>temp2/js/bootstrap.min.js"></script>
 	<script src="<?=base_url(); ?>temp2/js/chart.min.js"></script>
