@@ -225,6 +225,51 @@ class Api extends CI_Controller {
             $this->sg->remove('user', array('id' => $id));
         }
     }
+
+    public function test_api(){
+        if (isset($_GET['get_single'])) {
+            $id = $this->sg->_en_urlid($_GET['get_single'], '1');
+            $b = $this->sg->get_one('id', $id , 'test');
+            if(!empty($b) && $this->sg->checkAccess())
+                echo json_encode($b);
+            else
+                echo "{}";
+        }
+        elseif (isset($_GET['update'])) {
+            if(!$this->sg->checkAccess()) { /* check admin access.*/
+                echo json_encode(array('result' => 'error', 'message' => 'Access Denied'));
+                die;
+            }
+
+            if(!empty($_POST)){
+                $id = $this->input->post('id');
+                $up = array(
+                    'name'          => $this->input->post('name'),
+                    'desb'          => $this->input->post('desb')
+                );
+
+                $msg = 'Test Updated Successfull';
+                if($id == ''){
+                    $up['created_at'] = $this->sg->created_atDate();
+                    $id = $this->sg->add('test', $up);
+                    $msg = 'Test Created Successfull';
+                }
+                else{
+                    $id = $this->sg->_en_urlid($id, '1');
+                    $this->sg->update('test', $up, array('id'  => $id));
+                }
+
+                $return = array(
+                    'id'        => $id,
+                    'result'    => 'success',
+                    'message'   => $msg
+                );
+            }else
+                $return = array('result' => 'error', 'message'   => 'Input values are not found');
+
+            echo json_encode($return);
+        }
+    }
 }
 
 ?>

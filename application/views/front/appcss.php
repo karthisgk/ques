@@ -140,4 +140,12 @@ div#loading img.image {
     animation: spin 4s linear infinite;
 }
 
+textarea.textarea {
+  resize: none;
+}
+
+textarea.textarea[maxlength="255"] {
+  height: 100px;
+}
+
 </style>

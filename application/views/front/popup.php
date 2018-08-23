@@ -205,3 +205,64 @@
       
     </div>
 </div>
+
+
+<div class="modal fade" id="ptest-modal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+
+
+        <div></div>
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" id="ptest-cancel" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add Test</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="tab-content">
+                    <form class="tab-pane fade active in modal-form" id="ptest-form">
+
+                        <input type="hidden" id="ptest-id" />
+                        <div class="form-group">
+                            <label>Name  <span class="text-danger">*</span></label>
+                            <input type="text"  maxlength="50" class="form-control modal-inputs" id="ptest-name" placeholder="Enter Test Name" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Describtion <span class="text-danger">*</span></label>
+                            <textarea class="textarea form-control modal-inputs" type="text" maxlength="255" id="ptest-desb" placeholder="Enter Describtion"></textarea>
+                        </div>
+
+                        <p class="form-error-msg" id="ptest-form-error"></p>
+                        <div class="text-center">
+                            <button class="btn btn-success modal-submit" type="button" id="ptest-submit">Submit</button>
+                        </div>
+                    </form>
+
+                    <a href="#ptest-success" class="open-success" data-toggle="tab" style="display: none;"></a>
+                    <a href="#ptest-form" class="open-form" data-toggle="tab" style="display: none;"></a>
+
+                    <div class="tab-pane fade success-tab" id="ptest-success">
+                        <div class="card__body">
+                            <div class="submit-property__success">
+
+                                <p class="success-icon text-center yes">
+                                    <i class="fa fa-check check"></i>
+                                    <i class="fa fa-exclamation-triangle error"></i>
+                                </p>
+
+                                <h2 class="text-center">Successfull!</h2>
+                                <p class="success-alert text-center"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+      
+    </div>
+</div>

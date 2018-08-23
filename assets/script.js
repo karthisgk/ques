@@ -274,6 +274,7 @@ $(document).ready(function() {
   signup.init();
   batch.init();
   user.init();
+  test.init();
 });
 
 var signup = {
@@ -539,6 +540,7 @@ var user = {
     });
   },
   trigger: function(id = ''){
+    $('#auser-modal .modal-title').text('Add User');
     $('#auser-form').parsley().reset();
     $('div#loading').show();
     if(id != ''){
@@ -576,4 +578,64 @@ var user = {
     });
   }
 };
+
+var test = {
+  init: function(){
+    if(typeof testpage === 'undefined')
+      return; 
+  },
+  get: function(id = ''){
+    $('div#loading').hide();
+    $('#ptest-modal .tab-pane.fade.active.in').removeClass('active in');
+    $('#ptest-modal #ptest-form').addClass('active in');
+    $('#ptest-id').val(id);
+    test.popup = $('#ptest-modal').initPopup({
+      shortKey: 'ptest-',
+      afterSubmit: function(d, v){
+        d.id = $('#ptest-id').val();
+        test.update(d);
+      } 
+    });
+  },
+  update: function(data){
+    if($.isEmptyObject(data))
+      return;
+    $('#ptest-submit').off('click').html(Spinner);
+    $.ajax({
+      type: 'post',
+      url: base_url+'api/test_api?update',
+      dataType: 'json',
+      data: data,
+      success: function(resp){
+        $('#ptest-id').val('');
+        test.popup.ajaxComplete(resp);
+        $('#ptest-submit').html('Submit');
+      }
+    });
+  },
+  trigger: function(id = ''){
+    $('#ptest-modal .modal-title').text('Add Test');
+    $('#ptest-form').parsley().reset();
+    $('div#loading').show();
+    if(id != ''){
+      $('#ptest-modal .modal-title').text('Edit Test');
+      $.ajax({
+        type: 'post',
+        url: base_url+'api/test_api?get_single='+id,
+        dataType: 'json',
+        success: function(data){
+          if($.isEmptyObject(data)){
+            $('#ptest-id').val('');
+            Command: toastr["error"]("Data Not Found!");
+            return;
+          }
+          test.get(id);
+          $('#ptest-modal .modal-inputs').setValue(data, 'ptest-');
+        }
+      });
+    }else{
+      test.get();   
+    }
+  }
+}
 

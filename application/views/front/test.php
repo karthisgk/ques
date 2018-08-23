@@ -89,3 +89,7 @@
 		</div>
 	</div>
 </div>	<!--/.main-->
+
+<script type="text/javascript">
+var testpage = true;
+</script>
