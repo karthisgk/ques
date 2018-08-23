@@ -20,6 +20,8 @@ class Home extends CI_Controller {
             $this->batch();
         elseif ($id == 'user')
             $this->user();
+        elseif ($id == 'test')
+            $this->test();
         else
             $this->error_404();
     }
@@ -47,6 +49,15 @@ class Home extends CI_Controller {
         if($this->sg->checkAccess()){
             $d = array('actived' => $this->id);
             echo $this->sg->app($d, 'user');
+        }
+        else
+            redirect(base_url());
+    }
+
+    public function test(){
+        if($this->sg->checkAccess()){
+            $d = array('actived' => $this->id);
+            echo $this->sg->app($d, 'test');
         }
         else
             redirect(base_url());

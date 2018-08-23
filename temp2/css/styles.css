@@ -497,8 +497,8 @@ a.label:hover, a.label:focus {
   height: 26px;
   line-height: 26px; }
 
-.dropdown-settings .divider {
-  margin: 7px 0; }
+/*.dropdown-settings .divider {
+  margin: 7px 0; }*/
 
 .dropdown-settings li a {
   padding: 0;
@@ -506,6 +506,10 @@ a.label:hover, a.label:focus {
   display: inline-block;
   width: 100%;
   color: #444444; }
+
+.panel-primary .panel-settings .dropdown a.dropdown-toggle, .panel-settings a{
+  color: #fff;
+}
 
 .clickable {
   cursor: pointer; }
@@ -695,19 +699,43 @@ a.label:hover, a.label:focus {
 
 .nav-tabs {
   background: #f2f3f2;
-  border: 0; }
+  border: 0;
+}
+
+.nav-tabs.custom-tab {
+  background: #4eb96f;
+  border: 1px solid #dcdcdc;
+  border-radius: 3px;
+}
+
 
 .nav-tabs li a:hover {
   background: #fff; }
 
-.nav-tabs li a, .nav-tabs li a:hover, .nav-tabs li.active a, .nav-tabs li.active a:hover {
+.nav-tabs.custom-tab li a:hover {
+  background: #f2f3f2;
+  padding-bottom: 17px;
+  color: #30a5ff; }
+
+.nav-tabs.custom-tab li:first-child {
+  margin-left: 10px;
+}
+
+.nav-tabs li a, 
+.nav-tabs:not(.custom-tab) li a:hover, 
+.nav-tabs:not(.custom-tab) li.active a,
+.nav-tabs:not(.custom-tab) li.active a:hover {
   border: 0;
   padding: 15px 20px; }
+
+.nav-tabs.custom-tab li a {
+  color: #fff;
+}
 
 .nav-tabs li.active a {
   color: #30a5ff; }
 
-.nav-tabs li a {
+.nav-tabs:not(.custom-tab) li a {
   color: #999; }
 
 .nav-pills {
