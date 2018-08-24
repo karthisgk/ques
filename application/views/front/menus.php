@@ -9,7 +9,7 @@
 <?php endif; ?>
 
 <?php if($this->sg->checkAccess()): ?>
-	<li class="test"><a href="<?=base_url();?>Test"><em class="fa fa-file">&nbsp;</em> Test</a></li>
+	<li class="test"><a href="<?=base_url();?>Test"><em class="fa fa-file">&nbsp;</em> Make Test</a></li>
 <?php endif; ?>
 
 <li><a href="<?=base_url();?>login/logout"><em class="fa fa-power-off">&nbsp;</em> Logout</a></li>

@@ -582,7 +582,13 @@ var user = {
 var test = {
   init: function(){
     if(typeof testpage === 'undefined')
-      return; 
+      return;
+
+    $('.custom-tab#make-test-tabs li a').off('click').click(function(){
+      $('#make-test-header .tab-pane.active.in').removeClass('active in');
+      var id = this.getAttribute('href').replace(/#/, '');
+      $('#make-test-header .tab-pane[content-id="'+id+'"]').addClass('active in');
+    });
   },
   get: function(id = ''){
     $('div#loading').hide();
