@@ -260,7 +260,7 @@ class Api extends CI_Controller {
                 }
 
                 $return = array(
-                    'id'        => $id,
+                    'id'        => $this->sg->_en_urlid($id, '0'),
                     'result'    => 'success',
                     'message'   => $msg
                 );
@@ -268,6 +268,18 @@ class Api extends CI_Controller {
                 $return = array('result' => 'error', 'message'   => 'Input values are not found');
 
             echo json_encode($return);
+        }
+        elseif (isset($_GET['get'])) {
+            if(!$this->sg->checkAccess())
+                echo "[]";
+
+            $_POST['enid'] = true;
+            $d = $this->sg->getTest($_POST);
+            if(!empty($d)){
+                //$d['total'] = $this->sg->getTest($_POST, true);
+                echo json_encode($d);
+            }else
+                echo "[]";
         }
     }
 }

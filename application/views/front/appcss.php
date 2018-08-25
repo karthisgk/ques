@@ -148,4 +148,8 @@ textarea.textarea[maxlength="255"] {
   height: 100px;
 }
 
+.make-test-contents .tab-pane .panel-body{
+  border: 1px solid #f5f5f5;
+}
+
 </style>
