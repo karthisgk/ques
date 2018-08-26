@@ -235,6 +235,12 @@ class Api extends CI_Controller {
             else
                 echo "{}";
         }
+        elseif (isset($_GET['delete'])) {
+            if($this->sg->checkAccess()){
+                $id = $this->sg->_en_urlid($_GET['delete'], '1');
+                $this->sg->remove('test', array('id' => $id));
+            }
+        }
         elseif (isset($_GET['update'])) {
             if(!$this->sg->checkAccess()) { /* check admin access.*/
                 echo json_encode(array('result' => 'error', 'message' => 'Access Denied'));
@@ -276,7 +282,70 @@ class Api extends CI_Controller {
             $_POST['enid'] = true;
             $d = $this->sg->getTest($_POST);
             if(!empty($d)){
-                //$d['total'] = $this->sg->getTest($_POST, true);
+                $d[0]->total = $this->sg->getTest($_POST, true);
+                echo json_encode($d);
+            }else
+                echo "[]";
+        }
+    }
+
+    public function quest_api(){
+        if (isset($_GET['get_single'])) {
+            $id = $this->sg->_en_urlid($_GET['get_single'], '1');
+            $b = $this->sg->get_one('id', $id , 'questions');
+            if(!empty($b) && $this->sg->checkAccess())
+                echo json_encode($b);
+            else
+                echo "{}";
+        }
+        elseif (isset($_GET['delete'])) {
+            if($this->sg->checkAccess()){
+                $id = $this->sg->_en_urlid($_GET['delete'], '1');
+                $this->sg->remove('questions', array('id' => $id));
+            }
+        }
+        elseif (isset($_GET['update'])) {
+            if(!$this->sg->checkAccess()) { /* check admin access.*/
+                echo json_encode(array('result' => 'error', 'message' => 'Access Denied'));
+                die;
+            }
+
+            if(!empty($_POST)){
+                $id = $this->input->post('id');
+                $up = array(
+                    'name'          => $this->input->post('name'),
+                    'desb'          => $this->input->post('desb')
+                );
+
+                $msg = 'Question Updated Successfull';
+                if($id == ''){
+                    $up['created_at'] = $this->sg->created_atDate();
+                    $id = $this->sg->add('questions', $up);
+                    $msg = 'Question Created Successfull';
+                }
+                else{
+                    $id = $this->sg->_en_urlid($id, '1');
+                    $this->sg->update('questions', $up, array('id'  => $id));
+                }
+
+                $return = array(
+                    'id'        => $this->sg->_en_urlid($id, '0'),
+                    'result'    => 'success',
+                    'message'   => $msg
+                );
+            }else
+                $return = array('result' => 'error', 'message'   => 'Input values are not found');
+
+            echo json_encode($return);
+        }
+        elseif (isset($_GET['get'])) {
+            if(!$this->sg->checkAccess())
+                echo "[]";
+
+            $_POST['enid'] = true;
+            $d = $this->sg->getQuest($_POST);
+            if(!empty($d)){
+                $d[0]->total = $this->sg->getQuest($_POST, true);
                 echo json_encode($d);
             }else
                 echo "[]";

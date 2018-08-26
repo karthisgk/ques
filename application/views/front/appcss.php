@@ -152,4 +152,8 @@ textarea.textarea[maxlength="255"] {
   border: 1px solid #f5f5f5;
 }
 
+.checkbox > .checkbox-item, .radio > .radio-item {
+  margin-left: 45px;
+}
+
 </style>

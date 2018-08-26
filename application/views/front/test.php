@@ -45,6 +45,10 @@
 								<h4>Tab 2</h4>
 								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eget rutrum purus. Donec hendrerit ante ac metus sagittis elementum. Mauris feugiat nisl sit amet neque luctus, a tincidunt odio auctor.</p>
 							</div>
+
+							<div class="text-center">
+								<a class="btn btn-success" id="t-load-more">Load More</a>
+							</div>
 						</div>
 					</div>
 				</div><!--/.panel-->
@@ -54,34 +58,30 @@
 </div>	<!--/.main-->
 
 <div id="test-panel" style="display: none;">
-	<div class="col-md-6">
+	<div class="panel-child col-md-6">
 		<div class="panel panel-primary">
 			<div class="panel-heading"><span ui-element="test-name"></span>
 				<ul class="pull-right panel-settings panel-button-tab-right">
 					<li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
-						<em class="fa fa-cogs"></em>
+						<em class="fa fa-ellipsis-v"></em>
 					</a>
 						<ul class="dropdown-menu dropdown-menu-right">
 							<li>
 								<ul class="dropdown-settings">
-									<li><a href="#">
-										<em class="fa fa-cog"></em>Settings 1
+									<li><a href="#" ui-element="test-edit-btn">
+										<em class="fa fa-edit"></em> Edit
 									</a></li>
 									<li class="divider"></li>
-									<li><a href="#">
-										<em class="fa fa-cog"></em> Settings 2
-									</a></li>
-									<li class="divider"></li>
-									<li><a href="#">
-										<em class="fa fa-cog"></em> Settings 3
+									<li><a href="#" ui-element="test-delete-btn">
+										<em class="fa fa-trash"></em> Delete
 									</a></li>
 								</ul>
 							</li>
 						</ul>
 					</li>
 				</ul>
-				<span class="pull-right panel-toggle clickable"><em class="fa fa-toggle-up"></em></span></div>
-			<div class="panel-body">
+				<span class="pull-right panel-toggle clickable panel-collapsed"><em class="fa fa-toggle-down"></em></span></div>
+			<div class="panel-body" style="display: none;">
 				<p ui-element="test-desb"></p>
 			</div>
 		</div>

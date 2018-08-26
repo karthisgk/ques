@@ -330,6 +330,33 @@ class Model extends CI_Model
         	return array();
 
     }
+
+    public function getQuest($inp, $get_count = false){
+
+    	$offset = isset($inp['offset']) ? $inp['offset'] : 0;
+    	$limit = isset($inp['limit']) ? $inp['limit'] : $this->getsettings()->load_more_count;
+    	$enid = isset($inp['enid']) ? $inp['enid'] : false;
+
+    	if(!$get_count)
+			$this->db->limit($limit, $offset);
+		$this->db->order_by('id', 'DESC');
+
+    	$data = $this->db->get('questions')->result();
+    	if($get_count)
+        	return count($data);
+
+        if(count($data) > 0){
+        	$rt = array();
+        	foreach ($data as $key => $d) {
+        		$d->id = $enid ? $this->_en_urlid($d->id, '0') : $d->id;
+        		array_push($rt, $d);
+        	}
+        	return $rt;
+        }
+        else
+        	return array();
+
+    }
 }
 
 ?>

@@ -583,7 +583,12 @@ var test = {
   init: function(){
     if(typeof testpage === 'undefined')
       return;
-
+    quest.init();
+    $('#t-load-more').off('click').click(function(){
+      if($('.active.in#test-content').length > 0)
+        test.getData(true);
+      else if($('.active.in#quest-content').length > 0);
+    });
     $('.custom-tab#make-test-tabs li a').off('click').click(function(){
       $('#make-test-header .tab-pane.active.in').removeClass('active in');
       var id = this.getAttribute('href').replace(/#/, '');
@@ -624,11 +629,15 @@ var test = {
         $('#ptest-submit').html('Submit');
         if(resp.id)
           data.id = resp.id;
-        if($('#test-content').children('#'+data.id).length > 0){
-          
+        var panel = $('#test-content').children('#'+data.id);
+        if(panel.length > 0){
+          panel.find('[ui-element="test-name"]').text(data.name.short_string(25));  
+          panel.find('[ui-element="test-desb"]').text(data.desb);
         }
-        else
-          test.uipanels(data, $('#test-content'));
+        else{
+          var ui = test.uipanels(data);
+          $('#test-content').prepend(ui.html());
+        }
       }
     });
   },
@@ -656,9 +665,13 @@ var test = {
       test.get();   
     }
   },
-  getData: function(){
-    var post = {offset: $('#tab-content').children().length};
-    $('div#loading').show();
+  panelLength: function(){return $('#test-content').children().length;},
+  dataTotal: 0,
+  getData: function(loadmore = false){
+    var post = {offset: test.panelLength()};
+    if(post.offset >= test.dataTotal && loadmore)
+      return;
+    $('div#loading').show();    
     $.ajax({
       type: 'post',
       url: base_url+'api/test_api?get',
@@ -667,13 +680,35 @@ var test = {
       success: function(data){
         $('div#loading').hide();
         if(data.length > 0){
-          $.each(data, function(k, obj){            
-            if(k != 'total')
-              test.uipanels(obj, $('#test-content'));
+          test.dataTotal = data[0].total;
+          $.each(data, function(k, obj){
+            test.uipanels(obj, $('#test-content'));
           });
+        }
+        if(test.dataTotal == 0){
+          var msg = $('<h2 class="text-center">There\'s no Test</h2>');
+          msg.css({
+            color: '#c57e7e',
+            'font-weight' : 'bold'
+          });
+          $('#test-content').html(msg);
         }
       }
     })
+  },
+  delete: function(id = ''){
+    sweet_alert(() => {
+      $.ajax({
+        type: 'post',
+        url: base_url+'api/test_api?delete='+id,
+        success: function(data){
+          swal.close();
+          Command: toastr['success']('Test Deleted Successfull');
+          $('#test-content').children('#'+id).remove();
+          test.dataTotal--;
+        }
+      });
+    });
   }
 }
 
@@ -684,7 +719,18 @@ test.uipanels = function(d, ele = ''){
   ui.children().attr('id', d.id);
   ui.find('[ui-element="test-name"]').text(d.name.short_string(25));  
   ui.find('[ui-element="test-desb"]').text(d.desb);
+  var edit = ui.find('[ui-element="test-edit-btn"]');
+  var delBtn = ui.find('[ui-element="test-delete-btn"]');
+  edit.attr('onclick', 'test.trigger("'+d.id+'");');
+  delBtn.attr('onclick', 'test.delete("'+d.id+'");');
   if(typeof ele === 'object')
     ele.append(ui.html());
   return ui;
 };
+
+
+var quest = {
+  init: function(){
+    $('.sg-rich-txt').jqte();
+  }
+}

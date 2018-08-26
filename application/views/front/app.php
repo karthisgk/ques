@@ -17,6 +17,10 @@
 	<link href="<?=base_url(); ?>temp2/css/styles.css" rel="stylesheet">
 	<link href="<?=base_url(); ?>assets/plugins/toastr/toastr.min.css" rel="stylesheet" type="text/css" />
 
+
+	<!-- rich text css -->
+	<link type="text/css" rel="stylesheet" href="<?=base_url(); ?>assets/plugins/jQuery-rich-txt/jquery-te-1.4.0.css">
+
 	<!-- data tables -->
     <link href="<?=base_url(); ?>assets/plugins/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
     <link href="<?=base_url(); ?>assets/plugins/datatables/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
@@ -139,6 +143,9 @@
 	<script src="<?=base_url(); ?>temp2/js/easypiechart.js"></script>
 	<script src="<?=base_url(); ?>temp2/js/easypiechart-data.js"></script>
 	<script src="<?=base_url(); ?>temp2/js/bootstrap-datepicker.js"></script>
+
+	<!-- rich text js -->
+	<script type="text/javascript" src="<?=base_url(); ?>assets/plugins/jQuery-rich-txt/jquery-te-1.4.0.min.js" charset="utf-8"></script>
 
 	<!-- data tables -->
     <script src="<?=base_url(); ?>assets/plugins/datatables/jquery.dataTables.min.js"></script>
