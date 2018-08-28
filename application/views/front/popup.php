@@ -279,7 +279,7 @@
                 <h4 class="modal-title">Add Question</h4>
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body scrolable-bar scrolable-content" style="height: 780px;">
 
                 <div class="tab-content">
                     <form class="tab-pane fade active in modal-form" id="pquest-form">
@@ -289,11 +289,11 @@
                             <label>Question Type <span class="text-danger">*</span></label>
                             <div class="radio">
                                 <div class="radio-item">
-                                    <input type="radio" id="qtype-ch" name="question-type" />
+                                    <input type="radio" id="qtype-ch" name="question-type" value="0" onclick="quest.toggleType();" checked />
                                     <label for="qtype-ch">Multiple Choices</label>
                                 </div>
                                 <div class="radio-item">
-                                    <input type="radio" id="qtype-tf" name="question-type" />
+                                    <input type="radio" id="qtype-tf" name="question-type" value="1" onclick="quest.toggleType(true);" />
                                     <label for="qtype-tf">True / False</label>
                                 </div>
                             </div>
@@ -301,7 +301,28 @@
 
                         <div class="form-group">
                             <label>Question <span class="text-danger">*</span></label>
-                            <textarea class="sg-rich-txt"></textarea>
+                            <textarea class="sg-rich-txt" id="pquest-content"></textarea>
+                        </div>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade active in" id="quest-choises">
+
+                            </div>
+                            <div class="tab-pane fade form-group" id="quest-tf">
+                                <div class="form-group">
+                                    <label>Which is Correct?</label>
+                                    <div class="radio">
+                                        <div class="radio-item">
+                                            <input type="radio" id="tf-true" name="quest-tf" value="1" />
+                                            <label for="tf-true">True</label>
+                                        </div>
+                                        <div class="radio-item">
+                                            <input type="radio" id="tf-false" name="quest-tf" value="0" />
+                                            <label for="tf-false">False</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <p class="form-error-msg" id="pquest-form-error"></p>

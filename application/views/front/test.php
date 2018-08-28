@@ -42,8 +42,7 @@
 								
 							</div>
 							<div class="tab-pane fade col-xs-12" id="quest-content">
-								<h4>Tab 2</h4>
-								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eget rutrum purus. Donec hendrerit ante ac metus sagittis elementum. Mauris feugiat nisl sit amet neque luctus, a tincidunt odio auctor.</p>
+								
 							</div>
 
 							<div class="text-center">
