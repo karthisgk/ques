@@ -762,6 +762,7 @@ var quest = {
             var optVal = $this.find('.quest-choices').val();
             var optVal = optVal != '' && typeof optVal === 'string' ? optVal : 'Option '+$this.attr('opt');
             var ch = {id: $this.find('input[type="hidden"]').val(), value: optVal};
+            ch.crt = $this.find('input[type="radio"]').prop('checked') ? 1 : 0;
             d.choises.push(ch);
           });
         }
@@ -907,7 +908,10 @@ var quest = {
     $.each(options, function(k, ele){
       var uid = typeof ch[k] === 'undefined' ? 'opt-'+ele.attr('opt').toLowerCase() : ch[k].id;
       var value = typeof ch[k] !== 'undefined' ? ch[k].value : '';
-      ele.append($('<label>Option '+ele.attr('opt')+' <span class="text-danger">*</span></label>'));
+      var crt = typeof ch[k] !== 'undefined' ? parseInt(ch[k].crt) : 0;
+      crt = crt == 1 ? 'checked' : '';
+      var radio = '&nbsp<input type="radio" name="quest-choises" id="'+uid+'" '+crt+' />'
+      ele.append($('<label>Option '+ele.attr('opt')+' <span class="text-danger">*</span>'+radio+'</label>'));
       ele.append($('<input type="hidden" value="'+uid+'" />'));
       ele.append($('<textarea class="quest-choices">'+value+'</textarea>'));
       $('#quest-choises').append(ele);
