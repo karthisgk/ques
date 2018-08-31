@@ -723,7 +723,7 @@ test.uipanels = function(d, ele = ''){
   d.m = typeof d.m !== 'undefined' ? d.m : 'test';
   var ui = $('#test-panel');
   ui.children().attr('id', d.id);
-  ui.find('[ui-element="test-name"]').html(d.name.short_string(25));  
+  ui.find('[ui-element="test-name"]').text(d.name.replace(/<\/?[^>]+(>|$)/g, "").short_string(25));  
   ui.find('[ui-element="test-desb"]').html(d.desb);
   var edit = ui.find('[ui-element="test-edit-btn"]');
   var delBtn = ui.find('[ui-element="test-delete-btn"]');
@@ -905,10 +905,11 @@ var quest = {
       $('<div class="form-group" opt="D"></div>')
     ];
     $.each(options, function(k, ele){
-      var uid = typeof ch[ele] === 'undefined' ? 'opt-'+ele.attr('opt').toLowerCase() : ch[ele].id;      
+      var uid = typeof ch[k] === 'undefined' ? 'opt-'+ele.attr('opt').toLowerCase() : ch[k].id;
+      var value = typeof ch[k] !== 'undefined' ? ch[k].value : '';
       ele.append($('<label>Option '+ele.attr('opt')+' <span class="text-danger">*</span></label>'));
       ele.append($('<input type="hidden" value="'+uid+'" />'));
-      ele.append($('<textarea class="quest-choices"></textarea>'));
+      ele.append($('<textarea class="quest-choices">'+value+'</textarea>'));
       $('#quest-choises').append(ele);
     });
     $('.quest-choices').jqte();
