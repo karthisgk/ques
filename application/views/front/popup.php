@@ -299,16 +299,15 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label>Question <span class="text-danger">*</span></label>
-                            <textarea class="sg-rich-txt" id="pquest-content"></textarea>
+                        <div class="form-group pquest-content">
+                            <label>Question <span class="text-danger">*</span></label>                            
                         </div>
 
                         <div class="tab-content">
-                            <div class="tab-pane fade active in" id="quest-choises">
+                            <div class="sub-tab tab-pane fade active in" id="quest-choises">
 
                             </div>
-                            <div class="tab-pane fade form-group" id="quest-tf">
+                            <div class="sub-tab tab-pane fade form-group" id="quest-tf">
                                 <div class="form-group">
                                     <label>Which is Correct?</label>
                                     <div class="radio">
