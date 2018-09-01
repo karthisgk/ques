@@ -733,4 +733,4 @@ var quest = {
   init: function(){
     $('.sg-rich-txt').jqte();
   }
-}
+};
