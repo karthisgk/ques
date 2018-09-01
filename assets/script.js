@@ -275,6 +275,8 @@ $(document).ready(function() {
   batch.init();
   user.init();
   test.init();
+  if($('.sg-rich-txt').length > 0)
+    $('.sg-rich-txt').jqte();
 });
 
 var signup = {
@@ -587,7 +589,8 @@ var test = {
     $('#t-load-more').off('click').click(function(){
       if($('.active.in#test-content').length > 0)
         test.getData(true);
-      else if($('.active.in#quest-content').length > 0);
+      else if($('.active.in#quest-content').length > 0)
+        quest.getData(true);
     });
     $('.custom-tab#make-test-tabs li a').off('click').click(function(){
       $('#make-test-header .tab-pane.active.in').removeClass('active in');
@@ -595,11 +598,13 @@ var test = {
       $('#make-test-header .tab-pane[content-id="'+id+'"]').addClass('active in');
       if(id == 'test-content' && $('#test-content').children().length == 0)
         test.getData();
-      else if(id == 'quest-content' && $('#quest-content').children().length == 0);/*quest.getdata();*/
+      else if(id == 'quest-content' && $('#quest-content').children().length == 0)
+        quest.getData();
     });
     if($('.active.in#test-content').length > 0)
       test.getData();
-    else if($('.active.in#quest-content').length > 0);
+    else if($('.active.in#quest-content').length > 0)
+      quest.getData();
   },
   get: function(id = ''){
     $('div#loading').hide();
@@ -715,14 +720,15 @@ var test = {
 test.uipanels = function(d, ele = ''){
   if($.isEmptyObject(d))
     d = {id: uniqueid(),name: '',desb: ''};
+  d.m = typeof d.m !== 'undefined' ? d.m : 'test';
   var ui = $('#test-panel');
   ui.children().attr('id', d.id);
-  ui.find('[ui-element="test-name"]').text(d.name.short_string(25));  
-  ui.find('[ui-element="test-desb"]').text(d.desb);
+  ui.find('[ui-element="test-name"]').text(d.name.replace(/<\/?[^>]+(>|$)/g, "").short_string(25));  
+  ui.find('[ui-element="test-desb"]').html(d.desb);
   var edit = ui.find('[ui-element="test-edit-btn"]');
   var delBtn = ui.find('[ui-element="test-delete-btn"]');
-  edit.attr('onclick', 'test.trigger("'+d.id+'");');
-  delBtn.attr('onclick', 'test.delete("'+d.id+'");');
+  edit.attr('onclick', d.m+'.trigger("'+d.id+'");');
+  delBtn.attr('onclick', d.m+'.delete("'+d.id+'");');
   if(typeof ele === 'object')
     ele.append(ui.html());
   return ui;
@@ -731,6 +737,185 @@ test.uipanels = function(d, ele = ''){
 
 var quest = {
   init: function(){
-    $('.sg-rich-txt').jqte();
+
+  },
+  get: function(id = ''){    
+    $('div#loading').hide();
+    $('[name="question-type"][value="0"]').prop('checked', true);
+    $('[name="quest-tf"][value="0"]').prop('checked', true);
+    quest.toggleType();
+    $('#pquest-modal .tab-pane.fade.active.in:not(.sub-tab)').removeClass('active in');
+    $('#pquest-modal #pquest-form').addClass('active in');
+    $('#pquest-id').val(id);
+    quest.popup = $('#pquest-modal').initPopup({
+      shortKey: 'pquest-',
+      afterSubmit: function(d, v){
+        d = {};
+        d.id = $('#pquest-id').val();
+        d.qtype = $('[name="question-type"]:checked').val();
+        d.content = $('#pquest-content').val();
+        d.tf = $('[name="quest-tf"]:checked').val();
+        d.choises = [];
+        if($('#quest-choises').children().length == 4){
+          $.each($('#quest-choises').children(), function(){
+            var $this = $(this)
+            var optVal = $this.find('.quest-choices').val();
+            var optVal = optVal != '' && typeof optVal === 'string' ? optVal : 'Option '+$this.attr('opt');
+            var ch = {id: $this.find('input[type="hidden"]').val(), value: optVal};
+            ch.crt = $this.find('input[type="radio"]').prop('checked') ? 1 : 0;
+            d.choises.push(ch);
+          });
+        }
+        quest.update(d);
+      } 
+    });
+    
+    $('#pquest-submit').prop('disabled', false);
+    $('.pquest-content').children('.jqte').remove();
+    $('.pquest-content').append('<textarea id="pquest-content"></textarea>');
+    if($('.jqte_source #pquest-content').length == 0)
+      $('#pquest-content').jqte();
+  },
+  trigger: function(id = ''){
+    $('#quest-choises').html('');
+    $('#pquest-modal .modal-title').text('Add Question');
+    $('#pquest-form').parsley().reset();
+    $('div#loading').show();
+    if(id != ''){
+      $('#pquest-modal .modal-title').text('Edit Question');
+      $.ajax({
+        type: 'post',
+        url: base_url+'api/quest_api?get_single='+id,
+        dataType: 'json',
+        success: function(data){
+          if($.isEmptyObject(data)){
+            $('#pquest-id').val('');
+            Command: toastr["error"]("Data Not Found!");
+            return;
+          }
+          quest.get(id);
+          var ch = typeof data.choises === 'string' && data.choises.isJson() ? JSON.parse(data.choises) : ch;
+          quest.initChoises(ch);
+          $('[name="question-type"][value="'+data.qtype+'"]').prop('checked', true);
+          quest.toggleType(data.qtype == 1);
+          $('[name="quest-tf"][value="'+data.tf+'"]').prop('checked', true);
+          $('#pquest-content').jqteVal(data.content); 
+        }
+      });
+    }else{
+      quest.get();
+      quest.initChoises();  
+    }
+  },
+  update: function(data){
+    if($.isEmptyObject(data))
+      return;
+    $('#pquest-submit').off('click').html(Spinner);
+    $.ajax({
+      type: 'post',
+      url: base_url+'api/quest_api?update',
+      dataType: 'json',
+      data: data,
+      success: function(resp){
+        $('#pquest-id').val('');
+        quest.popup.ajaxComplete(resp);
+        $('#pquest-modal .modal-body.scrolable-content').css('height','270px');
+        $('#pquest-submit').html('Submit');
+        if(resp.id)
+          data.id = resp.id;
+        var panel = $('#quest-content').children('#'+data.id);
+        data.choises = JSON.stringify(data.choises);
+        var d = quest.panelUI(data);
+        var ui = test.uipanels(d);
+        if(panel.length > 0)
+          panel.html(ui.children().html());
+        else
+          $('#quest-content').prepend(ui.html());
+      }
+    });
+  },
+  panelLength: function(){return $('#quest-content').children().length;},
+  dataTotal: 0,
+  getData: function(loadmore = false){
+    var post = {offset: quest.panelLength()};
+    if(post.offset >= quest.dataTotal && loadmore)
+      return;
+    $('div#loading').show();    
+    $.ajax({
+      type: 'post',
+      url: base_url+'api/quest_api?get',
+      data: post,
+      dataType: 'json',
+      success: function(data){
+        $('div#loading').hide();
+        if(data.length > 0){
+          quest.dataTotal = data[0].total;
+          $.each(data, function(k, obj){
+            var d = quest.panelUI(obj);
+            test.uipanels(d, $('#quest-content'));
+          });
+        }
+        if(quest.dataTotal == 0){
+          var msg = $('<h2 class="text-center">There\'s no Questions</h2>');
+          msg.css({
+            color: '#c57e7e',
+            'font-weight' : 'bold'
+          });
+          $('#quest-content').html(msg);
+        }
+      }
+    })
+  },
+  panelUI: function(data){
+    if($.isEmptyObject(data))
+      return {};
+    var rt = {id: data.id, name: data.content, m: 'quest'};
+    rt.desb = '<div class="panel-question">'+data.content+'</div>';
+    rt.desb += '<ul class="panel-answer">';
+    if(data.qtype == 0 && data.choises.isJson()){
+      var ch = JSON.parse(data.choises);
+      var options = ['A','B','C','D'];
+      if(ch.length == 4){
+        $.each(ch, function(k, opt){
+          rt.desb += '<li><span>'+options[k]+'. '+opt.value.short_string(50)+'</span></li>';
+        });
+      }
+    }else if(data.qtype == 1)
+      rt.desb += '<li><span>1. True</span></li><li><span>2. False</span></li>';
+    rt.desb += '</ul>';
+    return rt;
+  },
+  toggleType: function(b = false){
+    var tabEle = $('#pquest-form').children('.tab-content');
+    tabEle.children('.tab-pane.active.in').removeClass('active in');
+    if(b){
+      $('#pquest-modal .modal-body.scrolable-content').css('height','540px');
+      tabEle.children('#quest-tf').addClass('active in');
+    }
+    else{
+      $('#pquest-modal .modal-body.scrolable-content').css('height','780px');
+      tabEle.children('#quest-choises').addClass('active in');
+    }
+  },
+  initChoises: function(ch = []){
+    $('#quest-choises').html('');
+    var options = [
+      $('<div class="form-group" opt="A"></div>'),
+      $('<div class="form-group" opt="B"></div>'),
+      $('<div class="form-group" opt="C"></div>'),
+      $('<div class="form-group" opt="D"></div>')
+    ];
+    $.each(options, function(k, ele){
+      var uid = typeof ch[k] === 'undefined' ? 'opt-'+ele.attr('opt').toLowerCase() : ch[k].id;
+      var value = typeof ch[k] !== 'undefined' ? ch[k].value : '';
+      var crt = typeof ch[k] !== 'undefined' ? parseInt(ch[k].crt) : 0;
+      crt = crt == 1 ? 'checked' : '';
+      var radio = '&nbsp<input type="radio" name="quest-choises" id="'+uid+'" '+crt+' />'
+      ele.append($('<label>Option '+ele.attr('opt')+' <span class="text-danger">*</span>'+radio+'</label>'));
+      ele.append($('<input type="hidden" value="'+uid+'" />'));
+      ele.append($('<textarea class="quest-choices">'+value+'</textarea>'));
+      $('#quest-choises').append(ele);
+    });
+    $('.quest-choices').jqte();
   }
 };

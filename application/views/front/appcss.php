@@ -156,4 +156,13 @@ textarea.textarea[maxlength="255"] {
   margin-left: 45px;
 }
 
+ul.panel-answer {
+  list-style: none;
+  padding-left: 20px;
+}
+
+.jqte {
+  margin: 0px;
+}
+
 </style>

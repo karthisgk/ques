@@ -313,8 +313,10 @@ class Api extends CI_Controller {
             if(!empty($_POST)){
                 $id = $this->input->post('id');
                 $up = array(
-                    'name'          => $this->input->post('name'),
-                    'desb'          => $this->input->post('desb')
+                    'qtype'            => $this->input->post('qtype'),
+                    'content'          => $this->input->post('content'),
+                    'tf'               => $this->input->post('tf'),
+                    'choises'          => json_encode($this->input->post('choises'))
                 );
 
                 $msg = 'Question Updated Successfull';
