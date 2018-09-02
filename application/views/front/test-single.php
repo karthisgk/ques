@@ -5,22 +5,22 @@
 			<li><a href="#">
 				<em class="fa fa-home"></em>
 			</a></li>
-			<li class="active">Make Test</li>
+			<li class="active"><?=isset($data->name) ? $data->name : '';?></li>
 		</ol>
 	</div><!--/.row-->
 	
 	<div class="row tab-content" id="make-test-header" style="padding: 0;">
-		<div class="col-lg-12 tab-pane fade in active" content-id="test-content">
+		<div class="col-lg-12 tab-pane fade in active" content-id="tquest-content">
 			<div class="float-left">
-				<h1 class="page-header">Test <a onclick="test.trigger();" class="btn btn-primary fix-float-btn"><i class="fa fa-plus"></i></a></h1>
+				<h1 class="page-header">Questions <a onclick="tquest.trigger();" class="btn btn-primary fix-float-btn"><i class="fa fa-plus"></i></a></h1>
 			</div>
 			<div class="float-right">
 				
 			</div>
 		</div>
-		<div class="col-lg-12 tab-pane fade" content-id="quest-content">
+		<div class="col-lg-12 tab-pane fade" content-id="assign-content">
 			<div class="float-left">
-				<h1 class="page-header">Questions <a onclick="quest.trigger();" class="btn btn-primary fix-float-btn"><i class="fa fa-plus"></i></a></h1>
+				<h1 class="page-header">Assign <a onclick="assign.trigger();" class="btn btn-primary fix-float-btn"><i class="fa fa-plus"></i></a></h1>
 			</div>
 			<div class="float-right">
 				
@@ -34,14 +34,14 @@
 				<div class="panel panel-primary">
 					<div class="panel-body tabs">
 						<ul class="nav nav-tabs custom-tab" id="make-test-tabs">
-							<li class="active"><a href="#test-content" data-toggle="tab">Test</a></li>
-							<li><a href="#quest-content" data-toggle="tab">Questions</a></li>
+							<li class="active"><a href="#tquest-content" data-toggle="tab">Questions</a></li>
+							<li><a href="#assign-content" data-toggle="tab">Assign</a></li>
 						</ul>
 						<div class="tab-content make-test-contents">
-							<div class="tab-pane fade in active col-xs-12" id="test-content">
+							<div class="tab-pane fade in active col-xs-12" id="tquest-content">
 								
 							</div>
-							<div class="tab-pane fade col-xs-12" id="quest-content">
+							<div class="tab-pane fade col-xs-12" id="assign-content">
 								
 							</div>
 
@@ -88,5 +88,7 @@
 </div>
 
 <script type="text/javascript">
-var testpage = true;
+var testSingle = true;
+var test_id = '<?=isset($data->enid) ? $data->enid : '';?>';
+var testQuest = <?=isset($data->questions) ? $data->questions : '[]';?>;
 </script>

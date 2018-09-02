@@ -235,6 +235,60 @@ class Api extends CI_Controller {
             else
                 echo "{}";
         }
+        elseif (isset($_GET['get_questions'])) {
+            if(!$this->sg->checkAccess())
+                echo "[]";
+
+            $id = $this->sg->_en_urlid($_GET['get_questions'], '1');
+            $b = $this->sg->get_one('id', $id , 'test');
+            $trigger = false;
+            if(!empty($b)){
+                if($b->questions != ''){
+                    $quest = json_decode($b->questions);
+                    $_POST['quest'] = $questCreated = array();                    
+                    if (json_last_error() === 0 && count($quest) > 0){ 
+                        $trigger = true;
+                        foreach ($quest as $k => $q) {
+                            array_push($_POST['quest'], $q->id);
+                            array_push($questCreated, $q->created);
+                        }
+                    }
+                }
+            }
+
+            if(!$trigger){
+                echo "[]";
+                die();
+            }
+
+            $_POST['enid'] = true;
+            $d = $this->sg->getQuest($_POST);
+            if(!empty($d)){
+                $fg = count($questCreated) == count($d);
+                if($_POST['reverse'] !== 'true' && $fg)
+                    array_multisort($questCreated, SORT_ASC, $d);
+                $d[0]->total = $this->sg->getQuest($_POST, true);
+                echo json_encode($d);
+            }else
+                echo json_encode($_POST);
+        }
+        elseif (isset($_GET['update_questions'])) {
+            if(!$this->sg->checkAccess())
+                echo "[]";
+
+            $id = $this->sg->_en_urlid($_GET['update_questions'], '1');
+            if(isset($_POST['quest'])){
+                $quest = array();
+                $_POST['quest'] = is_array($_POST['quest']) ? $_POST['quest'] : array();
+                foreach ($_POST['quest'] as $key => $obj) {
+                    if(isset($obj['created']))
+                        $obj['created'] = date('Y-m-d H:i:s', strtotime($obj['created']));
+                    array_push($quest, $obj);
+                }
+                $up = array('questions' => json_encode($quest));
+                $this->sg->update('test', $up, array('id'  => $id));
+            }            
+        }
         elseif (isset($_GET['delete'])) {
             if($this->sg->checkAccess()){
                 $id = $this->sg->_en_urlid($_GET['delete'], '1');
@@ -332,6 +386,7 @@ class Api extends CI_Controller {
 
                 $return = array(
                     'id'        => $this->sg->_en_urlid($id, '0'),
+                    'req_volume'=> $id,
                     'result'    => 'success',
                     'message'   => $msg
                 );

@@ -59,3 +59,6 @@ $route['signup'] = 'login/signup';
 $route['login'] = 'login/login';
 $route['(:any)'] = "home/$1";
 
+$route['Test/(:any)'] = "home/test/$1";
+$route['test/(:any)'] = "home/test/$1";
+

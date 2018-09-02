@@ -20,8 +20,10 @@ class Home extends CI_Controller {
             $this->batch();
         elseif ($id == 'user')
             $this->user();
-        elseif ($id == 'test')
-            $this->test();
+        elseif ($id == 'test'){
+            $id = isset($name[0]) ? $name[0] : '';
+            $this->test($id);
+        }
         else
             $this->error_404();
     }
@@ -54,10 +56,32 @@ class Home extends CI_Controller {
             redirect(base_url());
     }
 
-    public function test(){
+    public function test($id = ''){
         if($this->sg->checkAccess()){
-            $d = array('actived' => $this->id);
-            echo $this->sg->app($d, 'test');
+
+            $isSinggle = $id != '';$_id = $id;
+
+            if($isSinggle) {
+                $id = $this->sg->_en_urlid($id, '1');
+                $test = $this->sg->get_one('id', $id, 'test');
+                $isSinggle = !empty($test);
+                if(empty($test))
+                    redirect(base_url().'test');
+            }
+
+            if(!$isSinggle){
+                $d = array('actived' => $this->id);
+                echo $this->sg->app($d, 'test');
+            }else{
+                $d = array('actived' => $this->id);
+                $test->enid = $_id;
+                $test->questions = empty($test->questions) ? '[]' : $test->questions;
+                $quest = json_decode($test->questions);
+                if(json_last_error() !== 0)
+                    $test->questions = '[]';
+                $d['data'] = $test;
+                echo $this->sg->app($d, 'test-single');
+            }
         }
         else
             redirect(base_url());

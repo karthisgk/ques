@@ -148,6 +148,10 @@ textarea.textarea[maxlength="255"] {
   height: 100px;
 }
 
+.make-test-contents {
+  min-height: 450px;
+}
+
 .make-test-contents .tab-pane .panel-body{
   border: 1px solid #f5f5f5;
 }
@@ -163,6 +167,84 @@ ul.panel-answer {
 
 .jqte {
   margin: 0px;
+}
+
+#t-load-more {
+  display: none;
+}
+
+ul.list-view {
+  padding: 0;
+}
+
+ul.list-view li {
+  list-style: none;
+}
+
+ul.list-view > li {
+  padding: 10px 5px 10px 0px;
+  border-bottom: 1px solid #eee;
+  min-height: 85px;
+  cursor: pointer;
+  border-radius: 5px;
+  position: relative;
+}
+
+ul.list-view > li.selected {
+  background: #f2f2f2;
+}
+
+ul.list-view > li:hover {
+  background: #f9f9f9;
+}
+
+ul.list-view > li .time {
+  font-size: 10px;
+  float: right;
+}
+
+ul.list-view > li p, ul.list-view > li span {
+  color: #666;
+  font-size: 15px;
+  margin-bottom: 0px;
+  line-height: 1.3;
+}
+
+ul.list-view > li .head {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 0;
+}
+
+ul.list-view > li .message {
+  font-size: 13px;
+  max-width: 90%;
+}
+
+ul.list-view > li .checked{
+  display: none;
+  color: #4eb96f;
+  position: absolute;
+  right: 5px;
+  font-size: 45px;
+  top: 0;
+}
+
+ul.list-view > li.selected .checked {
+  display: block;
+}
+
+button#ptquest-action {
+  float: right;
+}
+
+#quest-list {
+  height: 500px;
+}
+
+.make-test-contents .panel-body {
+  word-wrap: break-word;
+  word-break: break-all;
 }
 
 </style>

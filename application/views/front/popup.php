@@ -276,7 +276,7 @@
 
             <div class="modal-header">
                 <button type="button" id="pquest-cancel" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Add Question</h4>
+                <h4 class="modal-title">Create Question</h4>
             </div>
 
             <div class="modal-body scrolable-bar scrolable-content" style="height: 780px;">
@@ -334,6 +334,58 @@
                     <a href="#pquest-form" class="open-form" data-toggle="tab" style="display: none;"></a>
 
                     <div class="tab-pane fade success-tab" id="pquest-success">
+                        <div class="card__body">
+                            <div class="submit-property__success">
+
+                                <p class="success-icon text-center yes">
+                                    <i class="fa fa-check check"></i>
+                                    <i class="fa fa-exclamation-triangle error"></i>
+                                </p>
+
+                                <h2 class="text-center">Successfull!</h2>
+                                <p class="success-alert text-center"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+      
+    </div>
+</div>
+
+<div class="modal fade" id="ptquest-modal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+
+
+        <div></div>
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" id="ptquest-action" class="btn-warning btn"><i class="fa fa-close"></i></button>
+                <h4 class="modal-title">Add Question to Test <a title="Create New Question" onclick="tquest.createNew();" href="#">(create)</a></h4>
+            </div>
+
+            <div class="form-group">
+                <input type="text"  maxlength="50" class="form-control modal-inputs" id="ptquest-keyword" placeholder="Search" />
+            </div>
+
+            <div class="modal-body" style="padding: 0 20px;">
+
+                <div class="tab-content" style="padding: 0;">
+                    <form class="tab-pane fade active in modal-form" id="ptquest-form">
+
+                        <ul class="list-view scrolable-content scrolable-bar" id="quest-list">
+                            
+                        </ul>
+                    </form>
+
+                    <a href="#ptquest-success" class="open-success" data-toggle="tab" style="display: none;"></a>
+                    <a href="#ptquest-form" class="open-form" data-toggle="tab" style="display: none;"></a>
+
+                    <div class="tab-pane fade success-tab" id="ptquest-success">
                         <div class="card__body">
                             <div class="submit-property__success">
 

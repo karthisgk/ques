@@ -137,9 +137,9 @@ class Model extends CI_Model
 	public function _en_urlid($data,$en_de = 0){ // $en_de = 0  for encode 1 for decode
 		$salt = 10000;
 		if($en_de == 0) //encode
-			return base_convert($data*$salt, 10, 36);
+			return base_convert($data*$salt, 36, 32);
 		else //decode
-			return base_convert($data, 36, 10) / $salt;
+			return base_convert($data, 32, 36) / $salt;
 	}
 
 	public function timeMoment($timestamp){
@@ -336,6 +336,27 @@ class Model extends CI_Model
     	$offset = isset($inp['offset']) ? $inp['offset'] : 0;
     	$limit = isset($inp['limit']) ? $inp['limit'] : $this->getsettings()->load_more_count;
     	$enid = isset($inp['enid']) ? $inp['enid'] : false;
+    	$reverse = isset($inp['reverse']) ? $inp['reverse'] : 'false';
+    	$keyword = isset($inp['keyword']) ? $inp['keyword'] : '';
+    	$keyword = preg_replace('/["\'{}|\\\\]/i', '', $keyword);
+    	$keyword = str_replace('%20', ' ', $keyword);
+		if($keyword != '' && strlen($keyword) > 3){
+			$array = array('content' => $keyword);			
+			$this->db->group_start();
+            $this->db->or_like($array)->group_end(); 
+        }
+
+    	if(isset($inp['quest']) && $reverse !== 'true'){
+    		if(is_array($inp['quest'])){
+    			$fg = count($inp['quest']) > 0;
+    			if($fg){
+    				$this->db->group_start();
+	    			foreach ($inp['quest'] as $k => $_id)
+	    				$this->db->or_where('id', $_id);
+    				$this->db->group_end();
+    			}
+    		}
+    	}
 
     	if(!$get_count)
 			$this->db->limit($limit, $offset);
@@ -348,6 +369,7 @@ class Model extends CI_Model
         if(count($data) > 0){
         	$rt = array();
         	foreach ($data as $key => $d) {
+        		$d->index = $d->id;
         		$d->id = $enid ? $this->_en_urlid($d->id, '0') : $d->id;
         		array_push($rt, $d);
         	}

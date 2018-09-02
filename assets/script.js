@@ -12,6 +12,16 @@ window.onload = function () {
 	}
 };
 
+function current_time() {
+  var time = new Date();
+  var date = time.getFullYear()+'-'+(time.getMonth() + 1)+'-'+time.getDate();
+  var format = 
+    ("0" + time.getHours()).slice(-2)   + ":" + 
+    ("0" + time.getMinutes()).slice(-2) + ":" + 
+    ("0" + time.getSeconds()).slice(-2);
+  return date+' '+format;
+}
+
 String.prototype.isURL = function(){
   var urlregex = /^(http|https):\/\/(([a-zA-Z0-9$\-_.+!*'(),;:&=]|%[0-9a-fA-F]{2})+@)?(((25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9]|[1-9][0-9]|[0-9])(\.(25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9]|[1-9][0-9]|[0-9])){3})|localhost|([a-zA-Z0-9\-\u00C0-\u017F]+\.)+([a-zA-Z]{2,}))(:[0-9]+)?(\/(([a-zA-Z0-9$\-_.+!*'(),;:@&=]|%[0-9a-fA-F]{2})*(\/([a-zA-Z0-9$\-_.+!*'(),;:@&=]|%[0-9a-fA-F]{2})*)*)?(\?([a-zA-Z0-9$\-_.+!*'(),;:@&=\/?]|%[0-9a-fA-F]{2})*)?(\#([a-zA-Z0-9$\-_.+!*'(),;:@&=\/?]|%[0-9a-fA-F]{2})*)?)?$/;
   return urlregex.test(this);
@@ -275,6 +285,7 @@ $(document).ready(function() {
   batch.init();
   user.init();
   test.init();
+  tquest.init();
   if($('.sg-rich-txt').length > 0)
     $('.sg-rich-txt').jqte();
 });
@@ -586,12 +597,18 @@ var test = {
     if(typeof testpage === 'undefined')
       return;
     quest.init();
-    $('#t-load-more').off('click').click(function(){
+    var windowScroll = function(event){
+      var st = $(this).scrollTop();
+      var rch = $(document).outerHeight() - $(window).height();
+      if(st < rch || !test.loadmore)
+        return;
       if($('.active.in#test-content').length > 0)
         test.getData(true);
       else if($('.active.in#quest-content').length > 0)
         quest.getData(true);
-    });
+    };
+    $(window).off('scroll').scroll(windowScroll);
+    $(document.body).off('touchmove').on('touchmove', windowScroll);
     $('.custom-tab#make-test-tabs li a').off('click').click(function(){
       $('#make-test-header .tab-pane.active.in').removeClass('active in');
       var id = this.getAttribute('href').replace(/#/, '');
@@ -670,13 +687,18 @@ var test = {
       test.get();   
     }
   },
+  loadMoreBtn: $('#t-load-more'),
+  loadmore: true,
   panelLength: function(){return $('#test-content').children().length;},
   dataTotal: 0,
   getData: function(loadmore = false){
     var post = {offset: test.panelLength()};
     if(post.offset >= test.dataTotal && loadmore)
       return;
-    $('div#loading').show();    
+    $('div#loading').show();  
+    if(loadmore)
+      test.loadMoreBtn.show();
+    test.loadmore = false;
     $.ajax({
       type: 'post',
       url: base_url+'api/test_api?get',
@@ -684,6 +706,8 @@ var test = {
       dataType: 'json',
       success: function(data){
         $('div#loading').hide();
+        if(loadmore)
+          test.loadMoreBtn.hide();
         if(data.length > 0){
           test.dataTotal = data[0].total;
           $.each(data, function(k, obj){
@@ -698,6 +722,7 @@ var test = {
           });
           $('#test-content').html(msg);
         }
+        test.loadmore = true;
       }
     })
   },
@@ -778,7 +803,7 @@ var quest = {
   },
   trigger: function(id = ''){
     $('#quest-choises').html('');
-    $('#pquest-modal .modal-title').text('Add Question');
+    $('#pquest-modal .modal-title').text('Create Question');
     $('#pquest-form').parsley().reset();
     $('div#loading').show();
     if(id != ''){
@@ -823,14 +848,27 @@ var quest = {
         $('#pquest-submit').html('Submit');
         if(resp.id)
           data.id = resp.id;
-        var panel = $('#quest-content').children('#'+data.id);
+        if($('#quest-content').length > 0)
+          var panel = $('#quest-content').children('#'+data.id);
+        else
+          var panel = $('#tquest-content').children('#'+data.id);
         data.choises = JSON.stringify(data.choises);
         var d = quest.panelUI(data);
         var ui = test.uipanels(d);
         if(panel.length > 0)
           panel.html(ui.children().html());
-        else
-          $('#quest-content').prepend(ui.html());
+        else{
+          if($('#quest-content').length > 0)
+            $('#quest-content').prepend(ui.html());
+          $('#quest-list').html('');
+          if(tquest.autoAdd){
+            if($('#quest-content').length == 0)
+              $('#tquest-content').prepend(ui.html());
+            tquest.addQuest(resp.req_volume);
+            $('div#loading').show();
+            tquest.update(tquest.listDone);          
+          }
+        }        
       }
     });
   },
@@ -840,7 +878,10 @@ var quest = {
     var post = {offset: quest.panelLength()};
     if(post.offset >= quest.dataTotal && loadmore)
       return;
-    $('div#loading').show();    
+    $('div#loading').show();
+    if(loadmore)
+      test.loadMoreBtn.show();  
+    test.loadmore = false;
     $.ajax({
       type: 'post',
       url: base_url+'api/quest_api?get',
@@ -848,6 +889,8 @@ var quest = {
       dataType: 'json',
       success: function(data){
         $('div#loading').hide();
+        if(loadmore)
+          test.loadMoreBtn.hide();
         if(data.length > 0){
           quest.dataTotal = data[0].total;
           $.each(data, function(k, obj){
@@ -863,6 +906,7 @@ var quest = {
           });
           $('#quest-content').html(msg);
         }
+        test.loadmore = true;
       }
     })
   },
@@ -916,6 +960,288 @@ var quest = {
       ele.append($('<textarea class="quest-choices">'+value+'</textarea>'));
       $('#quest-choises').append(ele);
     });
+    if($('[name="quest-choises"]:checked').length == 0)
+      $('[name="quest-choises"]').eq(0).prop('checked', true);
     $('.quest-choices').jqte();
+  }
+};
+
+
+var tquest = {/*test single page handler*/
+  init: function(){
+    if(typeof testSingle === 'undefined')
+      return;
+    assign.init();
+    var windowScroll = function(event){
+      var st = $(this).scrollTop();
+      var rch = $(document).outerHeight() - $(window).height();
+      if(st < rch || !test.loadmore)
+        return;
+      if($('.active.in#tquest-content').length > 0)
+        tquest.getData({loadmore: true});
+      else if($('.active.in#assign-content').length > 0)
+        assign.getData(true);
+    };
+    $(window).off('scroll').scroll(windowScroll);
+    $(document.body).off('touchmove').on('touchmove', windowScroll);
+    $('.custom-tab#make-test-tabs li a').off('click').click(function(){
+      $('#make-test-header .tab-pane.active.in').removeClass('active in');
+      var id = this.getAttribute('href').replace(/#/, '');
+      $('#make-test-header .tab-pane[content-id="'+id+'"]').addClass('active in');
+      if(id == 'tquest-content' && $('#tquest-content').children().length == 0)
+        tquest.getData();
+      else if(id == 'assign-content' && $('#assign-content').children().length == 0)
+        assign.getData();
+    });
+    if($('.active.in#tquest-content').length > 0)
+      tquest.getData();
+    else if($('.active.in#assign-content').length > 0)
+      assign.getData();
+    $('#ptquest-action').off('click').click(function(){
+      if($(this).hasClass('btn-warning')){
+        if($('#ptquest-modal').hasClass('in'))
+          $('#ptquest-modal').modal('toggle');
+        return;
+      }else{
+        $('div#loading').show();
+        tquest.update(tquest.listDone);
+      }
+    });
+  },
+  listDone: function(data){
+    Command: toastr["success"]("Questions Added Successfull");
+    tquest.isModified = tquest.autoAdd = false;
+    if($('#ptquest-modal').hasClass('in'))
+      $('#ptquest-modal').modal('toggle');
+    tquest.changeSubmitActionUi();          
+    $('#tquest-content').html('');
+    tquest.getData();
+  },
+  createNew: function(){
+    swal({
+      title: 'After Created. Are You Sure?',
+      text: 'You Want to Add Question to this Test.',
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: changeLang('Yes'),
+      cancelButtonText: changeLang('No'),
+      closeOnConfirm: false
+    },function(c){
+      tquest.autoAdd = c;
+      quest.trigger();
+      swal.close();
+      if($('#ptquest-modal').hasClass('in'))
+        $('#ptquest-modal').modal('toggle');
+    });
+  },
+  update: function(callback){
+    if(typeof callback !== 'function')
+      return;
+    $.ajax({
+      url: base_url+'api/test_api?update_questions='+test_id,
+      type: 'post',
+      data: {quest:testQuest},
+      success: callback
+    });
+  },
+  panelLength: function(){return $('#tquest-content').children().length;},
+  listLength: function(){return $('#quest-list').children().length;},
+  dataTotal: 0,
+  listTotal: 0,
+  isModified: false,
+  autoAdd: false,
+  getData: function(opt = {loadmore: false, list: false}){
+    var loadmore = opt.loadmore;
+    var post = {offset: tquest.panelLength(), reverse: false, keyword: ''};
+    var dataTotal = tquest.dataTotal;
+    if (opt.list){
+      post.offset = tquest.listLength();
+      post.reverse = true;
+      post.keyword = opt.keyword;
+      dataTotal = tquest.listTotal; 
+    }
+    if(post.offset >= dataTotal && loadmore)
+      return;
+    $('div#loading').show();  
+    if(loadmore)
+      test.loadMoreBtn.show();
+    test.loadmore = false;
+    $.ajax({
+      type: 'post',
+      url: base_url+'api/test_api?get_questions='+test_id,
+      data: post,
+      dataType: 'json',
+      success: function(data){
+        $('div#loading').hide();
+        if(loadmore)
+          test.loadMoreBtn.hide();
+        if (opt.list){
+          opt.callback(data);
+          test.loadmore = true;
+          return;
+        }
+        if(data.length > 0){
+          tquest.dataTotal = data[0].total;
+          $.each(data, function(k, obj){
+            var d = quest.panelUI(obj);
+            test.uipanels(d, $('#tquest-content'));
+          });
+        }
+        if(tquest.dataTotal == 0){
+          var msg = $('<h2 class="text-center">There\'s no Questions</h2>');
+          msg.css({
+            color: '#c57e7e',
+            'font-weight' : 'bold'
+          });
+          $('#tquest-content').html(msg);
+        }
+        test.loadmore = true;
+      }
+    });
+  },
+  pushui: function(data, ele = $('#quest-list')){
+    if(data.length == 0)
+      return;
+    $.each(data, function(k, obj){
+      obj.content = obj.content.replace(/<\/?[^>]+(>|$)/g, "");
+      var li = $('<li id="'+obj.id+'" data-index="'+obj.index+'"><h3 class="head">'+obj.content+'</h3>'
+                +'<div class="checked">'
+                +'<i class="fa fa-check"></i>'
+                +'</div></li>');
+      var opt_ui = $('<ul class="options"></ul>');
+      if(obj.qtype == 0 && obj.choises.isJson()){
+        var ch = JSON.parse(obj.choises);
+        var options = ['A','B','C','D'];
+        if(ch.length == 4){
+          $.each(ch, function(k, opt){
+            opt = $('<li><span>'+options[k]+'. '+opt.value.short_string(35)+'</span></li>');
+            opt_ui.append(opt);
+          });
+        }
+      }
+      else if(obj.qtype == 1){
+        var opt = $('<li><span>1. True</span></li>');
+        opt_ui.append(opt);
+        opt = $('<li><span>2. False</span></li>');
+        opt_ui.append(opt);
+      }
+      li.append(opt_ui);
+      if(testQuest.length > 0){
+        $.each(testQuest, function(ke, j){
+          if(String(j.id) === obj.index)
+            li.addClass('selected');
+        });
+      }
+      ele.append(li);      
+    });
+    tquest.initSelectListEvent();
+    tquest.changeSubmitActionUi();
+  },
+  initSelectListEvent: function(){
+    $('#quest-list').children().off('click').click(function(){
+      var $this = $(this);
+      var id = $this.attr('data-index');
+      if($this.hasClass('selected')){
+        $this.removeClass('selected');        
+        if(testQuest.length > 0)
+          tquest.removeQuest(id);
+      }
+      else{
+        $this.addClass('selected');
+        tquest.addQuest(id);
+      }
+      tquest.isModified = true;
+      tquest.changeSubmitActionUi();
+    });
+  },
+  removeQuest: function(id){
+    var rm = [];
+    $.each(testQuest, function(k, obj){
+      if(obj.id != id)
+        rm.push(obj);
+    });
+    testQuest = rm;
+  },
+  addQuest: function(id){
+    var add = true;
+    if(testQuest.length > 0){
+      $.each(testQuest, function(k, obj){
+        if(obj.id === id)
+          add = false;
+      });
+    }
+    if(add)
+      testQuest.push({id: id, created: current_time()});
+  },
+  changeSubmitActionUi: function(){
+    if(!tquest.isModified)
+        $('#ptquest-action').removeClass('btn-success')
+      .addClass('btn-warning').html('<i class="fa fa-close"></i>');
+    else
+      $('#ptquest-action').removeClass('btn-warning')
+    .addClass('btn-success').html('Done');
+  },
+  listOptions: {
+    loadmore: false,list: true,keyword: '',
+    callback: function(data){
+      if(data.length > 0){
+        tquest.listTotal = data[0].total;
+        tquest.pushui(data);
+      }
+      if(tquest.listTotal == 0){
+        var msg = $('<h2 class="text-center">There\'s no Questions</h2>');
+        msg.css({
+          color: '#c57e7e',
+          'font-weight' : 'bold'
+        });
+        $('#quest-list').html(msg);
+      }
+      if(!$('#ptquest-modal').hasClass('in'))
+        $('#ptquest-modal').modal();
+    }
+  },
+  trigger: function(){
+    if($('#quest-list').children().length > 0){
+      if(!$('#ptquest-modal').hasClass('in'))
+        $('#ptquest-modal').modal();
+      return;
+    }
+    $('#quest-list').html('');
+    tquest.listOptions.loadmore = false;
+    tquest.listOptions.keyword = '';
+    tquest.getData(tquest.listOptions);
+    $('#quest-list').off('scroll').scroll(tquest.listScroll);
+    $('#quest-list').off('touchmove').on('touchmove', tquest.listScroll);
+    $('#ptquest-keyword').off('keyup').keyup(function(){      
+      if(this.value.length > 3 && test.loadmore){
+        $('#quest-list').html('');
+        tquest.listOptions.loadmore = false;
+        tquest.listOptions.keyword = this.value;
+        tquest.getData(tquest.listOptions);
+      }
+      if(tquest.listOptions.keyword.trim() != '' && this.value.trim() == ''){
+        $('#quest-list').html('');
+        tquest.listOptions.loadmore = false;
+        tquest.listOptions.keyword = '';
+        tquest.getData(tquest.listOptions);
+      }
+    });
+  },
+  listScroll: function(){    
+    var scroll_height = this.scrollHeight - $(this).outerHeight();
+    if(this.scrollTop < scroll_height || !test.loadmore)
+        return;
+    tquest.listOptions.loadmore = true;
+    tquest.getData(tquest.listOptions); 
+  }
+};
+
+var assign = {
+  init: function(){
+
+  },
+  getData: function(loadmore = false){
+    
   }
 };
