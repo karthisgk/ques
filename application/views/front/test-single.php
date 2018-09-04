@@ -35,7 +35,7 @@
 					<div class="panel-body tabs">
 						<ul class="nav nav-tabs custom-tab" id="make-test-tabs">
 							<li class="<?=$test;?>"><a href="#tquest-content" data-toggle="tab">Questions</a></li>
-							<li class="<?=$assign;?>"><a href="#assign-content" data-toggle="tab">Assign</a></li>
+							<li class="<?=$assign;?>"><a href="#assign-content" data-toggle="tab">Assigned</a></li>
 						</ul>
 						<div class="tab-content make-test-contents">
 							<div class="tab-pane fade col-xs-12 <?=$test;?>" id="tquest-content">

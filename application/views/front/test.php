@@ -68,7 +68,11 @@
 							<li>
 								<ul class="dropdown-settings">
 									<li class="hidden"><a href="#" ui-element="test-add-quest">
-										<em class="fa fa-plus"></em> Add Questions
+										<em class="fa fa-search-plus"></em> Add Questions
+									</a></li>
+									<li class="divider hidden"></li>
+									<li class="hidden"><a href="#" ui-element="test-assign-btn">
+										<em class="fa fa-plus-square-o"></em> Assign
 									</a></li>
 									<li class="divider hidden"></li>
 									<li><a href="#" ui-element="test-edit-btn">

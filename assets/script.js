@@ -751,6 +751,7 @@ test.uipanels = function(d, ele = ''){
   ui.find('[ui-element="test-name"]').text(d.name.replace(/<\/?[^>]+(>|$)/g, "").short_string(25));  
   ui.find('[ui-element="test-desb"]').html(d.desb);
   var testAddQuest = ui.find('[ui-element="test-add-quest"]');
+  var testAssign = ui.find('[ui-element="test-assign-btn"]');
   var edit = ui.find('[ui-element="test-edit-btn"]');
   var delBtn = ui.find('[ui-element="test-delete-btn"]');
   edit.attr('onclick', d.m+'.trigger("'+d.id+'");');
@@ -758,6 +759,8 @@ test.uipanels = function(d, ele = ''){
   testAddQuest.parent().removeClass('hidden');
   testAddQuest.parent().next().removeClass('hidden');
   testAddQuest.attr('href', base_url+'test/'+d.id);
+  testAssign.parent().removeClass('hidden');
+  testAssign.parent().next().removeClass('hidden');
   if(typeof ele === 'object')
     ele.append(ui.html());
   return ui;
@@ -999,10 +1002,13 @@ quest.uipanels = function(d, ele = ''){
     var edit = ui.find('[ui-element="test-edit-btn"]');
     var delBtn = ui.find('[ui-element="test-delete-btn"]');
     var aq = ui.find('[ui-element="test-add-quest"]').parent();
+    var as = aq.next().next();
     edit.attr('onclick', d.m+'.trigger("'+d.id+'");');
     delBtn.attr('onclick', d.m+'.delete("'+d.id+'");');
     aq.addClass('hidden');
     aq.next().addClass('hidden');
+    as.addClass('hidden');
+    as.next().addClass('hidden');
   }else{
     ui.children().attr('data-index', d.index);
     ui.find('[ui-element="test-rm-btn"]').attr('onclick', 'tquest.remove("'+d.id+'")');
