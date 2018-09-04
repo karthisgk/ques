@@ -20,7 +20,7 @@ class Model extends CI_Model
 		return $query;*/
 
 		$rt = new stdClass();
-		$rt->load_more_count = 10;
+		$rt->load_more_count = 16;
 		return $rt;
 
 	}

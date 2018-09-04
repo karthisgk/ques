@@ -74,6 +74,11 @@ class Home extends CI_Controller {
                 echo $this->sg->app($d, 'test');
             }else{
                 $d = array('actived' => $this->id);
+                $d['test'] = $d['assign'] = '';
+                if(isset($_GET['assign']))
+                    $d['assign'] = 'active in';
+                else
+                    $d['test'] = 'active in';
                 $test->enid = $_id;
                 $test->questions = empty($test->questions) ? '[]' : $test->questions;
                 $quest = json_decode($test->questions);

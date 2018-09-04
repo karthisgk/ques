@@ -10,7 +10,7 @@
 	</div><!--/.row-->
 	
 	<div class="row tab-content" id="make-test-header" style="padding: 0;">
-		<div class="col-lg-12 tab-pane fade in active" content-id="tquest-content">
+		<div class="col-lg-12 tab-pane fade <?=$test;?>" content-id="tquest-content">
 			<div class="float-left">
 				<h1 class="page-header">Questions <a onclick="tquest.trigger();" class="btn btn-primary fix-float-btn"><i class="fa fa-plus"></i></a></h1>
 			</div>
@@ -18,7 +18,7 @@
 				
 			</div>
 		</div>
-		<div class="col-lg-12 tab-pane fade" content-id="assign-content">
+		<div class="col-lg-12 tab-pane fade <?=$assign;?>" content-id="assign-content">
 			<div class="float-left">
 				<h1 class="page-header">Assign <a onclick="assign.trigger();" class="btn btn-primary fix-float-btn"><i class="fa fa-plus"></i></a></h1>
 			</div>
@@ -34,14 +34,14 @@
 				<div class="panel panel-primary">
 					<div class="panel-body tabs">
 						<ul class="nav nav-tabs custom-tab" id="make-test-tabs">
-							<li class="active"><a href="#tquest-content" data-toggle="tab">Questions</a></li>
-							<li><a href="#assign-content" data-toggle="tab">Assign</a></li>
+							<li class="<?=$test;?>"><a href="#tquest-content" data-toggle="tab">Questions</a></li>
+							<li class="<?=$assign;?>"><a href="#assign-content" data-toggle="tab">Assign</a></li>
 						</ul>
 						<div class="tab-content make-test-contents">
-							<div class="tab-pane fade in active col-xs-12" id="tquest-content">
+							<div class="tab-pane fade col-xs-12 <?=$test;?>" id="tquest-content">
 								
 							</div>
-							<div class="tab-pane fade col-xs-12" id="assign-content">
+							<div class="tab-pane fade col-xs-12 <?=$assign;?>" id="assign-content">
 								
 							</div>
 
@@ -67,12 +67,8 @@
 						<ul class="dropdown-menu dropdown-menu-right">
 							<li>
 								<ul class="dropdown-settings">
-									<li><a href="#" ui-element="test-edit-btn">
-										<em class="fa fa-edit"></em> Edit
-									</a></li>
-									<li class="divider"></li>
-									<li><a href="#" ui-element="test-delete-btn">
-										<em class="fa fa-trash"></em> Delete
+									<li><a href="#" ui-element="test-rm-btn">
+										<em class="fa fa-trash"></em> Remove
 									</a></li>
 								</ul>
 							</li>

@@ -750,10 +750,14 @@ test.uipanels = function(d, ele = ''){
   ui.children().attr('id', d.id);
   ui.find('[ui-element="test-name"]').text(d.name.replace(/<\/?[^>]+(>|$)/g, "").short_string(25));  
   ui.find('[ui-element="test-desb"]').html(d.desb);
+  var testAddQuest = ui.find('[ui-element="test-add-quest"]');
   var edit = ui.find('[ui-element="test-edit-btn"]');
   var delBtn = ui.find('[ui-element="test-delete-btn"]');
   edit.attr('onclick', d.m+'.trigger("'+d.id+'");');
   delBtn.attr('onclick', d.m+'.delete("'+d.id+'");');
+  testAddQuest.parent().removeClass('hidden');
+  testAddQuest.parent().next().removeClass('hidden');
+  testAddQuest.attr('href', base_url+'test/'+d.id);
   if(typeof ele === 'object')
     ele.append(ui.html());
   return ui;
@@ -854,7 +858,7 @@ var quest = {
           var panel = $('#tquest-content').children('#'+data.id);
         data.choises = JSON.stringify(data.choises);
         var d = quest.panelUI(data);
-        var ui = test.uipanels(d);
+        var ui = quest.uipanels(d);
         if(panel.length > 0)
           panel.html(ui.children().html());
         else{
@@ -895,7 +899,7 @@ var quest = {
           quest.dataTotal = data[0].total;
           $.each(data, function(k, obj){
             var d = quest.panelUI(obj);
-            test.uipanels(d, $('#quest-content'));
+            quest.uipanels(d, $('#quest-content'));
           });
         }
         if(quest.dataTotal == 0){
@@ -963,9 +967,50 @@ var quest = {
     if($('[name="quest-choises"]:checked').length == 0)
       $('[name="quest-choises"]').eq(0).prop('checked', true);
     $('.quest-choices').jqte();
+  },
+  delete: function(id = ''){
+    sweet_alert(() => {
+      swal.close();
+      $('div#loading').show();
+      $.ajax({
+        type: 'post',
+        url: base_url+'api/quest_api?delete='+id,
+        success: function(data){
+          $('div#loading').hide();
+          Command: toastr['success']('Questions Deleted Successfull');
+          $('#quest-content').children('#'+id).remove();
+          test.dataTotal--;
+        }
+      });
+    });
   }
 };
 
+
+quest.uipanels = function(d, ele = ''){
+  if($.isEmptyObject(d))
+    d = {id: uniqueid(),name: '',desb: ''};
+  d.m = typeof d.m !== 'undefined' ? d.m : 'test';
+  var ui = $('#test-panel');
+  ui.children().attr('id', d.id);
+  ui.find('[ui-element="test-name"]').text(d.name.replace(/<\/?[^>]+(>|$)/g, "").short_string(25));  
+  ui.find('[ui-element="test-desb"]').html(d.desb);
+  if(typeof testSingle === 'undefined') {
+    var edit = ui.find('[ui-element="test-edit-btn"]');
+    var delBtn = ui.find('[ui-element="test-delete-btn"]');
+    var aq = ui.find('[ui-element="test-add-quest"]').parent();
+    edit.attr('onclick', d.m+'.trigger("'+d.id+'");');
+    delBtn.attr('onclick', d.m+'.delete("'+d.id+'");');
+    aq.addClass('hidden');
+    aq.next().addClass('hidden');
+  }else{
+    ui.children().attr('data-index', d.index);
+    ui.find('[ui-element="test-rm-btn"]').attr('onclick', 'tquest.remove("'+d.id+'")');
+  }
+  if(typeof ele === 'object')
+    ele.append(ui.html());
+  return ui;
+};
 
 var tquest = {/*test single page handler*/
   init: function(){
@@ -1045,6 +1090,23 @@ var tquest = {/*test single page handler*/
       success: callback
     });
   },
+  remove: function(id = ''){
+    var enid = id;
+    var confirm = function(){
+      var ele = $('#tquest-content').children('#'+enid);
+      var id = ele.attr('data-index');      
+      tquest.removeQuest(id);
+      swal.close();
+      $('div#loading').show();
+      tquest.update(function(d){
+        Command: toastr["success"]("Question Removed Successfull");
+        $('div#loading').hide();
+         ele.remove();
+        $('#quest-list').children('[data-index="'+id+'"]').removeClass('selected');
+      });
+    };
+    sweet_alert(confirm, 'You Want to Remove it from this Test.');
+  },
   panelLength: function(){return $('#tquest-content').children().length;},
   listLength: function(){return $('#quest-list').children().length;},
   dataTotal: 0,
@@ -1085,7 +1147,8 @@ var tquest = {/*test single page handler*/
           tquest.dataTotal = data[0].total;
           $.each(data, function(k, obj){
             var d = quest.panelUI(obj);
-            test.uipanels(d, $('#tquest-content'));
+            d.index = obj.index;
+            quest.uipanels(d, $('#tquest-content'));
           });
         }
         if(tquest.dataTotal == 0){

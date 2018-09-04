@@ -247,4 +247,8 @@ button#ptquest-action {
   word-break: break-all;
 }
 
+.dropdown-settings li a {
+  text-decoration: none;
+}
+
 </style>

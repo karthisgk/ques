@@ -67,6 +67,10 @@
 						<ul class="dropdown-menu dropdown-menu-right">
 							<li>
 								<ul class="dropdown-settings">
+									<li class="hidden"><a href="#" ui-element="test-add-quest">
+										<em class="fa fa-plus"></em> Add Questions
+									</a></li>
+									<li class="divider hidden"></li>
 									<li><a href="#" ui-element="test-edit-btn">
 										<em class="fa fa-edit"></em> Edit
 									</a></li>

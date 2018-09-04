@@ -270,7 +270,7 @@ class Api extends CI_Controller {
                 $d[0]->total = $this->sg->getQuest($_POST, true);
                 echo json_encode($d);
             }else
-                echo json_encode($_POST);
+                echo '[]';
         }
         elseif (isset($_GET['update_questions'])) {
             if(!$this->sg->checkAccess())
