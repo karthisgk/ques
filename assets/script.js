@@ -761,6 +761,7 @@ test.uipanels = function(d, ele = ''){
   testAddQuest.attr('href', base_url+'test/'+d.id);
   testAssign.parent().removeClass('hidden');
   testAssign.parent().next().removeClass('hidden');
+  testAssign.attr('href', base_url+'test/'+d.id+'?assign');
   if(typeof ele === 'object')
     ele.append(ui.html());
   return ui;
