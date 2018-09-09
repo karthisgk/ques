@@ -1090,6 +1090,12 @@ var tquest = {/*test single page handler*/
   update: function(callback){
     if(typeof callback !== 'function')
       return;
+    if (testQuest.length == 0) {
+      if($('div#loading').css('display') === 'block')
+        $('div#loading').hide();
+      Command: toastr["error"]("Select Atleast One Question");
+      return;
+    }
     $.ajax({
       url: base_url+'api/test_api?update_questions='+test_id,
       type: 'post',
@@ -1310,6 +1316,82 @@ var tquest = {/*test single page handler*/
 var assign = {
   init: function(){
 
+    $('.input-group.date input:not(#passign-name)').keypress(() => {return false});
+    $('#passign-name').next('span.input-group-addon').click(function(){
+      $('#passign-name').prop('disabled', false).focus();
+    });
+    $('#passign-from').datetimepicker({format: 'hh:mm A'});
+    $('#passign-to').datetimepicker({format: 'hh:mm A', useCurrent: false});
+    $("#passign-from").on("dp.change", function (e) {
+        $('#passign-to').data("DateTimePicker").minDate(e.date);
+    });
+    $("#passign-to").on("dp.change", function (e) {
+        $('#passign-from').data("DateTimePicker").maxDate(e.date);
+    });
+    $('#passign-date').datetimepicker({format: 'DD-MM-YYYY'});
+    $('#passign-date').on("dp.change", function (e) {
+      $('#passign-date input').parsley().validate();
+    });
+    $('#passign-submit').off('click').click(assign.submit);
+  },
+  trigger: function(id = ''){    
+    $('#passign-modal .modal-inputs').val('');
+    $('#passign-batch_id').val('').change();
+    $('#passign-from input').val('09:00 AM');
+    $('#passign-to input').val('10:00 AM');
+    $('#passign-to').data("DateTimePicker").minDate('09:05 AM');
+    $('#passign-date').data("DateTimePicker").minDate(new Date());
+    $('#passign-modal .modal-inputs').prop('required', true);
+    $('#passign-form').parsley().reset();
+    $('#passign-name').prop('disabled', true).val($('#test_name').val());
+    $('#passign-publish').prop('checked', false);
+    $('#passign-id').val(id);
+    $('#passign-modal').modal();    
+    if(id != ''){
+      $('div#loading').show();
+      $.ajax({
+        type: 'post',
+        url: base_url+'api/assign_api?='+id,
+        dataType: 'json',
+        success: function(d){
+          $('div#loading').hide();
+          if($.isEmptyObject(d)){
+            $('#passign-id').val('');
+            Command: toastr["error"]("Data Not Found!");
+            return;
+          }
+          $('#passign-name').val(d.name);
+          $('#passign-publish').prop('checked', d.publish == 1);
+          $('#passign-date input').val(d.date);
+          $('#passign-from input').val(d.from);
+          $('#passign-to input').val(d.to); 
+          $('#passign-batch_id').val(d.batch_id).change();
+        }
+      });
+    }
+  },
+  submit: function(){
+    if(!$('#passign-form').parsley().validate())
+      return;
+    $('#passign-submit').off('click').html(Spinner);
+    $('div#loading').show();
+    $.ajax({
+      type: 'post',
+      url: base_url+'api/assign_api?update',
+      dataType: 'json',
+      data: {
+        test_id: test_id, batch_id: $('#passign-batch_id').val(),
+        id: $('#passign-id').val(), name: $('#passign-name').val(),
+        date: $('#passign-date input').val(), publish: $('#passign-publish').prop('checked') ? 1 : 0,
+        from: $('#passign-from input').val(), to: $('#passign-to input').val()
+      },success: function(resp){
+        $('#passign-submit').off('click').click(assign.submit).html('Submit');
+        $('div#loading').hide();
+        Command: toastr[resp.result](resp.message);
+        if(resp.result == 'success')
+          $('#passign-modal').modal('toggle');
+      }
+    });
   },
   getData: function(loadmore = false){
     

@@ -13,7 +13,6 @@
 
 	<link href="<?=base_url(); ?>temp2/css/bootstrap.min.css" rel="stylesheet">
 	<link href="<?=base_url(); ?>temp2/css/font-awesome.min.css" rel="stylesheet">
-	<link href="<?=base_url(); ?>temp2/css/datepicker3.css" rel="stylesheet">
 	<link href="<?=base_url(); ?>temp2/css/styles.css" rel="stylesheet">
 	<link href="<?=base_url(); ?>assets/plugins/toastr/toastr.min.css" rel="stylesheet" type="text/css" />
 
@@ -29,6 +28,9 @@
 
     <!-- Sweet Alert css -->
     <link href="<?=base_url(); ?>assets/plugins/bootstrap-sweetalert/sweet-alert.css" rel="stylesheet" type="text/css" />
+
+    <!-- bootsrap datetime picker -->
+    <link href="<?=base_url(); ?>temp2/datetime/bootstrap-datetimepicker.css" rel="stylesheet">
 
 	<?=$appcss;?>
 	<!--Custom Font-->
@@ -142,7 +144,6 @@
 	<script src="<?=base_url(); ?>temp2/js/chart-data.js"></script>
 	<script src="<?=base_url(); ?>temp2/js/easypiechart.js"></script>
 	<script src="<?=base_url(); ?>temp2/js/easypiechart-data.js"></script>
-	<script src="<?=base_url(); ?>temp2/js/bootstrap-datepicker.js"></script>
 
 	<!-- rich text js -->
 	<script type="text/javascript" src="<?=base_url(); ?>assets/plugins/jQuery-rich-txt/jquery-te-1.4.0.min.js" charset="utf-8"></script>
@@ -164,6 +165,11 @@
     <script src="<?=base_url();?>assets/plugins/toastr/toastr.min.js"></script>
 	<!-- Validation js (Parsleyjs) -->
     <script type="text/javascript" src="<?=base_url(); ?>assets/plugins/parsleyjs/parsley.min.js"></script>
+	
+	<!-- bootsrap datetime picker -->
+	<script src="<?=base_url(); ?>temp2/datetime/moment.js"></script>
+    <script src="<?=base_url(); ?>temp2/datetime/bootstrap-datetimepicker.js"></script>
+
 	<script>	
 
 		toastr.options = {

@@ -406,3 +406,113 @@
       
     </div>
 </div>
+
+<div class="modal fade" id="passign-modal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+
+
+        <div></div>
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" id="passign-cancel" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Assign Test</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="tab-content">
+                    <form class="tab-pane fade active in modal-form" id="passign-form">
+
+                        <input type="hidden" id="passign-id" />
+
+                        <div class="form-group">
+                            <label>Test Name</label>
+                            <div class='input-group date'>
+                                <input type='text' class="form-control modal-inputs" value="<?=isset($data->name) ? $data->name : '';?>" placeholder="Enter Name" disabled id="passign-name" />
+                                <span class="input-group-addon">
+                                    <span class="fa fa-edit"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Batch</label>
+                            <select class="form-control modal-inputs" type="text" id="passign-batch_id">
+                                <option value="" hidden="">Select Batch</option>
+                                <?php foreach ($batchs as $b): ?>
+                                    <option value="<?=$b->id;?>"><?=$b->from;?> - <?=$b->to;?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Date  <span class="text-danger">*</span></label>
+                            <div class='input-group date' id='passign-date'>
+                                <input type='text' class="form-control modal-inputs" placeholder="dd-mm-yyyy" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row assign-datetime-picker">
+                            <div class="form-group col-sm-6 col-xs-12">   
+                                <label>From  <span class="text-danger">*</span></label>
+                                <div class='input-group date' id='passign-from'>
+                                    <input type='text' class="form-control modal-inputs" placeholder="hh:mm AM/PM" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-6 col-xs-12">
+                                <label>To  <span class="text-danger">*</span></label>
+                                <div class='input-group date' id='passign-to'>
+                                    <input type='text' class="form-control modal-inputs" placeholder="hh:mm Am/pm" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>                        
+
+                        <div class="form-group bootstrap-switch">
+                            <label>Result Auto Publish</label>
+                            <label class="switch">
+                                <input type="checkbox" id="passign-publish" />
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+
+                        <p class="form-error-msg" id="passign-form-error"></p>
+                        <div class="text-center">
+                            <button class="btn btn-success modal-submit" type="button" id="passign-submit">Submit</button>
+                        </div>
+                    </form>
+
+                    <a href="#passign-success" class="open-success" data-toggle="tab" style="display: none;"></a>
+                    <a href="#passign-form" class="open-form" data-toggle="tab" style="display: none;"></a>
+
+                    <div class="tab-pane fade success-tab" id="passign-success">
+                        <div class="card__body">
+                            <div class="submit-property__success">
+
+                                <p class="success-icon text-center yes">
+                                    <i class="fa fa-check check"></i>
+                                    <i class="fa fa-exclamation-triangle error"></i>
+                                </p>
+
+                                <h2 class="text-center">Successfull!</h2>
+                                <p class="success-alert text-center"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+      
+    </div>
+</div>

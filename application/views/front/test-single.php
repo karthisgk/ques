@@ -56,6 +56,7 @@
 	</div>
 </div>	<!--/.main-->
 
+<input type="hidden" id="test_name" value="<?=isset($data->name) ? $data->name : '';?>" />
 <div id="test-panel" style="display: none;">
 	<div class="panel-child col-md-6">
 		<div class="panel panel-primary">

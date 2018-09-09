@@ -236,16 +236,17 @@ class Api extends CI_Controller {
                 echo "{}";
         }
         elseif (isset($_GET['get_questions'])) {
-            if(!$this->sg->checkAccess())
-                echo "[]";
+            if(!$this->sg->checkAccess() && !$this->sg->checkAccess('1')){
+                echo "[]";die();
+            }
 
             $id = $this->sg->_en_urlid($_GET['get_questions'], '1');
             $b = $this->sg->get_one('id', $id , 'test');
+            $_POST['quest'] = $questCreated = array();
             $trigger = false;
             if(!empty($b)){
                 if($b->questions != ''){
-                    $quest = json_decode($b->questions);
-                    $_POST['quest'] = $questCreated = array();                    
+                    $quest = json_decode($b->questions);                   
                     if (json_last_error() === 0 && count($quest) > 0){ 
                         $trigger = true;
                         foreach ($quest as $k => $q) {
@@ -256,7 +257,7 @@ class Api extends CI_Controller {
                 }
             }
 
-            if(!$trigger){
+            if(!$trigger && $_POST['reverse'] !== 'true'){
                 echo "[]";
                 die();
             }
@@ -285,9 +286,10 @@ class Api extends CI_Controller {
                         $obj['created'] = date('Y-m-d H:i:s', strtotime($obj['created']));
                     array_push($quest, $obj);
                 }
-                $up = array('questions' => json_encode($quest));
-                $this->sg->update('test', $up, array('id'  => $id));
-            }            
+                $up = array('questions' => json_encode($quest));                
+            }else
+                $up = array('questions' => '');
+            $this->sg->update('test', $up, array('id'  => $id));           
         }
         elseif (isset($_GET['delete'])) {
             if($this->sg->checkAccess()){
@@ -406,6 +408,30 @@ class Api extends CI_Controller {
                 echo json_encode($d);
             }else
                 echo "[]";
+        }
+    }
+
+    public function assign_api(){
+        if (isset($_GET['get_single'])) {
+            $id = $this->sg->_en_urlid($_GET['get_single'], '1');
+            $b = $this->sg->get_one('id', $id , 'assign');
+            if(!empty($b) && $this->sg->checkAccess()){
+                $b->from = date('h:i A', strtotime($b->from));
+                $b->to = date('h:i A', strtotime($b->to));
+                echo json_encode($b);
+            }
+            else
+                echo "{}";
+        }
+        elseif (isset($_GET['update'])) {
+            if(!$this->sg->checkAccess()) { /* check admin access.*/
+                echo json_encode(array('result' => 'error', 'message' => 'Access Denied'));
+                die;
+            }
+
+            $return = $this->sg->assign_test($_POST);
+
+            echo json_encode($return);
         }
     }
 }

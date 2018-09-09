@@ -379,6 +379,48 @@ class Model extends CI_Model
         	return array();
 
     }
+
+    public function assign_test($inp = array()){
+
+    	$inp['test_id'] = isset($inp['test_id']) ? $inp['test_id'] : '';
+    	$test = $this->get_one('id', $inp['test_id'], 'test');
+    	if(empty($test))
+    		$inp = array();
+
+    	if(!empty($inp)){
+            $id = isset($inp['id']) ? $inp['id'] : '';
+            $up = array(
+                'test_id'			=> $inp['test_id'],
+                'batch_id'			=> isset($inp['batch_id']) ? $inp['batch_id'] : 0,
+                'name'				=> isset($inp['name']) ? $inp['name'] : $test->name,
+                'date'				=> date('Y-m-d', strtotime($inp['date'])),
+                'from'				=> date('H:i:s', strtotime($inp['from'])),
+                'to'				=> date('H:i:s', strtotime($inp['to'])),
+                'publish'			=> isset($inp['publish']) ? $inp['publish'] : 0
+            );
+
+            $msg = 'Assigned Test Modified';
+            if($id == ''){
+                $up['created_at'] = $this->sg->created_atDate();
+                $id = $this->sg->add('assign', $up);
+                $msg = 'Test Assigned Successfull';
+            }
+            else{
+                $id = $this->sg->_en_urlid($id, '1');
+                $this->sg->update('assign', $up, array('id'  => $id));
+            }
+
+            $return = array(
+                'id'        => $this->sg->_en_urlid($id, '0'),
+                'req_volume'=> $id,
+                'result'    => 'success',
+                'message'   => $msg
+            );
+        }else
+            $return = array('result' => 'error', 'message'   => 'Input values are not found');
+
+        return $return;
+    }
 }
 
 ?>
