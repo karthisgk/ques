@@ -37,7 +37,7 @@
 							<li class="active"><a href="#test-content" data-toggle="tab">Test</a></li>
 							<li><a href="#quest-content" data-toggle="tab">Questions</a></li>
 						</ul>
-						<div class="tab-content make-test-contents">
+						<div class="tab-content make-test-contents scrolable-content scrolable-bar">
 							<div class="tab-pane fade in active col-xs-12" id="test-content">
 								
 							</div>

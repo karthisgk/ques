@@ -37,7 +37,7 @@
 							<li class="<?=$test;?>"><a href="#tquest-content" data-toggle="tab">Questions</a></li>
 							<li class="<?=$assign;?>"><a href="#assign-content" data-toggle="tab">Assigned</a></li>
 						</ul>
-						<div class="tab-content make-test-contents">
+						<div class="tab-content make-test-contents scrolable-content scrolable-bar">
 							<div class="tab-pane fade col-xs-12 <?=$test;?>" id="tquest-content">
 								
 							</div>

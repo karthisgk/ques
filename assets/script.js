@@ -597,18 +597,21 @@ var test = {
     if(typeof testpage === 'undefined')
       return;
     quest.init();
-    var windowScroll = function(event){
-      var st = $(this).scrollTop();
+      var windowScroll = function(event){
+      /*var st = $(this).scrollTop();
       var rch = $(document).outerHeight() - $(window).height();
       if(st < rch || !test.loadmore)
-        return;
+        return;*/
+      var scroll_height = this.scrollHeight - $(this).outerHeight();
+      if(this.scrollTop < scroll_height || !test.loadmore)
+          return;
       if($('.active.in#test-content').length > 0)
         test.getData(true);
       else if($('.active.in#quest-content').length > 0)
         quest.getData(true);
     };
-    $(window).off('scroll').scroll(windowScroll);
-    $(document.body).off('touchmove').on('touchmove', windowScroll);
+    $('.make-test-contents').off('scroll').scroll(windowScroll);
+    $('.make-test-contents').off('touchmove').on('touchmove', windowScroll);
     $('.custom-tab#make-test-tabs li a').off('click').click(function(){
       $('#make-test-header .tab-pane.active.in').removeClass('active in');
       var id = this.getAttribute('href').replace(/#/, '');
@@ -1025,17 +1028,20 @@ var tquest = {/*test single page handler*/
       return;
     assign.init();
     var windowScroll = function(event){
-      var st = $(this).scrollTop();
+      /*var st = $(this).scrollTop();
       var rch = $(document).outerHeight() - $(window).height();
       if(st < rch || !test.loadmore)
-        return;
+        return;*/
+      var scroll_height = this.scrollHeight - $(this).outerHeight();
+      if(this.scrollTop < scroll_height || !test.loadmore)
+          return;
       if($('.active.in#tquest-content').length > 0)
         tquest.getData({loadmore: true});
       else if($('.active.in#assign-content').length > 0)
         assign.getData(true);
     };
-    $(window).off('scroll').scroll(windowScroll);
-    $(document.body).off('touchmove').on('touchmove', windowScroll);
+    $('.make-test-contents').off('scroll').scroll(windowScroll);
+    $('.make-test-contents').off('touchmove').on('touchmove', windowScroll);
     $('.custom-tab#make-test-tabs li a').off('click').click(function(){
       $('#make-test-header .tab-pane.active.in').removeClass('active in');
       var id = this.getAttribute('href').replace(/#/, '');
@@ -1451,5 +1457,6 @@ assign.ajax_table = function(){
                   }
                 },
         "columns": col
-    });    
+    });
+    $('#ajax-table').css('width', '100%');    
 };

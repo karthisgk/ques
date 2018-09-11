@@ -149,7 +149,7 @@ textarea.textarea[maxlength="255"] {
 }
 
 .make-test-contents {
-  min-height: 450px;
+  min-height: 350px;
 }
 
 .make-test-contents .tab-pane .panel-body{
