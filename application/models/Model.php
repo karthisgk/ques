@@ -142,6 +142,33 @@ class Model extends CI_Model
 			return base_convert($data, 32, 36) / $salt;
 	}
 
+	public function timeDiffer($t1, $t2) {
+		$datetime1=date_create($t1);
+    	$datetime2=date_create($t2);
+    	$diff=date_diff($datetime1, $datetime2);
+    	$timemsg='';
+    	if($diff->y > 0){
+        	$timemsg = $diff->y .' Year'. ($diff->y > 1?"s":'');
+
+    	}
+    	else if($diff->m > 0){
+     		$timemsg = $diff->m .' Month'. ($diff->m > 1?"s":'');
+    	}
+    	else if($diff->d > 0){
+     		$timemsg = $diff->d .' Day'. ($diff->d > 1?"s":'');
+    	}
+    	else if($diff->h > 0){
+     		$timemsg .= $diff->h .' Hr'.($diff->h > 1 ? "s":'');
+    	}
+    	if($diff->i > 0){
+     		$timemsg .= ' '.$diff->i .' Min'. ($diff->i > 1?"s":'');
+    	}
+    	if($diff->s > 0){
+     		$timemsg .= ' '.$diff->s .' Sec'. ($diff->s > 1?"s":'');
+    	}
+    	return $timemsg;
+	}
+
 	public function timeMoment($timestamp){
 		$datetime1=new DateTime("now");
     	$datetime2=date_create($timestamp);
@@ -382,7 +409,7 @@ class Model extends CI_Model
 
     public function assign_test($inp = array()){
 
-    	$inp['test_id'] = isset($inp['test_id']) ? $inp['test_id'] : '';
+    	$inp['test_id'] = isset($inp['test_id']) ? $this->_en_urlid($inp['test_id'], '1') : '';
     	$test = $this->get_one('id', $inp['test_id'], 'test');
     	if(empty($test))
     		$inp = array();

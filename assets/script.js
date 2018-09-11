@@ -1042,7 +1042,7 @@ var tquest = {/*test single page handler*/
       $('#make-test-header .tab-pane[content-id="'+id+'"]').addClass('active in');
       if(id == 'tquest-content' && $('#tquest-content').children().length == 0)
         tquest.getData();
-      else if(id == 'assign-content' && $('#assign-content').children().length == 0)
+      else if(id == 'assign-content' && $('#assign-content').children('#ajax-table_wrapper').length == 0)
         assign.getData();
     });
     if($('.active.in#tquest-content').length > 0)
@@ -1316,6 +1316,7 @@ var tquest = {/*test single page handler*/
 var assign = {
   init: function(){
 
+    /*this.ajax_table();*/
     $('.input-group.date input:not(#passign-name)').keypress(() => {return false});
     $('#passign-name').next('span.input-group-addon').click(function(){
       $('#passign-name').prop('disabled', false).focus();
@@ -1324,9 +1325,11 @@ var assign = {
     $('#passign-to').datetimepicker({format: 'hh:mm A', useCurrent: false});
     $("#passign-from").on("dp.change", function (e) {
         $('#passign-to').data("DateTimePicker").minDate(e.date);
+        $('#passign-from input').parsley().validate();
     });
     $("#passign-to").on("dp.change", function (e) {
         $('#passign-from').data("DateTimePicker").maxDate(e.date);
+        $('#passign-to input').parsley().validate();
     });
     $('#passign-date').datetimepicker({format: 'DD-MM-YYYY'});
     $('#passign-date').on("dp.change", function (e) {
@@ -1351,7 +1354,7 @@ var assign = {
       $('div#loading').show();
       $.ajax({
         type: 'post',
-        url: base_url+'api/assign_api?='+id,
+        url: base_url+'api/assign_api?get_single='+id,
         dataType: 'json',
         success: function(d){
           $('div#loading').hide();
@@ -1373,6 +1376,13 @@ var assign = {
   submit: function(){
     if(!$('#passign-form').parsley().validate())
       return;
+    if(testQuest.length == 0){
+      Command: toastr['error']('Add Atleast One Question!');
+      if($('#passign-modal').hasClass('in'))
+        $('#passign-modal').modal('toggle');
+      $('#make-test-tabs li a[href="#tquest-content"]').click();
+      return;
+    }
     $('#passign-submit').off('click').html(Spinner);
     $('div#loading').show();
     $.ajax({
@@ -1388,12 +1398,58 @@ var assign = {
         $('#passign-submit').off('click').click(assign.submit).html('Submit');
         $('div#loading').hide();
         Command: toastr[resp.result](resp.message);
-        if(resp.result == 'success')
+        if(resp.result == 'success'){
           $('#passign-modal').modal('toggle');
+          assign.table.ajax.reload();
+        }
       }
     });
   },
+  delete: function(id = ''){
+    sweet_alert(() => {
+      $.ajax({
+        type: 'post',
+        url: base_url+'api/assign_api?delete='+id,
+        success: function(data){
+          swal.close();
+          Command: toastr['success']('Test Deleted Successfull');
+          $('tr#row-'+id).remove();
+        }
+      });
+    });
+  },
   getData: function(loadmore = false){
-    
+    if(loadmore)
+      return;
+    if($('#assign-content').children('#ajax-table_wrapper').length == 0)
+      assign.ajax_table();
+    else
+      assign.table.ajax.reload();
   }
+};
+
+assign.ajax_table = function(){
+    var col = [];
+    $.each($('#ajax-table thead tr').children(), function(){
+      var col_name = $(this).text().toLowerCase().replace(/ /g, '_');
+      col_name = col_name == 'test_name' ? 'name' : col_name;
+      col_name = col_name == 'assigned_batch' ? 'batch_id' : col_name;
+      col_name = col_name == 'timing' ? 'from' : col_name;
+      col.push({data: col_name});
+    });
+    assign.table = $('#ajax-table').DataTable({
+        aaSorting : [[0, 'desc']],
+        "aoColumnDefs": [{ 'bSortable': false, 'aTargets':  [2,5]}],
+        "autoWidth": true,
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+                  "url": base_url+'api/assign_api?ajax_table&test_id='+test_id,
+                  "type": "POST",
+                  "dataSrc": function ( json ) {
+                    return json.data;
+                  }
+                },
+        "columns": col
+    });    
 };

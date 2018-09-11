@@ -42,7 +42,20 @@
 								
 							</div>
 							<div class="tab-pane fade col-xs-12 <?=$assign;?>" id="assign-content">
-								
+								<table id="ajax-table" class="table table-bordered table-striped">
+				                    <thead>
+				                        <tr>
+				                            <th>ID</th>
+				                            <th>Test Name</th>
+				                            <th>Assigned Batch</th>
+				                            <th>Date</th>
+				                            <th>Timing</th>
+				                            <th>Option</th>
+				                        </tr>
+				                    </thead>
+				                    <tbody>
+				                    </tbody>
+				               </table>
 							</div>
 
 							<div class="text-center">

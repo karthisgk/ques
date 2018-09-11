@@ -295,6 +295,8 @@ class Api extends CI_Controller {
             if($this->sg->checkAccess()){
                 $id = $this->sg->_en_urlid($_GET['delete'], '1');
                 $this->sg->remove('test', array('id' => $id));
+                $this->sg->remove('assign', array('test_id' => $id));
+                //$this->sg->remove('result', array('test_id' => $id));
             }
         }
         elseif (isset($_GET['update'])) {
@@ -416,6 +418,7 @@ class Api extends CI_Controller {
             $id = $this->sg->_en_urlid($_GET['get_single'], '1');
             $b = $this->sg->get_one('id', $id , 'assign');
             if(!empty($b) && $this->sg->checkAccess()){
+                $b->date = date('d-m-Y', strtotime($b->date));
                 $b->from = date('h:i A', strtotime($b->from));
                 $b->to = date('h:i A', strtotime($b->to));
                 echo json_encode($b);
@@ -432,6 +435,62 @@ class Api extends CI_Controller {
             $return = $this->sg->assign_test($_POST);
 
             echo json_encode($return);
+        }
+
+        elseif (isset($_GET['delete'])) {
+            if($this->sg->checkAccess()){
+                $id = $this->sg->_en_urlid($_GET['delete'], '1');
+                $this->sg->remove('assign', array('id' => $id));
+                //$this->sg->remove('result', array('assign_id' => $id));
+            }
+        }
+
+        else if (isset($_GET['ajax_table']) && isset($_GET['test_id'])) {
+            $sess_user = $this->sg->sessionUser();
+            if($_POST && $this->sg->checkAccess()) {
+                $wh = $response = array();
+                $response['draw'] = $_POST['draw'];
+                $response['recordsTotal'] = $response['recordsFiltered'] = 0;
+                $response['data'] = array();
+                $table_columns = array('id','name','batch_id','date','from','option');
+                $search_columns = $table_columns;
+                unset($search_columns[5]);
+                $request = $_POST;
+                $request['conditions']['or'] = false;
+                $request['conditions']['where'] = array('test_id' => $this->sg->_en_urlid($_GET['test_id'], '1'));
+                $request['column'] = $table_columns;
+                $request['search_columns'] = $search_columns;
+                $request['tablename'] = 'assign'; 
+                $data = $this->Model->ajax_table($request);            
+                if(!empty($data)){
+                    $total = $this->Model->ajax_table($request, true);
+                    $recordsTotal['recordsTotal'] = $response['recordsFiltered'] = $total;
+                    foreach ($data as $key => $b) {
+
+                        $enid = $this->sg->_en_urlid($b->id, '0');
+                        $option = '<a onclick="assign.trigger(\''.$enid.'\')" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>';
+                        $option .= ' <a onclick="assign.delete(\''.$enid.'\')" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>';
+
+                        $batch = $this->sg->get_one('id', $b->batch_id, 'batch');
+                        $b->from = date('h:i A', strtotime($b->from));
+                        $b->to = date('h:i A', strtotime($b->to));
+
+                        $row = array();
+                        $row['DT_RowId'] = 'row-'.$enid;
+                        $row['id'] = $enid;
+                        $row['name'] = $this->sg->short_string($b->name, '25');
+                        $row['batch_id'] = isset($batch->name) ? $batch->name : '';
+                        $row['date'] = date('d-m-Y', strtotime($b->date));
+                        $row['from'] = $b->from .'-'. $b->to. ' ('.$this->sg->timeDiffer($b->from, $b->to).')';
+                        $row['option'] = $option;
+                        array_push($response['data'], $row);
+                    }
+                }
+                echo json_encode($response);
+            }else
+                echo '{}';
+
+            die;
         }
     }
 }
