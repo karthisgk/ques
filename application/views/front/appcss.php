@@ -339,4 +339,18 @@ input:checked + .slider:before {
   }
 }
 
+
+.test-timeline .timeline-title {
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.test-timeline .timeline-sub-head {
+  font-size: 18px;
+}
+
+.test-timeline .timeline-body span {
+  word-wrap: break-word;
+}
+
 </style>

@@ -358,6 +358,40 @@ class Model extends CI_Model
 
     }
 
+    public function getAssigned($inp, $get_count = false){
+
+    	$suser = $this->sessionUser();
+    	$offset = isset($inp['offset']) ? $inp['offset'] : 0;
+    	$limit = isset($inp['limit']) ? $inp['limit'] : $this->getsettings()->load_more_count;
+    	$enid = isset($inp['enid']) ? $inp['enid'] : false;
+
+    	if(!$get_count)
+			$this->db->limit($limit, $offset);
+		$this->db->select(array('assign.*','test.desb'));
+		$this->db->order_by('assign.id', 'DESC');
+		$this->db->where('assign.batch_id', $suser->batch_id);
+		$this->db->join('test', 'assign.test_id = test.id');
+    	$data = $this->db->get('assign')->result();
+    	if($get_count)
+        	return count($data);
+
+        if(count($data) > 0){
+        	$rt = array();
+        	foreach ($data as $key => $d) {
+        		$d->id = $enid ? $this->_en_urlid($d->id, '0') : $d->id;
+        		$d->date = date('d M Y', strtotime($d->date));
+        		$d->from = date('h:i A', strtotime($d->from));
+                $d->to = date('h:i A', strtotime($d->to));
+                $d->time = $d->from .' to '. $d->to. ' ('.$this->timeDiffer($d->from, $d->to).')';
+        		array_push($rt, $d);
+        	}
+        	return $rt;
+        }
+        else
+        	return array();
+
+    }
+
     public function getQuest($inp, $get_count = false){
 
     	$offset = isset($inp['offset']) ? $inp['offset'] : 0;

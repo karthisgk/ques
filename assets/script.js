@@ -286,6 +286,7 @@ $(document).ready(function() {
   user.init();
   test.init();
   tquest.init();
+  testList.init();
   if($('.sg-rich-txt').length > 0)
     $('.sg-rich-txt').jqte();
 });
@@ -1452,4 +1453,74 @@ assign.ajax_table = function(){
                 },
         "columns": col
     });    
+};
+
+var testList = {
+  init: function(){
+    if(typeof testSchedlue === 'undefined')
+      return;
+    var windowScroll = function(event){
+      var scroll_height = this.scrollHeight - $(this).outerHeight();
+      if(this.scrollTop < scroll_height || !test.loadmore)
+          return;
+      testList.getData(true);
+    };
+    $('#test-content').off('scroll').scroll(windowScroll);
+    $('#test-content').off('touchmove').on('touchmove', windowScroll);
+    testList.getData();
+    var sch = $(document).innerHeight() - 220;
+    $('#test-content').css('height', sch+'px');
+  },
+  dataTotal: 0,
+  panelLength: function(){return $('#test-content').children().length;},
+  getData: function(loadmore = false){
+    var post = {offset: testList.panelLength()};
+    if(post.offset >= testList.dataTotal && loadmore)
+      return;
+    $('div#loading').show();
+    test.loadmore = false;
+    $.ajax({
+      type: 'post',
+      url: base_url+'api/test_schedule?get',
+      data: post,
+      dataType: 'json',
+      success: function(data){
+        $('div#loading').hide();
+
+        if(data.length > 0){
+          testList.dataTotal = data[0].total;
+          $.each(data, function(k, obj){
+            testList.uipanels(obj, $('#test-content'));
+          });
+        }
+        if(testList.dataTotal == 0){
+          var msg = $('<h2 class="text-center">There\'s no Test</h2>');
+          msg.css({
+            color: '#c57e7e',
+            'font-weight' : 'bold'
+          });
+          $('#test-content').html(msg);
+          var sch = $('#test-content').children().innerHeight() + 70;
+          $('#test-content').css('height', sch+'px');
+        }
+        test.loadmore = true;
+      }
+    })
+  }
+};
+
+
+testList.uipanels = function(d, ele = ''){
+  if($.isEmptyObject(d))
+    d = {id: uniqueid(),name: '',time: ''};
+  d.m = typeof d.m !== 'undefined' ? d.m : 'testList';
+  var ui = $('ul#test-panel');
+  ui.children().attr('id', d.id);
+  ui.find('[ui-element="test-name"]').text(d.name.replace(/<\/?[^>]+(>|$)/g, "").short_string(25));  
+  ui.find('[ui-element="test-time"]').html(d.time);
+  ui.find('[ui-element="test-date"]').html(d.date);
+  ui.find('[ui-element="test-desb"]').html(d.desb.short_string(280));
+  if(typeof ele === 'object')
+    ele.append(ui.html());
+  return ui;
 };
