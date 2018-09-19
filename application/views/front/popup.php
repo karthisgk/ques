@@ -231,8 +231,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Describtion <span class="text-danger">*</span></label>
-                            <textarea class="textarea form-control modal-inputs" type="text" maxlength="255" id="ptest-desb" placeholder="Enter Describtion"></textarea>
+                            <label>Note <span class="text-danger">*</span></label>
+                            <textarea class="textarea form-control modal-inputs" type="text" maxlength="255" id="ptest-desb" placeholder="Enter Note"></textarea>
                         </div>
 
                         <p class="form-error-msg" id="ptest-form-error"></p>
@@ -442,7 +442,7 @@
                             <select class="form-control modal-inputs" type="text" id="passign-batch_id">
                                 <option value="" hidden="">Select Batch</option>
                                 <?php foreach ($batchs as $b): ?>
-                                    <option value="<?=$b->id;?>"><?=$b->from;?> - <?=$b->to;?></option>
+                                    <option value="<?=$b->id;?>"><?=$b->from;?> - <?=$b->to.' ('.$b->name.')';?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

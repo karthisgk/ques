@@ -29,7 +29,10 @@ class Home extends CI_Controller {
     }
 
 	public function index(){
-		echo $this->sg->app(array('actived' => $this->id));
+        if($this->sg->checkAccess('1'))
+	   	   echo $this->sg->app(array('actived' => $this->id), 'test-list');
+        else
+            redirect(base_url('test'));
 	}
 
     public function error_404(){

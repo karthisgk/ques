@@ -334,8 +334,9 @@ class Api extends CI_Controller {
             echo json_encode($return);
         }
         elseif (isset($_GET['get'])) {
-            if(!$this->sg->checkAccess())
-                echo "[]";
+            if(!$this->sg->checkAccess()){
+                echo "[]";die;
+            }
 
             $_POST['enid'] = true;
             $d = $this->sg->getTest($_POST);
@@ -407,6 +408,22 @@ class Api extends CI_Controller {
             $d = $this->sg->getQuest($_POST);
             if(!empty($d)){
                 $d[0]->total = $this->sg->getQuest($_POST, true);
+                echo json_encode($d);
+            }else
+                echo "[]";
+        }
+    }
+
+    public function test_schedule(){
+        if (isset($_GET['get'])) {
+            if(!$this->sg->checkAccess('1')){
+                echo "[]";die;
+            }
+
+            $_POST['enid'] = true;
+            $d = $this->sg->getAssigned($_POST);
+            if(!empty($d)){
+                $d[0]->total = $this->sg->getAssigned($_POST, true);
                 echo json_encode($d);
             }else
                 echo "[]";
