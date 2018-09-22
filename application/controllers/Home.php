@@ -5,6 +5,7 @@ class Home extends CI_Controller {
 
 	function _remap($id, $name) {
         $this->redirect = base_url();
+        $this->suser = $this->sg->sessionUser();
         $this->login_url = base_url().'login/';
         $id = strtolower($id);
         $this->id = $id;
@@ -25,7 +26,24 @@ class Home extends CI_Controller {
             $this->test($id);
         }
         else
-            $this->error_404();
+            $this->testPage($id);            
+    }
+
+    public function testPage($id = ''){
+        if($id == '' || !$this->suser->login){
+            $this->error_404();die;
+        }
+        $id = $this->sg->_en_urlid($id, '1');
+        $d = $this->sg->get_one('id', $id, 'result');
+        if(!empty($d)){
+            if($d->user_id == $this->suser->id){
+                echo "string";
+            }else{
+                $this->error_404();die;
+            }
+        }else{
+            $this->error_404();die;
+        }
     }
 
 	public function index(){

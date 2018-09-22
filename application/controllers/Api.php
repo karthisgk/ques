@@ -8,7 +8,7 @@ class Api extends CI_Controller {
 		if(!$this->input->is_ajax_request())
 			redirect(base_url());	
 
-        $this->suser = $this->sg->sessionUser();	
+        $this->suser = $this->sg->sessionUser();
 	}
 
 	public function batch(){

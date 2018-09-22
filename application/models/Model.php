@@ -378,10 +378,11 @@ class Model extends CI_Model
         if(count($data) > 0){
         	$rt = array();
         	foreach ($data as $key => $d) {
+                $d->present = $this->count('select id from result where user_id="'.$suser->id.'" and assign_id="'.$d->id.'"');
         		$d->id = $enid ? $this->_en_urlid($d->id, '0') : $d->id;
                 $d->compareDate = date('Y-n-d', strtotime($d->date));
         		$d->date = date('d M Y', strtotime($d->date));
-                $d->time = date('h:i A', strtotime($d->from)) .' to '. date('h:i A', strtotime($d->to)). ' ('.$this->timeDiffer($d->from, $d->to).')';
+                $d->time = date('h:i A', strtotime($d->from)) .' to '. date('h:i A', strtotime($d->to)). ' ('.$this->timeDiffer($d->from, $d->to).')';                
         		array_push($rt, $d);
         	}
         	return $rt;

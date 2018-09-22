@@ -46,6 +46,10 @@
 						<label class="timeline-sub-head">Time: </label>
 						<span ui-element="test-time"></span>
 					</div>
+					<div class="sub">
+						<label class="timeline-sub-head">Status: </label>
+						<span ui-element="test-result"></span>
+					</div>
 				</div>
 			</div>
 			<div class="col-sm-7">

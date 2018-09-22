@@ -12,8 +12,85 @@ window.onload = function () {
 	}
 };
 
-function current_time() {
-  var time = new Date();
+function get_time_difference(earlierDate, laterDate) 
+{
+    var oDiff = new Object();
+
+    //  Calculate Differences
+    //  -------------------------------------------------------------------  //
+    laterDate = new Date(laterDate);
+    earlierDate = new Date(earlierDate);
+    var nTotalDiff = laterDate.getTime() - earlierDate.getTime();
+
+    oDiff.days = Math.floor(nTotalDiff / 1000 / 60 / 60 / 24);
+    nTotalDiff -= oDiff.days * 1000 * 60 * 60 * 24;
+
+    oDiff.hours = Math.floor(nTotalDiff / 1000 / 60 / 60);
+    nTotalDiff -= oDiff.hours * 1000 * 60 * 60;
+
+    oDiff.minutes = Math.floor(nTotalDiff / 1000 / 60);
+    nTotalDiff -= oDiff.minutes * 1000 * 60;
+
+    oDiff.seconds = Math.floor(nTotalDiff / 1000);
+    //  -------------------------------------------------------------------  //
+
+    //  Format Duration
+    //  -------------------------------------------------------------------  //
+    //  Format Hours
+    var hourtext = '00';
+    if (oDiff.days > 0){ hourtext = String(oDiff.days);}
+    if (hourtext.length == 1){hourtext = '0' + hourtext};
+
+    //  Format Minutes
+    var mintext = '00';
+    if (oDiff.minutes > 0){ mintext = String(oDiff.minutes);}
+    if (mintext.length == 1) { mintext = '0' + mintext };
+
+    //  Format Seconds
+    var sectext = '00';
+    if (oDiff.seconds > 0) { sectext = String(oDiff.seconds); }
+    if (sectext.length == 1) { sectext = '0' + sectext };
+
+    //  Set Duration
+    var sDuration = hourtext + ':' + mintext + ':' + sectext;
+    oDiff.duration = sDuration;
+    //  -------------------------------------------------------------------  //
+    var d =oDiff;
+    d.string = '';
+    if(d.days > 0){
+      d.string += d.days == 1 ? d.days+' Day' : d.days+' Days';
+      if(d.hours != 0)
+        d.string += d.hours == 1 ? ' '+d.hours+' Hr' : ' '+d.hours+' Hrs';
+      if(d.minutes != 0)
+          d.string += d.minutes == 1 ? ' '+d.minutes+' min' : ' '+d.minutes+' mins';
+      if(d.seconds != 0)
+            d.string += d.seconds == 1 ? ' '+d.seconds+' sec' : ' '+d.seconds+' secs';
+    }
+    else if(d.days == 0){
+      if(d.hours > 0){
+        d.string += d.hours == 1 ? d.hours+' Hr' : d.hours+' Hrs';
+        if(d.minutes != 0)
+          d.string += d.minutes == 1 ? ' '+d.minutes+' min' : ' '+d.minutes+' mins';
+        if(d.seconds != 0)
+          d.string += d.seconds == 1 ? ' '+d.seconds+' sec' : ' '+d.seconds+' secs';
+      }
+      else{
+        if(d.minutes > 0){
+          d.string += d.minutes == 1 ? d.minutes+' min' : d.minutes+' mins';
+          if(d.seconds != 0)
+            d.string += d.seconds == 1 ? ' '+d.seconds+' sec' : ' '+d.seconds+' secs';
+        }else
+          d.string += d.seconds <= 1 ? d.seconds+' sec' : d.seconds+' secs';
+      }
+    }
+    return d;
+}
+
+function current_time(t) {
+  var t = typeof t === 'undefined' ? '' : t;
+  if(t != '')
+    t = typeof t !== 'object' ? new Date( t ) : t;
+  var time = t == '' ? new Date() : t;
   var date = time.getFullYear()+'-'+(time.getMonth() + 1)+'-'+time.getDate();
   var format = 
     ("0" + time.getHours()).slice(-2)   + ":" + 
@@ -1331,6 +1408,7 @@ var assign = {
     $('#passign-from').datetimepicker({format: 'hh:mm A'});
     $('#passign-to').datetimepicker({format: 'hh:mm A', useCurrent: false});
     $("#passign-from").on("dp.change", function (e) {
+        $('#passign-to input').val(current_time(e.date._d).split(' ')[1]);
         $('#passign-to').data("DateTimePicker").minDate(e.date);
         $('#passign-from input').parsley().validate();
     });
@@ -1340,6 +1418,8 @@ var assign = {
     });
     $('#passign-date').datetimepicker({format: 'DD-MM-YYYY'});
     $('#passign-date').on("dp.change", function (e) {
+      $('#passign-date').data("DateTimePicker").minDate(new Date());
+      $('#passign-to').data("DateTimePicker").minDate('09:05 AM');
       $('#passign-date input').parsley().validate();
     });
     $('#passign-submit').off('click').click(assign.submit);
@@ -1348,9 +1428,9 @@ var assign = {
     $('#passign-modal .modal-inputs').val('');
     $('#passign-batch_id').val('').change();
     $('#passign-from input').val('09:00 AM');
-    $('#passign-to input').val('10:00 AM');
-    $('#passign-to').data("DateTimePicker").minDate('09:05 AM');
+    $('#passign-to input').val('10:00 AM');    
     $('#passign-date').data("DateTimePicker").minDate(new Date());
+    $('#passign-to').data("DateTimePicker").minDate('09:05 AM');
     $('#passign-modal .modal-inputs').prop('required', true);
     $('#passign-form').parsley().reset();
     $('#passign-name').prop('disabled', true).val($('#test_name').val());
@@ -1476,7 +1556,38 @@ var testList = {
     $('#test-content').off('touchmove').on('touchmove', windowScroll);
     testList.getData();
     var sch = $(document).innerHeight() - 220;
-    $('#test-content').css('height', sch+'px');
+    $('#test-content').css('height', sch+'px');    
+  },
+  futureTestListener: function(){
+    if($('#test-content').children().length <= 0)
+      return; 
+    setInterval(function(){
+      var futureTest = $('#test-content').children('li.future-test');
+      var active = $('#test-content').children('li.active');
+      if(futureTest.length > 0){
+        $.each(futureTest, function(k, ele){
+          var $ele = $(ele).find('[ui-element="test-result"]');
+          var df = get_time_difference(current_time(), $ele.attr('started-at'));
+          $ele.html(df.string+' to start');
+          if($ele.attr('started-at') < current_time())
+            $(ele).removeClass('future-test').addClass('active rdy-to-start');          
+        });
+      }
+      if(active.length > 0){
+        $.each(active, function(k, ele){
+          var $ele = $(ele).find('[ui-element="test-result"]');
+          var df = get_time_difference(current_time(), $ele.attr('end-at'));
+          $ele.html(df.string+' to end');
+          if($ele.attr('end-at') < current_time()){
+            $(ele).removeClass('active');
+            if($(ele).hasClass('rdy-to-start'))
+              $ele.html('Apsent');
+            else
+              $ele.html('View Result');
+          }
+        });
+      }
+    },  1000);
   },
   dataTotal: 0,
   panelLength: function(){return $('#test-content').children().length;},
@@ -1493,7 +1604,6 @@ var testList = {
       dataType: 'json',
       success: function(data){
         $('div#loading').hide();
-
         if(data.length > 0){
           testList.dataTotal = data[0].total;
           $.each(data, function(k, obj){
@@ -1511,6 +1621,7 @@ var testList = {
           $('#test-content').css('height', sch+'px');
         }
         test.loadmore = true;
+        testList.futureTestListener();
       }
     })
   }
@@ -1527,11 +1638,34 @@ testList.uipanels = function(d, ele = ''){
   ui.find('[ui-element="test-time"]').html(d.time);
   ui.find('[ui-element="test-date"]').html(d.date);
   ui.find('[ui-element="test-desb"]').html(d.desb.short_string(280));
+  var result = ui.find('[ui-element="test-result"]').html('');
   var crt_time = current_time().split(' ');
-  ui.children().removeClass('active');
-  if((d.from < crt_time[1] && d.to > crt_time[1]) && d.compareDate == crt_time[0]) 
+  crt_time[2] = current_time();
+  ui.children().removeClass('active future-test rdy-to-start');
+  if((d.from < crt_time[1] && d.to > crt_time[1]) && d.compareDate == crt_time[0]) {
     ui.children().addClass('active');
+    result.attr('end-at', d.compareDate+' '+d.to);
+    result.html(get_time_difference(crt_time[2], d.compareDate+' '+d.to).string+' to end');
+    if(d.present == 0)
+      ui.children().addClass('rdy-to-start');
+  }else{
+    var started_at = d.compareDate+' '+d.from;
+    if(started_at > crt_time[2]){
+      ui.children().addClass('future-test');
+      var dif = get_time_difference(crt_time[2], started_at);
+      result.html(dif.string+' to start');
+      result.attr('started-at', started_at);
+      result.attr('end-at', d.compareDate+' '+d.to);
+    }
+    else{
+      if(d.present == 0)
+        result.html('Apsent');
+      else
+        result.html('View Result');
+    }
+  }
   if(typeof ele === 'object')
     ele.append(ui.html());
   return ui;
 };
+

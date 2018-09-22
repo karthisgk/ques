@@ -479,7 +479,7 @@
                         </div>                        
 
                         <div class="form-group bootstrap-switch">
-                            <label>Result Auto Publish</label>
+                            <label>Result Publish</label>
                             <label class="switch">
                                 <input type="checkbox" id="passign-publish" />
                                 <span class="slider round"></span>
