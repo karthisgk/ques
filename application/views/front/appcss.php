@@ -1,5 +1,9 @@
 <style type="text/css">
 
+.text-warning {
+  color: #d58512;
+}
+
 .scrolable-content {
   width: 100%;
   margin: 0px;
@@ -363,6 +367,121 @@ ul.test-timeline > li.active .timeline-badge {
 
 ul.test-timeline > li.danger .timeline-badge {
   background: #cb4720;
+}
+
+.ques-btn > ul {
+  list-style: none;
+  padding: 0;
+}
+
+.ques-btn > ul > li {
+  margin:  17px 0px;
+  text-align: center;
+  padding: 0;
+  display: table;
+}
+
+.ques-btn > ul > li > a {
+  padding: 11px 14px;
+  border: 1px solid #f5f5f5;
+  color: #AAA;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 15px;
+}
+
+.ques-btn > ul > li.active > a {
+  background: #30a5ff !important;
+  color: #fff;
+}
+
+.isNegative .ques-btn > ul > li.loaded > a {
+  cursor: pointer;
+}
+
+.isNegative .ques-btn > ul > li.loaded + li > a{
+  cursor: pointer;
+  background: #fff;
+}
+
+.isNegative .ques-btn > ul > li:not(.loaded) > a {
+  cursor: not-allowed;
+  background: #f5f5f5;
+}
+
+#stud-quest {
+  padding: 20px 40px;
+  position: relative;
+  width: 100%;
+}
+
+#stud-quest > div.tab-pane {
+  margin: auto;
+  width: 80%;
+}
+
+#stud-quest > div.tab-pane .action-btns > div {
+  position: absolute;
+  bottom: 5%;
+}
+
+#stud-quest > div.tab-pane .action-btns > div.prev {
+  left:5%;
+}
+
+#stud-quest > div.tab-pane .action-btns > div.next {
+  right:5%;
+}
+
+#questions-content-loading {
+  position: absolute;
+  font-size: 50px;
+  left: 50%;
+  top: 40%;
+}
+
+#stud-quest .q-content {
+  font-size: 20px;
+  word-wrap: break-word;
+  margin-bottom: 10px;
+}
+
+.q-options {
+  list-style: none;
+}
+
+.q-options > li {
+  margin-top: 5px;
+  font-size: 20px;
+}
+
+.q-options > li i.fa.fa-dot-circle-o {
+  color: #79a700;
+}
+
+.q-options > li input[type="radio"] {
+  display: none;
+}
+
+.q-options > li input[type="radio"]:not(:checked) + i.fa.fa-circle-o + i.fa.fa-dot-circle-o {
+  display: none;
+}
+
+.q-options > li input[type="radio"]:not(:checked) + i.fa.fa-circle-o {
+  display: inline;
+}
+
+.q-options > li input[type="radio"]:checked + i.fa.fa-circle-o + i.fa.fa-dot-circle-o {
+  display: inline;
+}
+
+.q-options > li input[type="radio"]:checked + i.fa.fa-circle-o {
+  display: none;
+}
+
+#test-timer {
+  font-weight: bold;
+  font-size: 20px;
 }
 
 </style>

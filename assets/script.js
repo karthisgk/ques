@@ -364,6 +364,7 @@ $(document).ready(function() {
   test.init();
   tquest.init();
   testList.init();
+  studTest.init();
   if($('.sg-rich-txt').length > 0)
     $('.sg-rich-txt').jqte();
 });
@@ -1435,6 +1436,7 @@ var assign = {
     $('#passign-form').parsley().reset();
     $('#passign-name').prop('disabled', true).val($('#test_name').val());
     $('#passign-publish').prop('checked', false);
+    $('#passign-negative').prop('checked', false);
     $('#passign-id').val(id);
     $('#passign-modal').modal();    
     if(id != ''){
@@ -1452,6 +1454,7 @@ var assign = {
           }
           $('#passign-name').val(d.name);
           $('#passign-publish').prop('checked', d.publish == 1);
+          $('#passign-negative').prop('checked', d.negative == 1);
           $('#passign-date input').val(d.date);
           $('#passign-from input').val(d.from);
           $('#passign-to input').val(d.to); 
@@ -1480,7 +1483,8 @@ var assign = {
         test_id: test_id, batch_id: $('#passign-batch_id').val(),
         id: $('#passign-id').val(), name: $('#passign-name').val(),
         date: $('#passign-date input').val(), publish: $('#passign-publish').prop('checked') ? 1 : 0,
-        from: $('#passign-from input').val(), to: $('#passign-to input').val()
+        from: $('#passign-from input').val(), to: $('#passign-to input').val(),
+        negative: $('#passign-negative').prop('checked') ? 1 : 0
       },success: function(resp){
         $('#passign-submit').off('click').click(assign.submit).html('Submit');
         $('div#loading').hide();
@@ -1556,7 +1560,7 @@ var testList = {
     $('#test-content').off('touchmove').on('touchmove', windowScroll);
     testList.getData();
     var sch = $(document).innerHeight() - 220;
-    $('#test-content').css('height', sch+'px');    
+    $('#test-content').css('height', sch+'px');     
   },
   futureTestListener: function(){
     if($('#test-content').children().length <= 0)
@@ -1609,6 +1613,19 @@ var testList = {
           $.each(data, function(k, obj){
             testList.uipanels(obj, $('#test-content'));
           });
+          $('#test-content').children().off('click').click(function(){
+            if(!$(this).hasClass('active'))
+              return;
+            var asid = this.getAttribute('id');
+            var ck = function(id){
+              if(id == 0)
+                return;
+              $('div#loading').hide();
+              window.location.href = base_url+id;
+            };
+            $('div#loading').show();
+            testList.present(asid, ck);
+          });
         }
         if(testList.dataTotal == 0){
           var msg = $('<h2 class="text-center">There\'s no Test</h2>');
@@ -1623,7 +1640,18 @@ var testList = {
         test.loadmore = true;
         testList.futureTestListener();
       }
-    })
+    });
+  },
+  present: function(id, callback){
+    if(id == '')
+      return;
+    $.ajax({
+      type: 'post',
+      url: base_url+'api/test_schedule?present='+id,
+      success: function(rid){
+        callback(rid);
+      }
+    });
   }
 };
 
@@ -1669,3 +1697,84 @@ testList.uipanels = function(d, ele = ''){
   return ui;
 };
 
+
+var studTest = {
+  init: function(){
+    if(typeof studTestPage === 'undefined')
+      return;
+    var sch = $(document).innerHeight() - 190;
+    $('.ques-btn, #stud-quest').css('height', sch+'px');
+    var act_id = $('#stud-quest').children('.active.in').attr('data-id');
+    studTest.getQuest(act_id, 1);
+    studTest.lastQuest.html('Submit');
+    $('.select-quest-no').off('click').click(function(event){
+      var qid = this.getAttribute('data-id');
+      var ele = $('#stud-q-'+qid);
+      if(studTest.negative()){
+        if(ele.prev().length == 0 || ele.prev().hasClass('loaded'))
+          studTest.getQuest(qid, this.innerText);
+        else
+          return false;
+      }else
+        studTest.getQuest(qid, this.innerText);
+    });
+    $('.action-btns a.btn').off('click').click(function(){
+      var id = this.getAttribute('data-id');
+      var qnoEle = $('.select-quest-no[data-id="'+id+'"]');
+      if(qnoEle.length > 0 && $('#questions-content-loading').hasClass('hide'))
+          qnoEle.click();
+    });
+    if(studTest.timer()) {
+      $('#test-timer').html(get_time_difference(current_time(), testTo).string+' to End');
+      setInterval(function(){
+        if(!studTest.timer()){
+          window.location.href = base_url;
+          return;
+        }
+        var dif = get_time_difference(current_time(), testTo);
+        $('#test-timer').html(dif.string+' to End');
+        $('#test-timer')[0].className = 'pull-right';
+        if((dif.days <= 0 && dif.hours <= 0) && (dif.minutes <= 0 && dif.seconds <= 59))
+          $('#test-timer').addClass('text-danger');
+        else if((dif.days <= 0 && dif.hours <= 0) && (dif.minutes < 10))
+          $('#test-timer').addClass('text-warning');
+      }, 1000);
+    }else
+      window.location.href = base_url;
+  },
+  timer: function(){
+    return (current_time() > testFrom && current_time() < testTo);
+  },
+  negative: function(){return negative == 0},
+  lastQuest: $('#stud-quest').children(':last-child').prev().find('.action-btns .next a.btn'),
+  triggerLoading: function(){
+    if($('#questions-content-loading').hasClass('hide'))
+      $('#questions-content-loading').removeClass('hide');
+    else
+      $('#questions-content-loading').addClass('hide');
+  },
+  getQuest: function(id, qno = 0){
+    var ele = $('#stud-q-'+id);
+    if(id == '' || ele.hasClass('loaded'))
+      return;
+    studTest.triggerLoading();
+    $.ajax({
+      type: 'post',
+      url: base_url+'api/test_schedule?get_questions='+id,
+      data: {qno : qno},
+      success: function(ui){        
+        ele.addClass('loaded');
+        ele.prepend(ui);
+        var $this = $('.select-quest-no[data-id="'+id+'"]');
+        $this.parent().addClass('loaded');
+        var nxt = $this.parent().next().children('a');
+        var prv = $this.parent().prev().children('a');
+        if(nxt.length > 0)
+          ele.find('.action-btns .next a').attr('data-id', nxt.attr('data-id'));
+        if(prv.length > 0)
+          ele.find('.action-btns .prev a').attr('data-id', prv.attr('data-id'));
+        studTest.triggerLoading();
+      }
+    });
+  }
+};

@@ -486,6 +486,14 @@
                             </label>
                         </div>
 
+                        <div class="form-group bootstrap-switch">
+                            <label>Allow Negative Mark</label>
+                            <label class="switch">
+                                <input type="checkbox" id="passign-negative" />
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+
                         <p class="form-error-msg" id="passign-form-error"></p>
                         <div class="text-center">
                             <button class="btn btn-success modal-submit" type="button" id="passign-submit">Submit</button>

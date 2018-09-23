@@ -36,8 +36,23 @@ class Home extends CI_Controller {
         $id = $this->sg->_en_urlid($id, '1');
         $d = $this->sg->get_one('id', $id, 'result');
         if(!empty($d)){
-            if($d->user_id == $this->suser->id){
-                echo "string";
+            $test = $this->sg->get_one('id', $d->test_id, 'test');
+            $assign = $this->sg->get_one('id', $d->assign_id, 'assign');
+            if($d->user_id == $this->suser->id && (!empty($test) && !empty($assign))){
+                $d->from = date('Y-n-d H:i:s', strtotime($d->from));
+                $d->to = date('Y-n-d H:i:s', strtotime($d->to));
+                $vd = array('data' => $d, 'actived' => 'index');
+                $vd['test'] = $test;
+                $vd['assign'] = $assign;
+                $vd['questions'] = array();
+                //$this->load->view('front/checkTiming', $vd);
+                if($test->questions != ''){
+                    $vd['questions'] = array_reverse(json_decode($test->questions));
+                    if(json_last_error() !== 0)
+                        $vd['questions'] = array();
+
+                }
+                echo $this->sg->app($vd, 'front-test');
             }else{
                 $this->error_404();die;
             }

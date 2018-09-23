@@ -296,7 +296,7 @@ class Api extends CI_Controller {
                 $id = $this->sg->_en_urlid($_GET['delete'], '1');
                 $this->sg->remove('test', array('id' => $id));
                 $this->sg->remove('assign', array('test_id' => $id));
-                //$this->sg->remove('result', array('test_id' => $id));
+                $this->sg->remove('result', array('test_id' => $id));
             }
         }
         elseif (isset($_GET['update'])) {
@@ -428,6 +428,50 @@ class Api extends CI_Controller {
             }else
                 echo "[]";
         }
+        else if(isset($_GET['present'])){
+            $result_id =  $this->sg->presentTest($_GET['present']);
+            if($result_id != 0)
+                echo $this->sg->_en_urlid($result_id, '0');
+            else
+                echo 0;
+        }
+        elseif (isset($_GET['get_questions'])) {
+            $id = $this->sg->_en_urlid($_GET['get_questions'], '1');
+            $q = $this->sg->get_one('id', $id, 'questions');
+            $kq = isset($_POST['qno']) ? intval($_POST['qno']) : 0;
+            if(!empty($q)){
+                $rt = '<div class="q-content">'.$kq.'. '.$q->content.'</div>
+                        <ul class="q-options">';
+                $opts = $q->choises != '' ? json_decode($q->choises) : array();
+                $name = $this->sg->_en_urlid($q->id, '0');
+                if($q->qtype == 0 && json_last_error() == 0){
+                    foreach ($opts as $key => $opt) {
+                        $rt .= '<li>
+                                    <input type="radio" id="'.$name.'-'.$opt->id.'" name="'.$name.'" /> 
+                                    <i class="fa fa-circle-o"></i>
+                                    <i class="fa fa-dot-circle-o"></i>
+                                    <label for="'.$name.'-'.$opt->id.'">'.$opt->value.'</label>
+                                </li>';
+                    }
+                }else{                                      
+                    $rt .= '<li>
+                            <input type="radio" id="'.$name.'-true" name="'.$name.'" /> 
+                            <i class="fa fa-circle-o"></i>
+                            <i class="fa fa-dot-circle-o"></i>
+                            <label for="'.$name.'-true">True</label>
+                        </li>
+                    <li>
+                        <input type="radio" id="'.$name.'-false" name="'.$name.'" /> 
+                        <i class="fa fa-circle-o"></i>
+                        <i class="fa fa-dot-circle-o"></i>
+                        <label for="'.$name.'-false">False</label>
+                    </li>';
+                }
+                $rt .= "</ul>";
+                echo trim($rt);
+            }else
+                echo '';
+        }
     }
 
     public function assign_api(){
@@ -458,7 +502,7 @@ class Api extends CI_Controller {
             if($this->sg->checkAccess()){
                 $id = $this->sg->_en_urlid($_GET['delete'], '1');
                 $this->sg->remove('assign', array('id' => $id));
-                //$this->sg->remove('result', array('assign_id' => $id));
+                $this->sg->remove('result', array('assign_id' => $id));
             }
         }
 

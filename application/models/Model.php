@@ -457,7 +457,8 @@ class Model extends CI_Model
                 'date'				=> date('Y-m-d', strtotime($inp['date'])),
                 'from'				=> date('H:i:s', strtotime($inp['from'])),
                 'to'				=> date('H:i:s', strtotime($inp['to'])),
-                'publish'			=> isset($inp['publish']) ? $inp['publish'] : 0
+                'publish'			=> isset($inp['publish']) ? $inp['publish'] : 0,
+                'negative'          => isset($inp['negative']) ? $inp['negative'] : 0
             );
 
             $msg = 'Assigned Test Modified';
@@ -481,6 +482,31 @@ class Model extends CI_Model
             $return = array('result' => 'error', 'message'   => 'Input values are not found');
 
         return $return;
+    }
+
+    public function presentTest($asid = ''){
+        $asid = $this->_en_urlid($asid, '1');
+        $asgn = $this->get_one('id', $asid, 'assign');
+        $suser = $this->sessionUser();
+        if(!empty($asgn) && $suser->login){
+
+            $qry = 'select id from result where user_id="'.$suser->id.'" and assign_id="'.$asid.'"';
+            if($this->count($qry) > 0){
+                $res = $this->get($qry)[0];
+                return $res->id;
+            }else{
+                $d = array(
+                    'assign_id'     => $asid,
+                    'from'          => $asgn->date.' '.$asgn->from,
+                    'to'            => $asgn->date.' '.$asgn->to,
+                    'test_id'       => $asgn->test_id,
+                    'user_id'       => $suser->id,
+                    'started_at'    => $this->created_atDate()
+                );
+                return $this->add('result', $d);
+            }
+        }else
+            return 0;
     }
 }
 
