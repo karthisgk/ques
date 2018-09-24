@@ -492,8 +492,8 @@ class Model extends CI_Model
 
             $qry = 'select id from result where user_id="'.$suser->id.'" and assign_id="'.$asid.'"';
             if($this->count($qry) > 0){
-                $res = $this->get($qry)[0];
-                return $res->id;
+                $res = $this->get($qry);
+                return $res[0]->id;
             }else{
                 $d = array(
                     'assign_id'     => $asid,
