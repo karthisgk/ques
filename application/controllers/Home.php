@@ -39,13 +39,15 @@ class Home extends CI_Controller {
             $test = $this->sg->get_one('id', $d->test_id, 'test');
             $assign = $this->sg->get_one('id', $d->assign_id, 'assign');
             if($d->user_id == $this->suser->id && (!empty($test) && !empty($assign))){
+                $d->from = $assign->date.' '.$assign->from;
+                $d->to = $assign->date.' '.$assign->to;
                 $d->from = date('Y-n-d H:i:s', strtotime($d->from));
                 $d->to = date('Y-n-d H:i:s', strtotime($d->to));
                 $vd = array('data' => $d, 'actived' => 'index');
                 $vd['test'] = $test;
                 $vd['assign'] = $assign;
                 $vd['questions'] = array();
-                //$this->load->view('front/checkTiming', $vd);
+                $this->load->view('front/checkTiming', $vd);
                 if($test->questions != ''){
                     $vd['questions'] = array_reverse(json_decode($test->questions));
                     if(json_last_error() !== 0)

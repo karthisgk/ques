@@ -1707,6 +1707,30 @@ var studTest = {
     var act_id = $('#stud-quest').children('.active.in').attr('data-id');
     studTest.getQuest(act_id, 1);
     studTest.lastQuest.html('Submit');
+    studTest.getNoAttempt = function(){
+      var no_attempt = 0;
+      $.each($('#stud-quest').children('div.loaded'), function(k, ele){
+        var id = ele.getAttribute('data-id');
+        var v = $('[name="'+id+'"]:checked').val();
+        if(typeof v !== 'undefined')
+          no_attempt++;
+      });
+      return no_attempt;
+    };
+    studTest.submit = function(){
+      var noq = $('#stud-quest').children('div').length;
+      var ld = false;
+      var no_attempt = 0;
+      if(noq == $('#stud-quest').children('.loaded').length){        
+        no_attempt = studTest.getNoAttempt();
+        ld = noq === no_attempt;
+      }
+      if(studTest.negative() && !ld){
+        Command: toastr['error']('Answer All The Questions');
+        return;
+      }
+      console.log(no_attempt);
+    }; 
     $('.select-quest-no').off('click').click(function(event){
       var qid = this.getAttribute('data-id');
       var ele = $('#stud-q-'+qid);
@@ -1774,6 +1798,7 @@ var studTest = {
         if(prv.length > 0)
           ele.find('.action-btns .prev a').attr('data-id', prv.attr('data-id'));
         studTest.triggerLoading();
+        studTest.lastQuest.off('click').click(studTest.submit);
       }
     });
   }

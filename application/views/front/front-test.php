@@ -56,4 +56,5 @@
 	var negative = <?=$assign->negative;?>;
 	var testFrom = '<?=$data->from;?>';
 	var testTo = '<?=$data->to;?>';
+	var rid = '<?=$this->id;?>';
 </script>

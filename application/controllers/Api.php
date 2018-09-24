@@ -447,7 +447,7 @@ class Api extends CI_Controller {
                 if($q->qtype == 0 && json_last_error() == 0){
                     foreach ($opts as $key => $opt) {
                         $rt .= '<li>
-                                    <input type="radio" id="'.$name.'-'.$opt->id.'" name="'.$name.'" /> 
+                                    <input type="radio" id="'.$name.'-'.$opt->id.'" value="'.$opt->id.'" name="'.$name.'" /> 
                                     <i class="fa fa-circle-o"></i>
                                     <i class="fa fa-dot-circle-o"></i>
                                     <label for="'.$name.'-'.$opt->id.'">'.$opt->value.'</label>
@@ -455,13 +455,13 @@ class Api extends CI_Controller {
                     }
                 }else{                                      
                     $rt .= '<li>
-                            <input type="radio" id="'.$name.'-true" name="'.$name.'" /> 
+                            <input type="radio" id="'.$name.'-true" value="1" name="'.$name.'" /> 
                             <i class="fa fa-circle-o"></i>
                             <i class="fa fa-dot-circle-o"></i>
                             <label for="'.$name.'-true">True</label>
                         </li>
                     <li>
-                        <input type="radio" id="'.$name.'-false" name="'.$name.'" /> 
+                        <input type="radio" id="'.$name.'-false" value="0" name="'.$name.'" /> 
                         <i class="fa fa-circle-o"></i>
                         <i class="fa fa-dot-circle-o"></i>
                         <label for="'.$name.'-false">False</label>

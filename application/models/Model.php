@@ -508,6 +508,67 @@ class Model extends CI_Model
         }else
             return 0;
     }
+
+    public function searchInput($inp, $id){
+        $id = $this->_en_urlid($id, '0');
+        $inp = !empty($inp) ? $inp : array();
+        foreach ($inp as $k => $d) {
+            if($id === $d->id){
+                return $d;
+                break;
+            }
+        }
+        return array();
+    }
+
+    public function resultValidation($rid, $inp = array()){
+        $suser = $this->sessionUser();
+        if(empty($inp) && !$suser->login)
+            return;
+        $id = $this->_en_urlid($rid, '1');
+        $d = $this->get_one('id', $id, 'result');
+        if(!empty($d)){
+            $test = $this->sg->get_one('id', $d->test_id, 'test');
+            $assign = $this->sg->get_one('id', $d->assign_id, 'assign');
+            if($d->user_id == $suser->id && (!empty($test) && !empty($assign))){
+                if($test->questions != ''){
+                    $questions = array_reverse(json_decode($test->questions));
+                    if(json_last_error() === 0){
+                        $this->db->group_start();
+                        foreach ($questions as $k => $_id)
+                            $this->db->or_where('id', $_id);
+                        $this->db->group_end();
+                        $qdata = $this->db->get('questions')->result();
+                        $no_of_q = count($questions);
+                        $noc = 0;
+                        if(count($qdata) == count($inp) || $no_of_q == count($inp)){
+                            foreach ($qdata as $kq => $q) {
+                                $inpData = $this->searchInput($inp, $q->id);
+                                if(!empty($inpData)){
+                                    if($q->qtype == 1)
+                                        $noc = $q->tf == $inpData->ans ? $noc + 1 : $noc;
+                                    else{
+                                        if($q->choises != ''){
+                                            $chs = json_decode($q->choises);
+                                            if(json_last_error() === 0){
+                                                foreach ($chs as $kch => $ch) {
+                                                    if(intval($ch->crt) == 1 && $inpData->ans == $ch->id)
+                                                        $noc = $noc + 1;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        $up = array('no_of_q' => $no_of_q, 'noc' => $noc);
+                        $up['details'] = json_encode($inp);
+                        $this->update('result', $up, array('id' => $d->id));
+                    }
+                }
+            }
+        }
+    }
 }
 
 ?>
