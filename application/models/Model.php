@@ -21,6 +21,8 @@ class Model extends CI_Model
 
 		$rt = new stdClass();
 		$rt->load_more_count = 10;
+        $rt->no_of_negt_quest = 3;
+        $rt->no_of_attempt = 1;
 		return $rt;
 
 	}
@@ -378,7 +380,10 @@ class Model extends CI_Model
         if(count($data) > 0){
         	$rt = array();
         	foreach ($data as $key => $d) {
-                $d->present = $this->count('select id from result where user_id="'.$suser->id.'" and assign_id="'.$d->id.'"');
+                $qry = 'select id,attempt from result where user_id="'.$suser->id.'" and assign_id="'.$d->id.'"';
+                $at = $this->get($qry);
+                $d->present = $this->count($qry);
+                $d->attempt = !empty($at) ? $at[0]->attempt : 0;
         		$d->id = $enid ? $this->_en_urlid($d->id, '0') : $d->id;
                 $d->compareDate = date('Y-n-d', strtotime($d->date));
         		$d->date = date('d M Y', strtotime($d->date));
@@ -536,11 +541,11 @@ class Model extends CI_Model
                     if(json_last_error() === 0){
                         $this->db->group_start();
                         foreach ($questions as $k => $_id)
-                            $this->db->or_where('id', $_id);
+                            $this->db->or_where('id', $_id->id);
                         $this->db->group_end();
                         $qdata = $this->db->get('questions')->result();
                         $no_of_q = count($questions);
-                        $noc = 0;
+                        $noc = $now = 0;
                         if(count($qdata) == count($inp) || $no_of_q == count($inp)){
                             foreach ($qdata as $kq => $q) {
                                 $inpData = $this->searchInput($inp, $q->id);
@@ -554,6 +559,8 @@ class Model extends CI_Model
                                                 foreach ($chs as $kch => $ch) {
                                                     if(intval($ch->crt) == 1 && $inpData->ans == $ch->id)
                                                         $noc = $noc + 1;
+                                                    if(intval($ch->crt) == 0 && $inpData->ans == $ch->id)
+                                                        $now = $now + 1;
                                                 }
                                             }
                                         }
@@ -561,7 +568,11 @@ class Model extends CI_Model
                                 }
                             }
                         }
+                        if($assign->negative == 1)
+                            $noc = $noc - intval($now / $this->getsettings()->no_of_negt_quest);
                         $up = array('no_of_q' => $no_of_q, 'noc' => $noc);
+                        $up['now'] = $now;
+                        $up['attempt'] = $d->attempt + 1;
                         $up['details'] = json_encode($inp);
                         $this->update('result', $up, array('id' => $d->id));
                     }

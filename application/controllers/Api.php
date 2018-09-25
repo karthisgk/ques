@@ -446,25 +446,31 @@ class Api extends CI_Controller {
                 $name = $this->sg->_en_urlid($q->id, '0');
                 if($q->qtype == 0 && json_last_error() == 0){
                     foreach ($opts as $key => $opt) {
+                        $h = $opt->crt == 1 ? 'id="'.$name.'"' : 'data-id="'.$name.'"';
                         $rt .= '<li>
                                     <input type="radio" id="'.$name.'-'.$opt->id.'" value="'.$opt->id.'" name="'.$name.'" /> 
                                     <i class="fa fa-circle-o"></i>
                                     <i class="fa fa-dot-circle-o"></i>
                                     <label for="'.$name.'-'.$opt->id.'">'.$opt->value.'</label>
+                                    <span '.$h.' style="display: none;"></span>
                                 </li>';
                     }
-                }else{                                      
+                }else{ 
+                    $t = $q->tf == 1 ? 'id="'.$name.'"' : 'data-id="'.$name.'"';
+                    $f = $q->tf == 0 ? 'id="'.$name.'"' : 'data-id="'.$name.'"';
                     $rt .= '<li>
                             <input type="radio" id="'.$name.'-true" value="1" name="'.$name.'" /> 
                             <i class="fa fa-circle-o"></i>
                             <i class="fa fa-dot-circle-o"></i>
                             <label for="'.$name.'-true">True</label>
+                            <span '.$t.' style="display: none;"></span>
                         </li>
                     <li>
                         <input type="radio" id="'.$name.'-false" value="0" name="'.$name.'" /> 
                         <i class="fa fa-circle-o"></i>
                         <i class="fa fa-dot-circle-o"></i>
                         <label for="'.$name.'-false">False</label>
+                        <span '.$f.' style="display: none;"></span>
                     </li>';
                 }
                 $rt .= "</ul>";

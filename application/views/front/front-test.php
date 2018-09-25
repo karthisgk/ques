@@ -51,6 +51,10 @@
 	
 </div>	<!--/.main-->
 
+<form action="<?=base_url().$this->id;?>" method="POST" id="result-submit">
+	<input type="hidden" name="answers" />
+</form>
+
 <script type="text/javascript">
 	var studTestPage = true;
 	var negative = <?=$assign->negative;?>;

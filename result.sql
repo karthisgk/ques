@@ -66,3 +66,7 @@ ALTER TABLE `result`
 ALTER TABLE `result` ADD `from` DATETIME NOT NULL AFTER `assign_id`, ADD `to` DATETIME NOT NULL AFTER `from`;
 
 ALTER TABLE `assign` ADD `negative` ENUM('0','1') NOT NULL DEFAULT '0' COMMENT 'allow negative' AFTER `publish`;
+
+
+ALTER TABLE  `result` ADD  `now` INT NOT NULL COMMENT  'no of wrong' AFTER  `noc` ,
+ADD  `attempt` INT NOT NULL AFTER  `now`

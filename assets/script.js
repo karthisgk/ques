@@ -1670,6 +1670,7 @@ testList.uipanels = function(d, ele = ''){
   var crt_time = current_time().split(' ');
   crt_time[2] = current_time();
   ui.children().removeClass('active future-test rdy-to-start');
+  var isShowResult = false;
   if((d.from < crt_time[1] && d.to > crt_time[1]) && d.compareDate == crt_time[0]) {
     ui.children().addClass('active');
     result.attr('end-at', d.compareDate+' '+d.to);
@@ -1689,14 +1690,23 @@ testList.uipanels = function(d, ele = ''){
       if(d.present == 0)
         result.html('Apsent');
       else
-        result.html('View Result');
+        isShowResult = true;
     }
   }
+  if(isShowResult || d.attempt > (no_of_attempt - 1))
+    result.html('asdas');
   if(typeof ele === 'object')
     ele.append(ui.html());
   return ui;
 };
 
+user.conjectTion = function(){
+  $.each($('#stud-quest').children('div.loaded'), function(k, ele){
+    var id = this.getAttribute('data-id');
+    var span = $(ele).find('.q-options li span[id="'+id+'"]');
+    span.parent().find('input[type="radio"]').prop('checked', true);
+  });
+};
 
 var studTest = {
   init: function(){
@@ -1729,7 +1739,16 @@ var studTest = {
         Command: toastr['error']('Answer All The Questions');
         return;
       }
-      console.log(no_attempt);
+      var post = [];
+      $.each($('#stud-quest').children('div'), function(k, ele){
+        var obj = {id: ele.getAttribute('data-id')};
+        var v = $('[name="'+obj.id+'"]:checked').val();
+        obj.ans = typeof v !== 'undefined' ? v : 'false';
+        post.push(obj);
+      });
+      var form = $('#result-submit');
+      form.find('input[name="answers"]').val(JSON.stringify(post));
+      form.submit();
     }; 
     $('.select-quest-no').off('click').click(function(event){
       var qid = this.getAttribute('data-id');

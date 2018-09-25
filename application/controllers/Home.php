@@ -33,9 +33,26 @@ class Home extends CI_Controller {
         if($id == '' || !$this->suser->login){
             $this->error_404();die;
         }
+
+        if(!empty($_POST)){
+            $answers = json_decode($_POST['answers']);
+            if(json_last_error() === 0)
+                $this->sg->resultValidation($id, $answers);
+            $id = $this->sg->_en_urlid($id, '1');
+            $d = $this->sg->get_one('id', $id, 'result');
+            echo "<pre>";print_r($d);
+            //redirect(base_url());
+            die;
+        }
+
         $id = $this->sg->_en_urlid($id, '1');
         $d = $this->sg->get_one('id', $id, 'result');
         if(!empty($d)){
+
+            if($d->attempt > ($this->sg->getsettings()->no_of_attempt - 1)) {
+                redirect(base_url());die;
+            }
+
             $test = $this->sg->get_one('id', $d->test_id, 'test');
             $assign = $this->sg->get_one('id', $d->assign_id, 'assign');
             if($d->user_id == $this->suser->id && (!empty($test) && !empty($assign))){
