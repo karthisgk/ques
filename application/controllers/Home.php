@@ -38,10 +38,7 @@ class Home extends CI_Controller {
             $answers = json_decode($_POST['answers']);
             if(json_last_error() === 0)
                 $this->sg->resultValidation($id, $answers);
-            $id = $this->sg->_en_urlid($id, '1');
-            $d = $this->sg->get_one('id', $id, 'result');
-            echo "<pre>";print_r($d);
-            //redirect(base_url());
+            redirect(base_url());
             die;
         }
 

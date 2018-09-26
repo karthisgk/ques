@@ -676,6 +676,8 @@ var test = {
     if(typeof testpage === 'undefined')
       return;
     quest.init();
+    var sch = $(document).innerHeight() - 280;
+    $('.make-test-contents').css('height', sch+'px');
       var windowScroll = function(event){
       /*var st = $(this).scrollTop();
       var rch = $(document).outerHeight() - $(window).height();
@@ -1106,6 +1108,8 @@ var tquest = {/*test single page handler*/
     if(typeof testSingle === 'undefined')
       return;
     assign.init();
+    var sch = $(document).innerHeight() - 280;
+    $('.make-test-contents').css('height', sch+'px');
     var windowScroll = function(event){
       /*var st = $(this).scrollTop();
       var rch = $(document).outerHeight() - $(window).height();
@@ -1693,8 +1697,17 @@ testList.uipanels = function(d, ele = ''){
         isShowResult = true;
     }
   }
-  if(isShowResult || d.attempt > (no_of_attempt - 1))
-    result.html('asdas');
+  result.prev().text('Status: ');
+  if(isShowResult || d.attempt != 0){
+    if(d.attempt.attempt > (no_of_attempt - 1)){
+      result.prev().text('Result: ');
+      if(d.publish == 1)
+        result.html('<span class="text-success text-bold">'+d.attempt.noc + ' / '+d.attempt.no_of_q+'</span>');
+      else
+        result.html('<span class="text-warning text-bold">Will Come Soon</span>');
+      ui.children().removeClass('active');
+    }
+  }
   if(typeof ele === 'object')
     ele.append(ui.html());
   return ui;

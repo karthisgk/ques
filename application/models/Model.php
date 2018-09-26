@@ -20,7 +20,7 @@ class Model extends CI_Model
 		return $query;*/
 
 		$rt = new stdClass();
-		$rt->load_more_count = 10;
+		$rt->load_more_count = 16;
         $rt->no_of_negt_quest = 3;
         $rt->no_of_attempt = 1;
 		return $rt;
@@ -380,10 +380,15 @@ class Model extends CI_Model
         if(count($data) > 0){
         	$rt = array();
         	foreach ($data as $key => $d) {
-                $qry = 'select id,attempt from result where user_id="'.$suser->id.'" and assign_id="'.$d->id.'"';
-                $at = $this->get($qry);
-                $d->present = $this->count($qry);
-                $d->attempt = !empty($at) ? $at[0]->attempt : 0;
+                $qry = 'select * from result where user_id="'.$suser->id.'" and assign_id="'.$d->id.'"';
+                $at = $this->db->query($qry);
+                $d->present = $at->num_rows();                
+                if($d->present > 0){
+                    $at = $at->result();
+                    $at = $at[0];
+                }else
+                    $at = array();
+                $d->attempt = !empty($at) ? $at : 0;
         		$d->id = $enid ? $this->_en_urlid($d->id, '0') : $d->id;
                 $d->compareDate = date('Y-n-d', strtotime($d->date));
         		$d->date = date('d M Y', strtotime($d->date));

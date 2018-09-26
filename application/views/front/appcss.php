@@ -1,7 +1,15 @@
 <style type="text/css">
 
 .text-warning {
-  color: #d58512;
+  color: #c3d000;
+}
+
+.text-success {
+  color: #4eb96f;
+}
+
+.text-bold {
+  font-weight: bold;
 }
 
 .scrolable-content {
