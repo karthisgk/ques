@@ -676,7 +676,7 @@ var test = {
     if(typeof testpage === 'undefined')
       return;
     quest.init();
-    var sch = $(document).innerHeight() - 280;
+    var sch = $(document).innerHeight() - 300;
     $('.make-test-contents').css('height', sch+'px');
       var windowScroll = function(event){
       /*var st = $(this).scrollTop();
@@ -1108,7 +1108,7 @@ var tquest = {/*test single page handler*/
     if(typeof testSingle === 'undefined')
       return;
     assign.init();
-    var sch = $(document).innerHeight() - 280;
+    var sch = $(document).innerHeight() - 300;
     $('.make-test-contents').css('height', sch+'px');
     var windowScroll = function(event){
       /*var st = $(this).scrollTop();

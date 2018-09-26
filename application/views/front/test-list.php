@@ -65,5 +65,5 @@
 
 <script type="text/javascript">
 var testSchedlue = true;
-var no_of_attempt = <?=$this->sg->getsettings()->no_of_attempt;?>;
+var no_of_attempt = <?=$settings->no_of_attempt;?>;
 </script>

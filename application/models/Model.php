@@ -20,9 +20,11 @@ class Model extends CI_Model
 		return $query;*/
 
 		$rt = new stdClass();
-		$rt->load_more_count = 16;
+        $rt->title = 'Questionary';
+        $rt->site_name = 'Quiz System';
+		$rt->load_more_count = 10;
         $rt->no_of_negt_quest = 3;
-        $rt->no_of_attempt = 1;
+        $rt->no_of_attempt = 2;
 		return $rt;
 
 	}
@@ -241,6 +243,8 @@ class Model extends CI_Model
 			return $this->_en_urlid($id, $opt);
 		};
 		$batch = $this->sg->get('select * from batch');
+        $data['settings'] = $this->getsettings();
+        //$data['suser'] = $this->sessionUser();
         $data['batchs'] = !empty($batch) ? $batch : array();
 		$data['appcss'] = $this->load->view('front/appcss' , $data, true);
 		$data['menus'] = $this->load->view('front/menus' , $data, true);
@@ -555,8 +559,11 @@ class Model extends CI_Model
                             foreach ($qdata as $kq => $q) {
                                 $inpData = $this->searchInput($inp, $q->id);
                                 if(!empty($inpData)){
-                                    if($q->qtype == 1)
+                                    if($q->qtype == 1){
                                         $noc = $q->tf == $inpData->ans ? $noc + 1 : $noc;
+                                        if($inpData->ans != 'false')
+                                            $now = $q->tf != $inpData->ans ? $now + 1 : $now;
+                                    }
                                     else{
                                         if($q->choises != ''){
                                             $chs = json_decode($q->choises);

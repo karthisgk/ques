@@ -96,7 +96,7 @@
                                 <option value="" hidden="">Select Batch</option>
                                 <option value="all">All</option>
                                 <?php foreach ($batchs as $b): ?>
-                                    <option value="<?=$b->id;?>"><?=$b->from;?> - <?=$b->to;?></option>
+                                    <option value="<?=$b->id;?>"><?=$b->from;?> - <?=$b->to.' ('.$b->name.')';?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -170,7 +170,7 @@
                             <select class="form-control modal-inputs" type="text" id="auser-batch_id">
                                 <option value="" hidden="">Select Batch</option>
                                 <?php foreach ($batchs as $b): ?>
-                                    <option value="<?=$b->id;?>"><?=$b->from;?> - <?=$b->to;?></option>
+                                    <option value="<?=$b->id;?>"><?=$b->from;?> - <?=$b->to.' ('.$b->name.')';?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

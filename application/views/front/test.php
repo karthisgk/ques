@@ -57,7 +57,7 @@
 </div>	<!--/.main-->
 
 <div id="test-panel" style="display: none;">
-	<div class="panel-child col-md-6">
+	<div class="panel-child col-md-12">
 		<div class="panel panel-primary">
 			<div class="panel-heading"><span ui-element="test-name"></span>
 				<ul class="pull-right panel-settings panel-button-tab-right">

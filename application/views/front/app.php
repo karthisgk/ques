@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Questionary</title>
+	<title><?=$settings->title;?></title>
 	<meta name="description" content="Student Online Exam Test Applicaton">
 	<meta name="keywords" content="Student,Student Online Exam,Questionary,Online Exam, Online Test">
     <meta name="author" content="karthisgk">
@@ -52,7 +52,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span></button>
-				<a class="navbar-brand" href="#"><span>Lumino</span>Admin</a>
+				<a class="navbar-brand" href="<?=base_url();?>"><span><?=$settings->site_name;?></span></a>
 				<ul class="nav navbar-top-links navbar-right">
 					<li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
 						<em class="fa fa-envelope"></em><span class="label label-danger">15</span>
@@ -112,20 +112,20 @@
 	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar scrolable-bar">
 		<div class="profile-sidebar">
 			<div class="profile-userpic">
-				<img src="http://placehold.it/50/30a5ff/fff" class="img-responsive" alt="">
+				<img src="<?=base_url();?>assets/images/users/Avatar.jpg" class="img-responsive" alt="">
 			</div>
 			<div class="profile-usertitle">
-				<div class="profile-usertitle-name">Username</div>
-				<div class="profile-usertitle-status"><span class="indicator label-success"></span>Online</div>
+				<div class="profile-usertitle-name"><?=$this->suser->login ? $this->suser->uname : 'Admin';?></div>
+				<!-- <div class="profile-usertitle-status"><span class="indicator label-success"></span>Online</div> -->
 			</div>
 			<div class="clear"></div>
 		</div>
 		<div class="divider"></div>
-		<form role="search">
+		<!-- <form role="search">
 			<div class="form-group">
 				<input type="text" class="form-control" placeholder="Search">
 			</div>
-		</form>
+		</form> -->
 		<ul class="nav menu">
 			<?=$menus;?>
 		</ul>
