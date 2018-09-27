@@ -367,6 +367,10 @@ $(document).ready(function() {
   studTest.init();
   if($('.sg-rich-txt').length > 0)
     $('.sg-rich-txt').jqte();
+
+  node.on('sample', function(data){
+    console.log(data);
+  });
 });
 
 var signup = {
