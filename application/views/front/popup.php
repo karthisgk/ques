@@ -524,3 +524,39 @@
       
     </div>
 </div>
+
+
+<div class="modal fade" id="vresult-modal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+
+
+        <div></div>
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" id="vresult-cancel" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">View Result</h4>
+            </div>
+
+            <div class="modal-body">
+                <table id="vajax-table" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Student Name</th>
+                            <th>Roll No</th>
+                            <th>Mark Scored</th>
+                            <th>Mark Obtained</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+               </table>
+            </div>
+        </div>
+      
+    </div>
+</div>
+

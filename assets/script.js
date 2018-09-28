@@ -1433,6 +1433,7 @@ var assign = {
     });
     $('#passign-submit').off('click').click(assign.submit);
   },
+  viewResult: {currentAid: '', popup: $('#vresult-modal')},
   trigger: function(id = ''){    
     $('#passign-modal .modal-inputs').val('');
     $('#passign-batch_id').val('').change();
@@ -1552,6 +1553,55 @@ assign.ajax_table = function(){
         "columns": col
     });
     $('#ajax-table').css('width', '100%');
+};
+
+assign.viewResult.trigger = function(aid){
+  $('#vajax-table').DataTable().clear();
+  $('#vajax-table').DataTable().destroy();
+  $('div#loading').show();
+  $.ajax({
+    url: base_url+'api/assign_api?get_single='+aid,
+    dataType: 'json',
+    success: function(d){
+      $('div#loading').hide();
+      if($.isEmptyObject(d)){
+        assign.viewResult.currentAid = '';
+        Command: toastr["error"]("Data Not Found!");
+        return;
+      }
+      assign.viewResult.currentAid = aid;
+      assign.viewResult.popup.find('.modal-title').text('Result For '+d.name);
+      assign.viewResult.popup.modal();
+      assign.viewResult.ajax_table();
+    }
+  });
+};
+
+assign.viewResult.ajax_table = function(){
+    var col = [
+      {data: 'id'},
+      {data: 'user_id'},
+      {data: 'roll_no'},
+      {data: 'noc'},
+      {data: 'no_of_q'},
+      {data: 'result'}
+    ];
+    assign.viewResult.table = $('#vajax-table').DataTable({
+        aaSorting : [[0, 'desc']],
+        "aoColumnDefs": [{ 'bSortable': false, 'aTargets':  [5]}],
+        "autoWidth": true,
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+                  "url": base_url+'api/assign_api?get_result='+assign.viewResult.currentAid,
+                  "type": "POST",
+                  "dataSrc": function ( json ) {
+                    return json.data;
+                  }
+                },
+        "columns": col
+    });
+    $('#vajax-table').css('width', '100%');
 };
 
 var testList = {
