@@ -493,6 +493,49 @@ class Api extends CI_Controller {
             else
                 echo "{}";
         }
+
+        elseif (isset($_GET['get_result'])) {
+            $id = $this->sg->_en_urlid($_GET['get_result'], '1');
+            $qry = 'select * from result where assign_id="'.$id.'"';
+            if($_POST && $this->sg->checkAccess()) {
+                $wh = $response = array();
+                $response['draw'] = $_POST['draw'];
+                $response['recordsTotal'] = $response['recordsFiltered'] = 0;
+                $response['data'] = array();
+                $table_columns = array('id','user_id','roll_no','noc','no_of_q','result');
+                $search_columns = $table_columns;
+                unset($search_columns[5]);
+                $request = $_POST;
+                $request['conditions']['or'] = false;
+                $request['conditions']['where'] = array('assign_id' => $id);
+                $request['column'] = $table_columns;
+                $request['search_columns'] = $search_columns;
+                $request['tablename'] = 'result'; 
+                $data = $this->Model->ajax_table($request);            
+                if(!empty($data)){
+                    $total = $this->Model->ajax_table($request, true);
+                    $recordsTotal['recordsTotal'] = $response['recordsFiltered'] = $total;
+                    foreach ($data as $key => $b) {
+
+                        $enid = $this->sg->_en_urlid($b->id, '0');
+                        $row = array();
+                        $row['DT_RowId'] = 'row-'.$enid;
+                        $row['id'] = $key + 1;
+                        $row['user_id'] = $this->sg->short_string($b->uname, '20');
+                        $row['roll_no'] = $b->rollno;
+                        $row['noc'] = $b->noc;
+                        $row['no_of_q'] = $b->no_of_q;
+                        $row['result'] = $b->noc.' / '.$b->no_of_q;
+                        array_push($response['data'], $row);
+                    }
+                }
+                echo json_encode($response);
+            }else
+                echo '{}';
+
+            die;
+        }
+
         elseif (isset($_GET['update'])) {
             if(!$this->sg->checkAccess()) { /* check admin access.*/
                 echo json_encode(array('result' => 'error', 'message' => 'Access Denied'));
@@ -536,6 +579,7 @@ class Api extends CI_Controller {
 
                         $enid = $this->sg->_en_urlid($b->id, '0');
                         $option = '<a onclick="assign.trigger(\''.$enid.'\')" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>';
+                        $option .= ' <a title="View Result" onclick="assign.viewResult.trigger(\''.$enid.'\')" class="btn btn-sm btn-warning"><i class="fa fa-eye"></i></a>';
                         $option .= ' <a onclick="assign.delete(\''.$enid.'\')" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>';
 
                         $batch = $this->sg->get_one('id', $b->batch_id, 'batch');

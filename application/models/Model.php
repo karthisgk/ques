@@ -271,16 +271,38 @@ class Model extends CI_Model
 
 		if(is_array($input['search_columns'])){
 			foreach ($input['search_columns'] as $c_key => $col) {
+                if($input['tablename'] == 'result'){
+                    if($col == 'user_id')    
+                        $col = 'user.name';
+                    elseif($col == 'roll_no')
+                        $col = 'user.uname';
+                    else
+                        $col = 'result.'.$col;
+                }
 				$like[$col] = $input['search']['value'];
 			}
 		}
 
 		$order_col = 'id';
+        if($input['tablename'] == 'result')
+            $order_col = 'result.'.$order_col;
 		$order_sort = 'DESC';
 		if($input['order']['0']['column']){
 			$order_sort = $input['order']['0']['dir'];
 			$order_col = $input['column'][$input['order']['0']['column']];
+            if($input['tablename'] == 'result'){
+                $oc = $input['column'][$input['order']['0']['column']];
+                if($oc == 'user_id')
+                    $order_col = 'user.name';
+                elseif($oc == 'roll_no')
+                    $order_col = 'user.uname';
+                else
+                    $order_col = 'result.'.$input['column'][$input['order']['0']['column']];
+            }
 		}
+
+        if($input['tablename'] == 'result')
+            $this->db->select(array('result.*','user.uname as rollno', 'user.name as uname'));
 
 		if(!empty($like)) {
 			unset($like['action']);
@@ -299,6 +321,8 @@ class Model extends CI_Model
 	    if(!$get_count)
 			$this->db->limit($input['length'], $input['start']);
 		$this->db->order_by($order_col, $order_sort);
+        if($input['tablename'] == 'result')
+            $this->db->join('user', 'user.id=result.user_id');
 		$query = $this->db->get($input['tablename']);
         $data = $query->result();
 
