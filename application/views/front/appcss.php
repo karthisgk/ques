@@ -492,4 +492,13 @@ ul.test-timeline > li.danger .timeline-badge {
   font-size: 20px;
 }
 
+.sidebar ul.nav .active a, .sidebar ul.nav li.parent a.active, .sidebar ul.nav .active > a:hover, .sidebar ul.nav li.parent a.active:hover, .sidebar ul.nav .active > a:focus, .sidebar ul.nav li.parent a.active:focus {
+  background: #313435;
+}
+
+.sidebar ul.nav li.parent a.active {
+  /*margin-left: 20px;*/
+  background: #525a55;
+}
+
 </style>

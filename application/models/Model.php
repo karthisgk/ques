@@ -16,16 +16,8 @@ class Model extends CI_Model
 
 	public function getsettings(){
 		
-		/*$query = $this->get_one("id","1","settings");
-		return $query;*/
-
-		$rt = new stdClass();
-        $rt->title = 'Questionary';
-        $rt->site_name = 'Quiz System';
-		$rt->load_more_count = 10;
-        $rt->no_of_negt_quest = 3;
-        $rt->no_of_attempt = 1;
-		return $rt;
+		$query = $this->get_one("id","1","settings");
+		return $query;
 
 	}
 

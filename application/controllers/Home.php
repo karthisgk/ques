@@ -25,6 +25,10 @@ class Home extends CI_Controller {
             $id = isset($name[0]) ? $name[0] : '';
             $this->test($id);
         }
+        elseif($id == 'site_settings')
+            $this->site_settings();
+        elseif($id == 'profile')
+            $this->profile();
         else
             $this->testPage($id);            
     }
@@ -142,5 +146,57 @@ class Home extends CI_Controller {
         }
         else
             redirect(base_url());
+    }
+
+    public function site_settings(){
+        if(!$this->sg->checkAccess())
+            redirect(base_url());
+        if(!empty($_POST)) {
+            $_POST['no_of_negt_quest'] = intval($_POST['no_of_negt_quest']) == 0 ? 1 : $_POST['no_of_negt_quest'];
+            $this->sg->update('settings', $_POST, array('id' => 1));
+            $this->session->set_flashdata('flash', 'Settings Updated Successfull');
+            $this->session->set_flashdata('flashtype', 'success');
+            redirect(base_url('site_settings'));
+        }
+        $d = array('actived' => $this->id, 'isSettings' => true);
+        echo $this->sg->app($d, 'site_settings');
+    }
+
+    public function profile(){
+        if(!$this->suser->login)
+            redirect(base_url());
+        if(!empty($_POST)){
+            $pass = $this->input->post('password');
+            $npass = $this->input->post('npassword');
+            $cpass = $this->input->post('cf_password'); 
+            $up = array(
+                'name'          => $this->input->post('fname'),
+                'lname'         => $this->input->post('lname'),
+                'email'         => $this->input->post('email')
+            );
+            if($this->suser->user_type == '0' && ($this->input->post('uname') != '' && strlen($this->input->post('uname')) > 4))
+                $up['uname'] = $this->input->post('uname');
+            $p = ($pass != '' && $npass != '' && $cpass != '');
+            if($p && (md5($pass) == $this->suser->password && $npass == $cpass)){
+                $up['password'] = md5($npass);
+                $this->session->set_flashdata('flash', 'Profile Updated Successfull');
+                $this->session->set_flashdata('flashtype', 'success');
+            }
+            elseif(md5($pass) != $this->suser->password && !$p) {
+                $this->session->set_flashdata('flash', 'Invalid Password');
+                $this->session->set_flashdata('flashtype', 'error');
+            }
+            elseif($npass != $cpass){
+                $this->session->set_flashdata('flash', 'New Password and Confirm Password does\'nt be Same.');
+                $this->session->set_flashdata('flashtype', 'error');
+            }else{
+                $this->session->set_flashdata('flash', 'Profile Updated Successfull');
+                $this->session->set_flashdata('flashtype', 'success');
+            }  
+            $this->sg->update('user', $up, array('id' => $this->suser->id));            
+            redirect(base_url('profile'));
+        }
+        $d = array('actived' => $this->id, 'isSettings' => true);
+        echo $this->sg->app($d, 'profile');
     }
 }

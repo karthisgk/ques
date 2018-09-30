@@ -138,9 +138,9 @@
 	<div id="loading" style="display: none;">
 	    <img class="image" src="<?=base_url();?>media/loading.png" alt="" height="50">
 	</div>
-	<script src="<?php echo base_url('node_modules/socket.io/node_modules/socket.io-client/socket.io.js');?>"></script>
+	<!-- <script src="<?php //echo base_url('node_modules/socket.io/node_modules/socket.io-client/socket.io.js');?>"></script> -->
 	<script type="text/javascript">
-		var node = io.connect( 'http://'+window.location.hostname+':3000' );
+		/*var node = io.connect( 'http://'+window.location.hostname+':3000' );*/
 		var sessionUserId = '<?=$this->sg->_en_urlid($this->suser->id);?>';
 	</script>
 	<script src="<?=base_url(); ?>temp2/js/jquery-1.11.1.min.js"></script>

@@ -358,6 +358,8 @@ $(document).ready(function() {
   }
 
   $('#sidebar-collapse .menu').find('.'+activeMenu).addClass('active');
+  var sch = $(document).innerHeight() - 200;
+  $('form#settings').css('height',sch+'px');
   signup.init();
   batch.init();
   user.init();
@@ -365,12 +367,13 @@ $(document).ready(function() {
   tquest.init();
   testList.init();
   studTest.init();
+  settings.init();
   if($('.sg-rich-txt').length > 0)
     $('.sg-rich-txt').jqte();
 
-  node.on('sample', function(data){
+  /*node.on('sample', function(data){
     console.log(data);
-  });
+  });*/
 });
 
 var signup = {
@@ -1887,5 +1890,50 @@ var studTest = {
         studTest.lastQuest.off('click').click(studTest.submit);
       }
     });
+  }
+};
+
+var settings = {
+  form: $('#settings'),
+  init: function(){
+    if(this.form.length == 0)
+      return;
+    this.form.attr('action', window.location.href);
+    this.form.find('input.form-control:not(.not-req)').prop('required', true);
+    this.form.find('#save').click(this.save);
+    this.form.find('input.form-control[data-type="text"]').keyup(function(){
+      if(/["'<>`{}|\\]/g.test(this.value))
+        this.value = this.value.input_validate();
+    });
+    this.form.find('input.form-control[data-type="number"]').keyup(function(){
+      if(/[^0-9]/g.test(this.value))
+        this.value = this.value.num_validate();
+      if(this.getAttribute('name') == 'load_more_count'){
+        $(this).parsley().reset();
+        if(this.value < 10 && this.value != '')
+          ParsleyUI.addError($(this).parsley(), 'cus_error', 'Minimum 10');
+      }
+      if(this.getAttribute('name') == 'no_of_negt_quest' && parseInt(this.value) == 0)
+        this.value = 1;
+    });
+    this.form.find('input.form-control[name="uname"]').keyup(function(){
+      if(/\W+/g.test(this.value))
+        this.value = this.value.alpha_numeric();
+    });
+    this.form.find('input.form-control[type="password"]').keyup(function(){
+      var pf =settings.form.find('input.form-control[type="password"]');
+      if(pf.length == 3)
+        pf.prop('required', !(pf[0].value == '' && pf[1].value == '' && pf[2].value == ''));
+    });
+  },
+  save: function(){
+    if(!settings.form.parsley().validate())
+      return false;
+    var lm = settings.form.find('input.form-control[name="load_more_count"]');
+    if(lm.val() < 10){
+      lm.val(10);
+      lm.parsley().reset();
+    }
+    settings.form.submit();
   }
 };
