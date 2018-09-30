@@ -24,7 +24,7 @@ class Model extends CI_Model
         $rt->site_name = 'Quiz System';
 		$rt->load_more_count = 10;
         $rt->no_of_negt_quest = 3;
-        $rt->no_of_attempt = 2;
+        $rt->no_of_attempt = 1;
 		return $rt;
 
 	}
