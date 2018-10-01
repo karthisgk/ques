@@ -59,8 +59,8 @@ class Home extends CI_Controller {
             if($d->user_id == $this->suser->id && (!empty($test) && !empty($assign))){
                 $d->from = $assign->date.' '.$assign->from;
                 $d->to = $assign->date.' '.$assign->to;
-                $d->from = date('Y-n-d H:i:s', strtotime($d->from));
-                $d->to = date('Y-n-d H:i:s', strtotime($d->to));
+                $d->from = date('Y-m-d H:i:s', strtotime($d->from));
+                $d->to = date('Y-m-d H:i:s', strtotime($d->to));
                 $vd = array('data' => $d, 'actived' => 'index');
                 $vd['test'] = $test;
                 $vd['assign'] = $assign;
@@ -166,37 +166,45 @@ class Home extends CI_Controller {
         if(!$this->suser->login)
             redirect(base_url());
         if(!empty($_POST)){
-            $pass = $this->input->post('password');
-            $npass = $this->input->post('npassword');
-            $cpass = $this->input->post('cf_password'); 
+            $pass = $_POST['password'];
+            $npass = $_POST['npassword'];
+            $cpass = $_POST['cf_password']; 
             $up = array(
                 'name'          => $this->input->post('fname'),
                 'lname'         => $this->input->post('lname'),
                 'email'         => $this->input->post('email')
             );
+            //echo "<pre>";print_r($_POST);die;
             if($this->suser->user_type == '0' && ($this->input->post('uname') != '' && strlen($this->input->post('uname')) > 4))
                 $up['uname'] = $this->input->post('uname');
             $p = ($pass != '' && $npass != '' && $cpass != '');
-            if($p && (md5($pass) == $this->suser->password && $npass == $cpass)){
-                $up['password'] = md5($npass);
-                $this->session->set_flashdata('flash', 'Profile Updated Successfull');
-                $this->session->set_flashdata('flashtype', 'success');
-            }
-            elseif(md5($pass) != $this->suser->password && !$p) {
-                $this->session->set_flashdata('flash', 'Invalid Password');
-                $this->session->set_flashdata('flashtype', 'error');
-            }
-            elseif($npass != $cpass){
-                $this->session->set_flashdata('flash', 'New Password and Confirm Password does\'nt be Same.');
-                $this->session->set_flashdata('flashtype', 'error');
+            if($p) {
+                if(md5($pass) == $this->suser->password && $npass == $cpass){
+                    $up['password'] = md5($npass);
+                    $this->session->set_flashdata('flash', 'Profile Updated Successfull');
+                    $this->session->set_flashdata('flashtype', 'success');
+                }
+                elseif(md5($pass) != $this->suser->password) {
+                    $this->session->set_flashdata('flash', 'Invalid Password');
+                    $this->session->set_flashdata('flashtype', 'error');
+                }
+                elseif($npass != $cpass){
+                    $this->session->set_flashdata('flash', 'New Password and Confirm Password does\'nt be Same.');
+                    $this->session->set_flashdata('flashtype', 'error');
+                }
             }else{
                 $this->session->set_flashdata('flash', 'Profile Updated Successfull');
                 $this->session->set_flashdata('flashtype', 'success');
-            }  
+            }
             $this->sg->update('user', $up, array('id' => $this->suser->id));            
             redirect(base_url('profile'));
         }
         $d = array('actived' => $this->id, 'isSettings' => true);
+        if($this->suser->user_type == '1') {
+            $d['bname'] = $this->sg->get_one('id', $this->suser->batch_id, 'batch');
+            if(!empty($d['bname']))
+                $d['bname'] = $d['bname']->from.'-'.$d['bname']->to.' ('.$d['bname']->name.')';
+        }
         echo $this->sg->app($d, 'profile');
     }
 }

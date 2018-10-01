@@ -410,7 +410,7 @@ class Model extends CI_Model
                     $at = array();
                 $d->attempt = !empty($at) ? $at : 0;
         		$d->id = $enid ? $this->_en_urlid($d->id, '0') : $d->id;
-                $d->compareDate = date('Y-n-d', strtotime($d->date));
+                $d->compareDate = date('Y-m-d', strtotime($d->date));
         		$d->date = date('d M Y', strtotime($d->date));
                 $d->time = date('h:i A', strtotime($d->from)) .' to '. date('h:i A', strtotime($d->to)). ' ('.$this->timeDiffer($d->from, $d->to).')';                
         		array_push($rt, $d);

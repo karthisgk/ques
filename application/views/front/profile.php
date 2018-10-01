@@ -10,18 +10,25 @@
 		</ol>
 	</div><!--/.row-->
 
-	<div class="panel panel-default" style="margin-top: 10px;">
+	<div class="panel panel-default col-md-8 col-sm-12" style="margin-top: 10px;">
 		<div class="panel-heading">
 			Profile Settings
 			<span class="pull-right clickable panel-toggle panel-button-tab-left hide"><em class="fa fa-toggle-up"></em></span>
 		</div>
 		<form class="panel-body scrolable-content scrolable-bar" method="post" id="settings">
-			<div class="col-md-6 col-sm-12">
+			<div class="col-md-12 col-sm-12">
 
 				<?php if($this->sg->checkAccess('1')): ?>
 		        	<div class="form-group">
 			        	<label>Roll No</label>
 		                <input type="text" value="<?=$this->suser->uname;?>" disabled class="form-control not-req" placeholder="Enter Roll No" />
+		            </div>
+		        <?php endif; ?>
+
+		        <?php if($this->sg->checkAccess('1')): ?>
+		        	<div class="form-group">
+			        	<label>Batch</label>
+		                <input type="text" value="<?=$bname;?>" disabled class="form-control not-req" />
 		            </div>
 		        <?php endif; ?>
 

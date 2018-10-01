@@ -91,7 +91,10 @@ function current_time(t) {
   if(t != '')
     t = typeof t !== 'object' ? new Date( t ) : t;
   var time = t == '' ? new Date() : t;
-  var date = time.getFullYear()+'-'+(time.getMonth() + 1)+'-'+time.getDate();
+  var date = 
+    time.getFullYear() +'-'+ 
+    ('0' + (time.getMonth() + 1)).slice(-2) +'-'+
+    ('0' + time.getDate()).slice(-2);
   var format = 
     ("0" + time.getHours()).slice(-2)   + ":" + 
     ("0" + time.getMinutes()).slice(-2) + ":" + 
@@ -579,6 +582,7 @@ var user = {
     }); 
   },
   get: function(id = ''){
+    $('#auser-form').parsley().reset();
     $('div#loading').hide();
     $('#auser-modal .tab-pane.fade.active.in').removeClass('active in');
     $('#auser-modal #auser-form').addClass('active in');
