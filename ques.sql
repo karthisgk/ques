@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 02, 2018 at 09:05 PM
+-- Generation Time: Oct 04, 2018 at 05:43 PM
 -- Server version: 10.1.13-MariaDB
 -- PHP Version: 5.6.20
 
@@ -19,6 +19,39 @@ SET time_zone = "+00:00";
 --
 -- Database: `ques`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `assign`
+--
+
+CREATE TABLE `assign` (
+  `id` int(11) NOT NULL,
+  `test_id` int(11) NOT NULL,
+  `batch_id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `date` date NOT NULL,
+  `from` time NOT NULL,
+  `to` time NOT NULL,
+  `publish` enum('0','1') NOT NULL DEFAULT '0',
+  `negative` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'allow negative',
+  `created_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `assign`
+--
+
+INSERT INTO `assign` (`id`, `test_id`, `batch_id`, `name`, `date`, `from`, `to`, `publish`, `negative`, `created_at`) VALUES
+(2, 1, 1, 'test 14', '2018-09-13', '09:00:00', '10:00:00', '1', '0', '2018-09-09 19:41:43'),
+(3, 1, 2, 'test 14', '2018-09-14', '09:00:00', '13:30:00', '0', '0', '2018-09-09 19:58:31'),
+(4, 1, 2, 'Aptidute Test', '2018-09-22', '12:30:00', '14:30:00', '1', '0', '2018-09-09 20:00:40'),
+(5, 1, 1, 'test 14', '2018-09-09', '09:00:00', '10:00:00', '1', '0', '2018-09-09 20:01:24'),
+(6, 1, 1, 'test 14', '2018-09-09', '09:00:00', '10:00:00', '1', '0', '2018-09-09 20:01:35'),
+(7, 1, 2, 'test1', '2018-09-21', '09:00:00', '12:45:00', '1', '0', '2018-09-21 08:56:53'),
+(8, 1, 2, 'removefu', '2018-10-02', '09:30:00', '10:50:00', '1', '0', '2018-09-21 09:37:46'),
+(9, 13, 1, 'New Test 1', '2018-09-26', '21:00:00', '22:00:00', '1', '1', '2018-09-26 18:06:45');
 
 -- --------------------------------------------------------
 
@@ -137,7 +170,60 @@ INSERT INTO `questions` (`id`, `content`, `qtype`, `choises`, `tf`, `created_at`
 (75, 'newly5 created als djaskdjkajs dljaslkdjalksjd?', 1, '[{"id":"opt-a","value":"Option A","crt":"1"},{"id":"opt-b","value":"Option B","crt":"0"},{"id":"opt-c","value":"Option C","crt":"0"},{"id":"opt-d","value":"Option D","crt":"0"}]', '1', '2018-09-02 20:58:09'),
 (76, 'newly6 created als djaskdjkajs dljaslkdjalksjd?', 1, '[{"id":"opt-a","value":"Option A","crt":"1"},{"id":"opt-b","value":"Option B","crt":"0"},{"id":"opt-c","value":"Option C","crt":"0"},{"id":"opt-d","value":"Option D","crt":"0"}]', '1', '2018-09-02 20:59:01'),
 (77, 'newly7 created als djaskdjkajs dljaslkdjalksjd?', 1, '[{"id":"opt-a","value":"Option A","crt":"1"},{"id":"opt-b","value":"Option B","crt":"0"},{"id":"opt-c","value":"Option C","crt":"0"},{"id":"opt-d","value":"Option D","crt":"0"}]', '1', '2018-09-02 21:00:31'),
-(78, 'newly8 created als djaskdjkajs dljaslkdjalksjd?', 1, '[{"id":"opt-a","value":"Option A","crt":"1"},{"id":"opt-b","value":"Option B","crt":"0"},{"id":"opt-c","value":"Option C","crt":"0"},{"id":"opt-d","value":"Option D","crt":"0"}]', '0', '2018-09-02 21:01:17');
+(78, 'newly8 created als djaskdjkajs dljaslkdjalksjd?', 1, '[{"id":"opt-a","value":"Option A","crt":"1"},{"id":"opt-b","value":"Option B","crt":"0"},{"id":"opt-c","value":"Option C","crt":"0"},{"id":"opt-d","value":"Option D","crt":"0"}]', '0', '2018-09-02 21:01:17'),
+(79, 'consider the probleeamma sasd asjdhajshdj hakjdh', 0, '[{"id":"opt-a","value":"asdh","crt":"0"},{"id":"opt-b","value":"aslkdjaskldj lkj","crt":"1"},{"id":"opt-c","value":"asd askdh","crt":"0"},{"id":"opt-d","value":"skdj kljasda","crt":"0"}]', '1', '2018-09-23 10:32:39');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `result`
+--
+
+CREATE TABLE `result` (
+  `id` int(11) NOT NULL,
+  `assign_id` int(11) NOT NULL,
+  `from` datetime NOT NULL,
+  `to` datetime NOT NULL,
+  `test_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `no_of_q` int(11) NOT NULL,
+  `noc` int(11) NOT NULL COMMENT 'num of correct answered',
+  `now` int(11) NOT NULL COMMENT 'no of wrong',
+  `attempt` int(11) NOT NULL,
+  `details` text NOT NULL,
+  `started_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `result`
+--
+
+INSERT INTO `result` (`id`, `assign_id`, `from`, `to`, `test_id`, `user_id`, `no_of_q`, `noc`, `now`, `attempt`, `details`, `started_at`) VALUES
+(3, 8, '2018-09-23 18:30:00', '2018-09-23 18:50:00', 1, 9, 11, 9, 2, 1, '[{"id":"d22980","ans":"opt-b"},{"id":"b56fo0","ans":"opt-b"},{"id":"b6po00","ans":"opt-a"},{"id":"b8d080","ans":"opt-a"},{"id":"cmrfg0","ans":"1"},{"id":"coeno0","ans":"1"},{"id":"cq2000","ans":"0"},{"id":"crl880","ans":"1"},{"id":"ct8gg0","ans":"1"},{"id":"curoo0","ans":"0"},{"id":"d0f100","ans":"1"}]', '2018-09-23 07:55:27'),
+(5, 9, '2018-09-26 21:00:00', '2018-09-26 22:00:00', 13, 10, 12, 8, 3, 1, '[{"id":"b8d080","ans":"opt-a"},{"id":"cq2000","ans":"0"},{"id":"ct8gg0","ans":"1"},{"id":"d0f100","ans":"0"},{"id":"curoo0","ans":"1"},{"id":"crl880","ans":"1"},{"id":"coeno0","ans":"1"},{"id":"cmrfg0","ans":"1"},{"id":"b0cn00","ans":"opt-a"},{"id":"b3j7g0","ans":"opt-c"},{"id":"b56fo0","ans":"opt-c"},{"id":"b6po00","ans":"opt-b"}]', '2018-09-26 18:10:20');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `settings`
+--
+
+CREATE TABLE `settings` (
+  `id` int(1) NOT NULL,
+  `title` varchar(50) NOT NULL,
+  `site_name` varchar(50) NOT NULL,
+  `load_more_count` int(11) NOT NULL,
+  `no_of_negt_quest` int(11) NOT NULL,
+  `no_of_attempt` int(11) NOT NULL,
+  `stud_approve` enum('0','1') NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `settings`
+--
+
+INSERT INTO `settings` (`id`, `title`, `site_name`, `load_more_count`, `no_of_negt_quest`, `no_of_attempt`, `stud_approve`) VALUES
+(1, 'Quest', 'Quiz Systemm', 10, 3, 1, '0');
 
 -- --------------------------------------------------------
 
@@ -158,7 +244,7 @@ CREATE TABLE `test` (
 --
 
 INSERT INTO `test` (`id`, `name`, `questions`, `desb`, `created_at`) VALUES
-(1, 'test1', '', 'lksj kjasjdad', '2018-08-23 18:34:53'),
+(1, 'test1', '[{"id":"78","created":"2018-09-19 09:55:45"},{"id":"77","created":"2018-09-19 09:55:46"},{"id":"76","created":"2018-09-19 09:55:46"},{"id":"75","created":"2018-09-19 09:55:47"},{"id":"74","created":"2018-09-19 09:55:47"},{"id":"73","created":"2018-09-19 09:55:49"},{"id":"72","created":"2018-09-23 14:01:50"},{"id":"69","created":"2018-09-23 14:01:52"},{"id":"68","created":"2018-09-23 14:01:53"},{"id":"67","created":"2018-09-23 14:01:54"},{"id":"79","created":"2018-09-23 14:02:39"}]', 'lksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kjasjdadlksj kja', '2018-08-23 18:34:53'),
 (2, 'test2', '', 'k hajshhasd kjasdh kashdkjh sakjdh aksjdhkasj hdkjashdkjashdkjsah dkjashdkjashdkjashdkjashd kjashdkjasdhasdj ashdkjahsdjkha ksdhakjsdhjksajdhkjsadhkjas hdkjasdh', '2018-08-26 12:16:39'),
 (3, 'new test', '', 'asdj haskjdja hdkjasdjhakjsdhkjashdkjas', '2018-08-26 12:18:29'),
 (4, 'new test123 kasjdk ahsdhakjhdkjashkjdh kashkdha', '', 'hi hello welcome', '2018-08-26 12:24:08'),
@@ -169,7 +255,7 @@ INSERT INTO `test` (`id`, `name`, `questions`, `desb`, `created_at`) VALUES
 (9, 'skfhkdjshfjkh skjh', '', 'kjhsdkjfhkjsdhfkjh', '2018-08-26 14:11:11'),
 (10, 'jhfkjs hjkfhskjdhqkjhdfkjh', '', 'sjkdh fkjsdhfkj', '2018-08-26 14:11:19'),
 (11, 'al jdlaj dlkajsdl', '', 'lkjslkdjlkajdlkjaslkd', '2018-08-26 14:11:42'),
-(12, 'askj dlkajsdlkj aslkdj', '', 'lksjdlkajdlkjasd', '2018-08-26 14:11:47'),
+(12, 'askj dlkajsdlkj aslkdj', '[{"id":"78","created":"2018-09-09 20:18:44"}]', 'lksjdlkajdlkjasd', '2018-08-26 14:11:47'),
 (13, 'test 14', '[{"id":"68","created":"2018-09-02 23:26:17"},{"id":"67","created":"2018-09-02 23:28:25"},{"id":"66","created":"2018-09-02 23:28:50"},{"id":"64","created":"2018-09-02 23:28:52"},{"id":"72","created":"2018-09-03 00:12:26"},{"id":"73","created":"2018-09-03 00:18:02"},{"id":"75","created":"2018-09-03 00:28:10"},{"id":"77","created":"2018-09-03 00:30:31"},{"id":"78","created":"2018-09-03 00:31:17"},{"id":"76","created":"2018-09-03 00:32:21"},{"id":"74","created":"2018-09-03 00:32:23"},{"id":"69","created":"2018-09-03 00:32:23"}]', 'sjak hdjaskhdjkahs dkjhakjsdhkjhdkja shdk', '2018-08-27 12:05:57');
 
 -- --------------------------------------------------------
@@ -187,25 +273,32 @@ CREATE TABLE `user` (
   `email` varchar(70) NOT NULL,
   `password` varchar(32) NOT NULL,
   `created_at` datetime NOT NULL,
-  `batch_id` int(11) NOT NULL
+  `batch_id` int(11) NOT NULL,
+  `activated` int(2) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `user_type`, `name`, `lname`, `uname`, `email`, `password`, `created_at`, `batch_id`) VALUES
-(1, 0, 'karthi', '', 'karthisgk', '', 'e10adc3949ba59abbe56e057f20f883e', '2018-08-10 00:00:00', 0),
-(5, 1, 'mahesh', 'm', '188066', 'maheshwaren@g.in', 'e10adc3949ba59abbe56e057f20f883e', '2018-08-10 16:07:28', 1),
-(6, 1, 'sajdhjas', 'ajskhdjas', '100596', 'karthisgkasd@g.in', '89f0f675e2e4822ba531f97566dbccae', '2018-08-12 04:43:23', 1),
-(7, 1, 'karthick', 'jhkjsh', '10005863', 'asjdhkja@g.in', 'e10adc3949ba59abbe56e057f20f883e', '2018-08-17 04:38:08', 2),
-(8, 1, 'student1', 'asd', '10656985', 'stud1@gmail.com', 'e10adc3949ba59abbe56e057f20f883e', '2018-08-18 07:01:55', 2),
-(9, 1, 'student2', 'sajdalk', '100597', 'askdjaksdk@g.in', '89f0f675e2e4822ba531f97566dbccae', '2018-08-18 13:01:50', 2),
-(10, 1, 'Dhdjdj', 'Sjdjd', '100569', 'dkdjdjjd@hotmail.com', 'e10adc3949ba59abbe56e057f20f883e', '2018-09-02 11:42:29', 1);
+INSERT INTO `user` (`id`, `user_type`, `name`, `lname`, `uname`, `email`, `password`, `created_at`, `batch_id`, `activated`) VALUES
+(1, 0, 'karthi', '', 'karthisgk', 'admin@admin.com', 'e10adc3949ba59abbe56e057f20f883e', '2018-08-10 00:00:00', 0, 0),
+(5, 1, 'mahesh', 'm', '188066', 'maheshwaren@g.in', 'e10adc3949ba59abbe56e057f20f883e', '2018-08-10 16:07:28', 1, 1),
+(6, 1, 'sajdhjas', 'ajskhdjas', '100596', 'karthisgkasd@g.in', '89f0f675e2e4822ba531f97566dbccae', '2018-08-12 04:43:23', 1, 1),
+(7, 1, 'karthick', 'jhkjsh', '10005863', 'asjdhkja@g.in', 'e10adc3949ba59abbe56e057f20f883e', '2018-08-17 04:38:08', 2, 0),
+(8, 1, 'student1', 'asd', '10656985', 'stud1@gmail.com', 'e10adc3949ba59abbe56e057f20f883e', '2018-08-18 07:01:55', 2, 0),
+(9, 1, 'student2', 'sajdalk', '100597', 'askdjaksdk@g.in', '89f0f675e2e4822ba531f97566dbccae', '2018-08-18 13:01:50', 2, 1),
+(10, 1, 'Dhdjdj', 'Sjdjd', '100569', 'dkdjdjjd@hotmail.com', 'e10adc3949ba59abbe56e057f20f883e', '2018-09-02 11:42:29', 1, 1);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `assign`
+--
+ALTER TABLE `assign`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `batch`
@@ -219,6 +312,18 @@ ALTER TABLE `batch`
 ALTER TABLE `questions`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id` (`id`);
+
+--
+-- Indexes for table `result`
+--
+ALTER TABLE `result`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `settings`
+--
+ALTER TABLE `settings`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `test`
@@ -237,6 +342,11 @@ ALTER TABLE `user`
 --
 
 --
+-- AUTO_INCREMENT for table `assign`
+--
+ALTER TABLE `assign`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+--
 -- AUTO_INCREMENT for table `batch`
 --
 ALTER TABLE `batch`
@@ -245,7 +355,17 @@ ALTER TABLE `batch`
 -- AUTO_INCREMENT for table `questions`
 --
 ALTER TABLE `questions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+--
+-- AUTO_INCREMENT for table `result`
+--
+ALTER TABLE `result`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `settings`
+--
+ALTER TABLE `settings`
+  MODIFY `id` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `test`
 --

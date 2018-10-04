@@ -5,17 +5,18 @@
 			<li><a href="#">
 				<em class="fa fa-home"></em>
 			</a></li>
-			<li class="active">Manage Users</li>
+			<li class="active">Manage Students</li>
 		</ol>
 	</div><!--/.row-->
 	
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="float-left">
-				<h1 class="page-header">Users <a id="change-batch" style="font-size: 18px; cursor: pointer;">(Change Batch)</a></h1>
+				<h1 class="page-header">Students <a id="change-batch" style="font-size: 18px; cursor: pointer;">(Change Batch)</a></h1>
 			</div>
 			<div class="float-right">
-				<a onclick="user.trigger();" class="btn btn-primary fix-float-btn"><i class="fa fa-plus"></i> Add User</a>
+				<a onclick="user.trigger();" class="btn btn-primary fix-float-btn"><i class="fa fa-plus"></i> Add Student</a>
+				<a onclick="user.approve();" class="btn btn-success fix-float-btn"><i class="fa fa-check"></i> Approve</a>
 			</div>
 		</div>
 	</div><!--/.row-->

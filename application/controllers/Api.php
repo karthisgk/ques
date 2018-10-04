@@ -141,10 +141,11 @@ class Api extends CI_Controller {
                 	$enid = $this->sg->_en_urlid($b->id, '0');
                 	$option = '<a onclick="user.trigger(\''.$enid.'\')" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>';
                 	$option .= ' <a onclick="user.delete(\''.$enid.'\')" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>';
-
+                    $isActivated = $b->activated == 1 ? 'checked' : '';
+                    $chk = '<input type="checkbox" class="stud-approve" '.$isActivated.' data-id="'.$b->id.'" /> ';
                     $row = array();
                     $row['DT_RowId'] = 'row-'.$b->id;
-                    $row['id'] = $b->id;
+                    $row['id'] = $chk.$b->id;
                     $row['uname'] = $this->sg->short_string($b->uname, '10');
                     $row['name'] = $this->sg->short_string($b->name, '25');
                     $row['email'] = $this->sg->short_string($b->email, '25');
@@ -223,6 +224,15 @@ class Api extends CI_Controller {
         if($this->sg->checkAccess()){
             $id = $this->sg->_en_urlid($id, '1');
             $this->sg->remove('user', array('id' => $id));
+        }
+    }
+
+    public function approve_student(){
+        if($this->sg->checkAccess() && isset($_POST['stud'])){
+            if(is_array($_POST['stud'])){
+                foreach ($_POST['stud'] as $key => $id)
+                    $this->sg->update('user', array('activated' => 1), array('id' => $id));
+            }
         }
     }
 
@@ -523,9 +533,9 @@ class Api extends CI_Controller {
                         $row['id'] = $key + 1;
                         $row['user_id'] = $this->sg->short_string($b->uname, '20');
                         $row['roll_no'] = $b->rollno;
-                        $row['noc'] = $b->noc;
-                        $row['no_of_q'] = $b->no_of_q;
-                        $row['result'] = $b->noc.' / '.$b->no_of_q;
+                        $row['noc'] = $b->attempt != '0' ? $b->noc : 'Apsent';
+                        $row['no_of_q'] = $b->attempt != '0' ? $b->no_of_q : 'Apsent';
+                        $row['result'] = $b->attempt != '0' ? $b->noc.' / '.$b->no_of_q : 'Apsent';
                         array_push($response['data'], $row);
                     }
                 }

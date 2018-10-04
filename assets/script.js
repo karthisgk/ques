@@ -643,11 +643,11 @@ var user = {
     });
   },
   trigger: function(id = ''){
-    $('#auser-modal .modal-title').text('Add User');
+    $('#auser-modal .modal-title').text('Add Student');
     $('#auser-form').parsley().reset();
     $('div#loading').show();
     if(id != ''){
-      $('#auser-modal .modal-title').text('Edit User');
+      $('#auser-modal .modal-title').text('Edit Student');
       $.ajax({
         type: 'post',
         url: base_url+'api/get_user/'+id,
@@ -674,12 +674,27 @@ var user = {
         url: base_url+'api/delete_user/'+id,
         success: function(data){
           swal.close();
-          Command: toastr['success']('User Deleted Successfull');
+          Command: toastr['success']('Student Deleted Successfull');
           user.table.ajax.reload();
         }
       });
     });
   }
+};
+
+user.approve = function(){
+  if($('.stud-approve:checked').length <= 0)
+    return;
+  var post = [];
+  $.each($('.stud-approve:checked'), function(k, ele){
+    post.push(ele.getAttribute('data-id'));
+  });
+  $.ajax({
+    type: 'post',
+    url: base_url+'api/approve_student',
+    data: {stud: post},
+    success: function(d){ Command: toastr['success']('Student Approved Successfull'); }
+  });
 };
 
 var test = {
@@ -1767,6 +1782,9 @@ testList.uipanels = function(d, ele = ''){
       else
         result.html('<span class="text-warning text-bold">Will Come Soon</span>');
       ui.children().removeClass('active');
+    }else{
+      if(d.attempt.attempt == '0')
+        result.html('Apsent');
     }
   }
   if(typeof ele === 'object')

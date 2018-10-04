@@ -65,7 +65,7 @@ class Home extends CI_Controller {
                 $vd['test'] = $test;
                 $vd['assign'] = $assign;
                 $vd['questions'] = array();
-                $this->load->view('front/checkTiming', $vd);
+                //$this->load->view('front/checkTiming', $vd);
                 if($test->questions != ''){
                     $vd['questions'] = array_reverse(json_decode($test->questions));
                     if(json_last_error() !== 0)

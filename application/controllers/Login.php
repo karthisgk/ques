@@ -34,10 +34,17 @@ class Login extends CI_Controller {
 			$users=$this->Model->get($query);
 			$rows=$this->Model->count($query);
 			if($rows > 0){
-				$this->session->set_userdata('user',$users[0]->id);
-				$this->session->set_flashdata('flash', 'Logged in Successfully');
-				$this->session->set_flashdata('flashtype', 'success');
-				redirect(base_url());
+				if($users[0]->user_type == '0' || $users[0]->activated == '1'){
+					$this->session->set_userdata('user',$users[0]->id);
+					$this->session->set_flashdata('flash', 'Logged in Successfully');
+					$this->session->set_flashdata('flashtype', 'success');
+					redirect(base_url());
+				}else{
+					$this->session->set_flashdata('flash', 'Your Account still does\'nt activated.');
+					$this->session->set_flashdata('flashtype', 'error');
+					$this->session->set_flashdata('front_username', $username);
+					redirect($this->url);
+				}
 			}else{	
 				$this->session->set_flashdata('flash', 'Invalid Username/Password.');
 				$this->session->set_flashdata('flashtype', 'error');
