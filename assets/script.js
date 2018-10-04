@@ -385,7 +385,7 @@ var signup = {
       return;
 
     $('#sign-up-submit').off('click').click(function(){
-      if(!$('#s-form').parsley().validate() || !$('#s-form input.form-control').checkInput())
+      if(!$('#s-form').parsley().validate())
         return;
 
       if($('#s-form [name="uname"][rno="true"]').length < 1)
