@@ -42,6 +42,15 @@
 			        </div>
 		        </div>
 
+		        <div class="form-group bootstrap-switch">
+	                <label for="stud_approve">Student Auto Approve</label>
+	                <label class="switch">
+	                	<input type="hidden" value="0" name="stud_approve" />
+	                    <input type="checkbox" value="1" id="stud_approve" name="stud_approve" />
+	                    <span class="slider round"></span>
+	                </label>
+	            </div>
+
 		        <div class="form-group text-center">
 	                <button class="btn btn-success" id="save" type="button">Save Changes</button>
 	            </div>
@@ -49,3 +58,7 @@
 		</form>
 	</div>
 </div>
+
+<script type="text/javascript">
+	document.getElementById('stud_approve').checked = <?=$settings->stud_approve;?> == 1;
+</script>

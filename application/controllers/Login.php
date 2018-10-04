@@ -89,6 +89,9 @@ class Login extends CI_Controller {
 				'batch_id'		=> $this->input->post('batch')
 			);
 
+			if($this->sg->getsettings()->stud_approve == '1')
+				$inps['activated'] = '1';
+
 			if($this->input->post('password') != $this->input->post('cpassword')){
 				$this->session->set_flashdata('flash', 'Password Does\'nt be Same.');
 				$this->session->set_flashdata('flashtype', 'error');
