@@ -501,4 +501,21 @@ ul.test-timeline > li.danger .timeline-badge {
   background: #525a55;
 }
 
+
+@media (max-width: 500px) {
+  .panel-body {
+    padding: 0;
+  }
+
+  .make-test-contents, .make-test-contents > .tab-pane{
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .make-test-contents > .tab-pane > .panel-child {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+
 </style>
