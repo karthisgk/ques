@@ -143,11 +143,14 @@ class Api extends CI_Controller {
                 	$option .= ' <a onclick="user.delete(\''.$enid.'\')" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>';
                     $isActivated = $b->activated == 1 ? 'checked' : '';
                     $chk = '<input type="checkbox" class="stud-approve" '.$isActivated.' data-id="'.$b->id.'" /> ';
+                    $ap = '';
+                    if($b->activated == '1')
+                        $ap = ' <i class="fa fa-circle online-circle"></a>';
                     $row = array();
                     $row['DT_RowId'] = 'row-'.$b->id;
                     $row['id'] = $chk.$b->id;
                     $row['uname'] = $this->sg->short_string($b->uname, '10');
-                    $row['name'] = $this->sg->short_string($b->name, '25');
+                    $row['name'] = $this->sg->short_string($b->name, '25').$ap;
                     $row['email'] = $this->sg->short_string($b->email, '25');
                     $row['created_at'] = $this->sg->timeAgo($b->created_at);
                     $row['option'] = $option;
@@ -186,11 +189,13 @@ class Api extends CI_Controller {
         if(!empty($_POST)){            
             $up = array(
                 'name'          => $this->input->post('name'),
-                'lname'         => $this->input->post('lname'),
                 'uname'         => $this->input->post('uname'),
                 'email'         => $this->input->post('email'),
                 'batch_id'      => $this->input->post('batch_id')
             );
+
+            if($this->input->post('lname') != '')
+                $up['lname'] = $this->input->post('lname');
 
             if(trim($this->input->post('password')) != ''){
                 if($this->input->post('password') != $this->input->post('cpassword')){

@@ -94,7 +94,7 @@
                             <label>Batch</label>
                             <select class="form-control">
                                 <option value="" hidden="">Select Batch</option>
-                                <option value="all">All</option>
+                                <option value="all">All Students</option>
                                 <?php foreach ($batchs as $b): ?>
                                     <option value="<?=$b->id;?>"><?=$b->from;?> - <?=$b->to.' ('.$b->name.')';?></option>
                                 <?php endforeach; ?>
@@ -141,7 +141,7 @@
 
                             <div class="col-sm-6 col-xs-12 form-group">
                                 <label>Last Name  <span class="text-danger">*</span></label>
-                                <input type="text"  maxlength="30" class="form-control modal-inputs" id="auser-lname" placeholder="Enter Last Name" />
+                                <input type="text"  maxlength="30" class="form-control" id="auser-lname" placeholder="Enter Last Name" />
                             </div>
                         </div>
 

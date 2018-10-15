@@ -4,6 +4,10 @@
   color: #c3d000;
 }
 
+.online-circle {
+  color: #9ccb20;
+}
+
 .text-success {
   color: #4eb96f;
 }

@@ -6,12 +6,13 @@ class Login extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
 		$this->load->library('form_validation');
+		$this->suser = $this->sg->sessionUser();
 		$this->url = base_url().'login/';
 		$m = $this->router->fetch_method();
 	}
 
 	public function login(){
-		if(!isset($_SESSION['user'])){
+		if(!$this->suser->login){
 			$this->load->view('front/login');
 		}
 		else
@@ -46,13 +47,13 @@ class Login extends CI_Controller {
 					redirect($this->url);
 				}
 			}else{	
-				$this->session->set_flashdata('flash', 'Invalid Username/Password.');
+				$this->session->set_flashdata('flash', 'Invalid RollNo/Password.');
 				$this->session->set_flashdata('flashtype', 'error');
 				$this->session->set_flashdata('front_username', $username);
 				redirect($this->url);
 			}
 		}else{
-			$this->session->set_flashdata('flash', 'Invalid Username/Password.');
+			$this->session->set_flashdata('flash', 'Invalid RollNo/Password.');
 			$this->session->set_flashdata('flashtype', 'error');
 			$this->session->set_flashdata('front_username', $username);
 			redirect($this->url);
@@ -70,7 +71,7 @@ class Login extends CI_Controller {
 	}
 
 	public function signup(){
-		if(isset($_SESSION['user']))
+		if($this->suser->login)
 			redirect(base_url());
 
 		if(empty($_POST)){

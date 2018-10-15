@@ -30,7 +30,7 @@
                                 <input name="fname" class="form-control" type="text" maxlength="30" required placeholder="First Name" />
                             </div>
                             <div class="form-group">
-                                <input name="lname" class="form-control" type="text" maxlength="30" required placeholder="Last Name" />
+                                <input name="lname" class="form-control" type="text" maxlength="30" placeholder="Last Name" />
                             </div>
                             <div class="form-group">
                                 <input name="uname" class="form-control" type="text" maxlength="20" required placeholder="Roll Number" />

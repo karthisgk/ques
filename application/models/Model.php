@@ -341,6 +341,13 @@ class Model extends CI_Model
     	$obj = new stdClass;    	
     	if(!empty($user))
     		$obj = $user;
+        else{
+            if(isset($_SESSION['user'])){
+                unset($_SESSION['user']);
+                $this->session->set_flashdata('flash', 'Something Went Wrong!.');
+                $this->session->set_flashdata('flashtype', 'error');
+            }
+        }
     	$obj->login = !empty($user);
     	return $obj;
     }

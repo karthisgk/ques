@@ -544,6 +544,13 @@ var user = {
     });
     if(mu_batch_id == '0')
       $('#change-batch').click();
+    else{
+      var crt_batch = $('#select-batch select.form-control').children('option[value="'+mu_batch_id+'"]').text();
+      if($('.table-responsive').children('.panel-body').find('.crt_batch').length == 0)  
+        $('.table-responsive').children('.panel-body').prepend('<h3 style="margin: 0;" class="crt_batch text-center">'+crt_batch+'</h3>');
+      else
+        $('.table-responsive').children('.panel-body').find('.crt_batch').text(crt_batch);
+    }
   },
   changeBatch: function(){
     var btEle = $('#select-batch select.form-control')[0];
@@ -557,6 +564,11 @@ var user = {
     user.ajax_table();
     history.pushState({urlPath: base_url+'user'},'', base_url+'user?bid='+mu_batch_id);
     $('#select-batch').modal('toggle');
+    var crt_batch = $('#select-batch select.form-control').children('option[value="'+mu_batch_id+'"]').text();
+    if($('.table-responsive').children('.panel-body').find('.crt_batch').length == 0)  
+      $('.table-responsive').children('.panel-body').prepend('<h3 style="margin: 0;" class="crt_batch text-center">'+crt_batch+'</h3>');
+    else
+      $('.table-responsive').children('.panel-body').find('.crt_batch').text(crt_batch);
   },
   ajax_table: function(){
     var user_col = [];
@@ -582,6 +594,7 @@ var user = {
     }); 
   },
   get: function(id = ''){
+    $('#auser-password, #auser-cpassword, #auser-lname').val('');
     $('#auser-form').parsley().reset();
     $('div#loading').hide();
     $('#auser-modal .tab-pane.fade.active.in').removeClass('active in');
@@ -620,6 +633,7 @@ var user = {
     });
   },
   update: function(data){
+    data.lname = $('#auser-lname').val();
     if($.isEmptyObject(data))
       return;
     if($('#auser-modal #auser-uname[rno="true"]').length < 1){
@@ -660,6 +674,7 @@ var user = {
           }
           user.get(id);
           $('#auser-modal .modal-inputs').setValue(data, 'auser-');
+          $('#auser-lname').val(data.lname);
           $('#auser-modal #auser-uname').keyup();
         }
       });
@@ -846,6 +861,8 @@ var test = {
           Command: toastr['success']('Test Deleted Successfull');
           $('#test-content').children('#'+id).remove();
           test.dataTotal--;
+          if(test.panelLength() < 10)
+            test.getData();
         }
       });
     });
@@ -1093,7 +1110,9 @@ var quest = {
           $('div#loading').hide();
           Command: toastr['success']('Questions Deleted Successfull');
           $('#quest-content').children('#'+id).remove();
-          test.dataTotal--;
+          quest.dataTotal--;
+          if(quest.panelLength() < 10)
+            quest.getData();
         }
       });
     });
@@ -1231,6 +1250,8 @@ var tquest = {/*test single page handler*/
         $('div#loading').hide();
          ele.remove();
         $('#quest-list').children('[data-index="'+id+'"]').removeClass('selected');
+        if(tquest.panelLength() < 10)
+            tquest.getData();
       });
     };
     sweet_alert(confirm, 'You Want to Remove it from this Test.');

@@ -5,7 +5,7 @@
 <?php endif; ?>
 
 <?php if($this->sg->checkAccess()): ?>
-	<li class="user"><a href="<?=base_url();?>User"><em class="fa fa-user-circle">&nbsp;</em> User</a></li>
+	<li class="user"><a href="<?=base_url();?>User"><em class="fa fa-user-circle">&nbsp;</em> Student</a></li>
 <?php endif; ?>
 
 <?php if($this->sg->checkAccess()): ?>

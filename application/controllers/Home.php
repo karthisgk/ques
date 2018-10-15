@@ -10,7 +10,7 @@ class Home extends CI_Controller {
         $id = strtolower($id);
         $this->id = $id;
 
-        if(!isset($_SESSION['user']))
+        if(!$this->suser->login)
         	redirect($this->login_url);
 
         if($id == 'index')
