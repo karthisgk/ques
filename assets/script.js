@@ -918,6 +918,11 @@ var quest = {
         d.content = $('#pquest-content').val();
         d.tf = $('[name="quest-tf"]:checked').val();
         d.choises = [];
+        if(d.content.trim() == ''){
+          Command: toastr["error"]("Field is Mandatory!");
+          $('#pquest-submit').prop('disabled', false);
+          return;
+        }
         if($('#quest-choises').children().length == 4){
           $.each($('#quest-choises').children(), function(){
             var $this = $(this)
