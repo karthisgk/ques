@@ -279,7 +279,7 @@
                 <h4 class="modal-title">Create Question</h4>
             </div>
 
-            <div class="modal-body scrolable-bar scrolable-content" style="height: 520px;">
+            <div class="modal-body scrolable-bar scrolable-content" style="height: 780px;">
 
                 <div class="tab-content">
                     <form class="tab-pane fade active in modal-form" id="pquest-form">

@@ -609,6 +609,8 @@ var user = {
         user.update(d);
       } 
     });
+    if(mu_batch_id != 'all')
+      $('#auser-batch_id').val(mu_batch_id).change();
     if(id == '')
       $('#auser-modal input[type="password"]').attr('required','required');
     else
@@ -659,7 +661,7 @@ var user = {
   trigger: function(id = ''){
     $('#auser-modal .modal-title').text('Add Student');
     $('#auser-form').parsley().reset();
-    $('div#loading').show();
+    $('div#loading').show();    
     if(id != ''){
       $('#auser-modal .modal-title').text('Edit Student');
       $.ajax({
@@ -1933,6 +1935,9 @@ var studTest = {
         studTest.lastQuest.off('click').click(studTest.submit);
       }
     });
+  },
+  handleCheck: function(ele){
+    $(ele).prev('input').prop('checked', true);
   }
 };
 
