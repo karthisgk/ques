@@ -5,6 +5,7 @@
 			<li><a href="#">
 				<em class="fa fa-home"></em>
 			</a></li>
+			<li>Make Test</li>
 			<li class="active"><?=isset($data->name) ? $data->name : '';?></li>
 		</ol>
 	</div><!--/.row-->
@@ -34,8 +35,8 @@
 				<div class="panel panel-primary">
 					<div class="panel-body tabs">
 						<ul class="nav nav-tabs custom-tab" id="make-test-tabs">
-							<li class="<?=$test;?>"><a href="#tquest-content" data-toggle="tab">Questions</a></li>
-							<li class="<?=$assign;?>"><a href="#assign-content" data-toggle="tab">Assigned</a></li>
+							<li class="<?=$test;?>"><a href="#tquest-content" data-toggle="tab"><?=isset($data->name) ? $data->name : '';?></a></li>
+							<li class="<?=$assign;?>"><a href="#assign-content" data-toggle="tab">Reserved Batch</a></li>
 						</ul>
 						<div class="tab-content make-test-contents scrolable-content scrolable-bar">
 							<div class="tab-pane fade col-xs-12 <?=$test;?>" id="tquest-content">
