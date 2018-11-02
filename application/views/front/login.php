@@ -55,8 +55,17 @@
 <!-- Validation js (Parsleyjs) -->
         <script type="text/javascript" src="<?=base_url(); ?>assets/plugins/parsleyjs/parsley.min.js"></script>
 <script type="text/javascript">
+
+String.prototype.alpha_numeric = function(){
+  return this.replace(/\W+/g, '');
+};
+    
 $(document).ready(function() {
     $('#login_form').parsley();
+    $('[name="email"]').keyup(function(){
+      if(/\W+/g.test(this.value))
+        this.value = this.value.alpha_numeric();
+    });
 });
 
 function login(){

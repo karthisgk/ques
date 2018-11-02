@@ -609,7 +609,7 @@ var user = {
         user.update(d);
       } 
     });
-    if(mu_batch_id != 'all')
+    if(mu_batch_id != 'all' && mu_batch_id != '0')
       $('#auser-batch_id').val(mu_batch_id).change();
     if(id == '')
       $('#auser-modal input[type="password"]').attr('required','required');
@@ -1982,6 +1982,9 @@ var settings = {
   save: function(){
     if(!settings.form.parsley().validate())
       return false;
+    if($('[name="load_more_count"]').val() < 10)
+      $('[name="load_more_count"]').val(10);
+
     var lm = settings.form.find('input.form-control[name="load_more_count"]');
     if(lm.val() < 10){
       lm.val(10);

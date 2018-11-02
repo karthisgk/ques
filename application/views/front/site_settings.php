@@ -16,7 +16,7 @@
 			<span class="pull-right clickable panel-toggle panel-button-tab-left hide"><em class="fa fa-toggle-up"></em></span>
 		</div>
 		<form class="panel-body scrolable-content scrolable-bar" method="post" id="settings">
-			<div class="col-md-6 col-sm-12">
+			<div class="col-md-8 col-sm-12">
 				<div class="form-group">
 	                <label>Site Title  <span class="text-danger">*</span></label>
 	                <input type="text" data-type="text" value="<?=$settings->title;?>" name="title" maxlength="30" class="form-control" placeholder="Enter Site Title" />
@@ -30,7 +30,7 @@
 	            <div class="row">
 		            <div class="col-md-6 col-sm-12">	
 			            <div class="form-group">
-			                <label>Load More Count  <span class="text-danger">*</span></label>
+			                <label>Load More Count  <span class="text-danger">*</span> (Minimum 10)</label>
 			                <input type="text" data-type="number" value="<?=$settings->load_more_count;?>" name="load_more_count" maxlength="5" class="form-control" placeholder="Enter Load More Count" />
 			            </div>
 			        </div>
