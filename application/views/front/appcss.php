@@ -458,6 +458,11 @@ ul.test-timeline > li.danger .timeline-badge {
   margin-bottom: 10px;
 }
 
+#stud-quest .q-content * {
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
 .q-options {
   list-style: none;
 }

@@ -16,9 +16,9 @@
 				<span class="pull-right clickable panel-toggle panel-button-tab-left hide"><em class="fa fa-toggle-up"></em></span>
 				<span class="pull-right" id="test-timer"></span>
 			</div>
-			<div class="panel-body scrolable-content scrolable-bar tab-content" id="stud-quest">
+			<div class="panel-body tab-content" id="stud-quest">
 				<?php foreach ($questions as $kq => $q): $dataid = $this->sg->_en_urlid($q->id, '0'); ?>
-					<div class="tab-pane fade <?=$kq == 0  ? 'active in' : '';?>" data-id="<?=$dataid;?>" id="stud-q-<?=$dataid;?>">
+					<div class="tab-pane scrolable-content scrolable-bar fade <?=$kq == 0  ? 'active in' : '';?>" data-id="<?=$dataid;?>" id="stud-q-<?=$dataid;?>">
 						<div class="action-btns">
 							<div class="prev">
 								<a class="btn btn-warning"><i class="fa fa-angle-double-left"></i> Prev</a>
