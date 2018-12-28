@@ -1063,7 +1063,7 @@ var quest = {
       var options = ['A','B','C','D'];
       if(ch.length == 4){
         $.each(ch, function(k, opt){
-          rt.desb += '<li><span>'+options[k]+'. '+opt.value.short_string(50)+'</span></li>';
+          rt.desb += '<li><span>'+options[k]+'. '+opt.value+'</span></li>';
         });
       }
     }else if(data.qtype == 1)
