@@ -29,12 +29,13 @@ class Login extends CI_Controller {
 		$username=$this->input->post('email');
 		$password=$this->input->post('password');
 
-		if($username!="" && $password!="") {	
+		if($username!="" && $password!="") {
+			$username = str_replace("'", "", $username);
+			$username = str_replace("\"", "", $username);	
 			$password = md5($password);
-			$query="select * from user where uname='".$username."' and password='".$password."' ";
-			$users=$this->Model->get($query);
-			$rows=$this->Model->count($query);
-			if($rows > 0){
+			//$query="select * from user where uname='".$username."' and password='".$password."' ";
+			$users=$this->Model->checkLogin($username, $password);
+			if(count($users) > 0){
 				if($users[0]->user_type == '0' || $users[0]->activated == '1'){
 					$this->session->set_userdata('user',$users[0]->id);
 					$this->session->set_flashdata('flash', 'Logged in Successfully');

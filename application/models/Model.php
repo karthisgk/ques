@@ -387,6 +387,12 @@ class Model extends CI_Model
 
     }
 
+    public function checkLogin($user, $password){
+        $this->db->where('uname', $user);
+        $this->db->where('password', $password);
+        return $this->db->get('user')->result();
+    }
+
     public function getAssigned($inp, $get_count = false){
 
     	$suser = $this->sessionUser();
